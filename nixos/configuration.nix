@@ -8,6 +8,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ./services
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -41,9 +42,8 @@
 
   networking = {
     hostName = "nitro";
-    nameservers = ["1.1.1.1" "::1"];
     networkmanager.enable = true;
-  }  
+  };
   
   users.users = {
     drum3x = {
