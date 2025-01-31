@@ -2,6 +2,6 @@
   imports = [
     ./git
     ./kitty
-    ./vscode
+    ./vscodium
   ];
 }
