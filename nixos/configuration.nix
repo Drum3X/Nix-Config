@@ -8,11 +8,13 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ./services
-  ];
+    ./users.nix
+    ./networking.nix
+    ./boot.nix
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+    ./services
+    ./programs
+  ];
 
   nixpkgs = {
     overlays = [
@@ -37,29 +39,6 @@
 
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-  };
-
-
-  networking = {
-    hostName = "nitro";
-    networkmanager.enable = true;
-  };
-  
-  users.users = {
-    drum3x = {
-      isNormalUser = true;
-      extraGroups = ["wheel"];
-    };
-  };
-
-  programs.hyprland.enable = true;
-
-  services.openssh = {
-    enable = false;
-    settings = {
-      PermitRootLogin = "no";
-      PasswordAuthentication = false;
-    };
   };
 
   system.stateVersion = "24.11";

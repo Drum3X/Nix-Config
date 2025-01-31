@@ -27,18 +27,7 @@
     enableNixpkgsReleaseCheck = false;
   };
 
-  home.packages = with pkgs; [ 
-    neofetch 
-    neovim
-    firefox
-    vscodium
-    bitwarden-desktop
-  ];
-
-  programs.home-manager.enable = true;
-  
-  programs.kitty.enable = true;
-  programs.wofi.enable = true;
+  programs.home-manager.enable = true; 
 
   systemd.user.startServices = "sd-switch";
 

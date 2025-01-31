@@ -2,5 +2,6 @@
   imports = [
     ./zapret
     ./dnscrypt
+    ./openssh
   ];
 }
