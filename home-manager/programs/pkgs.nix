@@ -1,10 +1,11 @@
-{ inputs, pkgs, ... }: {
-  home.packages = with pkgs; [ 
+{ inputs, pkgs, ... }:
+{
+  home.packages = with pkgs; [
     inputs.zen-browser.packages."${pkgs.system}".default
 
-    neofetch 
+    neofetch
     neovim
-    firefox   
+    firefox
     bitwarden-desktop
     dissent
   ];
