@@ -110,6 +110,18 @@
         "Super, mouse:273, resizewindow"
       ];
 
+      bindl = [
+        "Alt ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle" 
+        "Super ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle" 
+        ",XF86AudioMute, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%" 
+        "Super+Shift,M, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%" 
+      ];
+
+      bindle = [
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+      ];
+
       bind = [
         "$mainMod, d, killactive,"
         "$mainMod, Return, exec, kitty"
