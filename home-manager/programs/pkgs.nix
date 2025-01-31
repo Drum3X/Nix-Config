@@ -5,5 +5,6 @@
     firefox
     vscodium
     bitwarden-desktop
+    dissent
   ];
 }
