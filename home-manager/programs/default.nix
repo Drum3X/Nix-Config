@@ -1,9 +1,8 @@
 { ... }: {
   imports = [
     ./pkgs.nix
-    ./hyprland
-    ./git
-    ./wofi
-    ./kitty
+
+    ./desktop
+    ./apps
   ];
 }

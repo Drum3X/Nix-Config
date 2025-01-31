@@ -19,7 +19,7 @@
     MOZ_ENABLE_WAYLAND = 1;
     WLR_BACKEND = "vulkan";
     WLR_RENDERER = "vulkan";
-    WLR_NO_HARDWARE_CURSORS = 1;
+    WLR_NO_HARDWARE_CURSORS = 0;
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";

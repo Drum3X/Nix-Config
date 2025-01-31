@@ -8,6 +8,7 @@
 }: {
   imports = [
     ./programs
+    ./theme
   ];
   
   nixpkgs = {

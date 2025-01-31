@@ -1,7 +1,9 @@
 { ... }: {
   wayland.windowManager.hyprland = {
     settings = {
-      exec-once = [];
+      exec-once = [
+        "hyprctl setcursor Bibata-Modern-Ice 24"
+      ];
       
       input = {
         kb_layout = "us,tr";
@@ -125,7 +127,7 @@
       bind = [
         "$mainMod, d, killactive,"
         "$mainMod, Return, exec, kitty"
-        "$mainMod, s, exec, wofi --show drun"
+        "$mainMod, s, exec, wofi --show drun || pkill wofi"
 
         "$mainMod, f, fullscreen, 0"
         "$mainMod SHIFT, f, fullscreen, 1"
