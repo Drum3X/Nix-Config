@@ -5,7 +5,6 @@
     neofetch 
     neovim
     firefox   
-    vscodium
     bitwarden-desktop
     dissent
   ];
