@@ -1,6 +1,8 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./hyprland
+    ./ags
     ./wofi
   ];
 }
