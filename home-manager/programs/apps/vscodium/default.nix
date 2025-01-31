@@ -21,8 +21,8 @@
       "extensions.autoUpdate" = false;
       "window.titleBarStyle" = "custom";
 
-      "editor.fontFamily" = "JetBrains Mono";
-      "terminal.integrated.fontFamily" = "JetBrains Mono";
+      "editor.fontFamily" = "JetBrainsMono Nerd Font";
+      "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
       "editor.fontSize" = 18;
 
       "editor.formatOnSave" = true;

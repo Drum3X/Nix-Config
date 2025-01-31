@@ -1,16 +1,17 @@
-{ pkgs, ... }: {
-  fonts.fontconfig.enable = true; 
+{ pkgs, ... }:
+{
+  fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
+    inter-nerdfont
   ];
 
   gtk = {
     enable = true;
     font = {
-      name = "Jetbrains Mono";
-      size = 12;
+      name = "Inter Nerd Font";
+      size = 11;
     };
 
     theme = {
