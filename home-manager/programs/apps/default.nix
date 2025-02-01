@@ -6,5 +6,6 @@
     ./git
     ./kitty
     ./vscodium
+    ./spotify
   ];
 }

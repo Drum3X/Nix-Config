@@ -10,7 +10,7 @@ window.Bar {
     box-shadow: none;
     background-color: $bg;
     color: $fg;
-    font-size: 1.1em;
+    font-size: 1.3em;
     font-weight: bold;
 
     label {
@@ -47,7 +47,7 @@ window.Bar {
     }
 
     .SysTray {
-        margin-right: 8px;
+        margin-left: 16px;
 
         button {
             padding: 0 4px;

@@ -95,7 +95,7 @@ function Workspaces() {
 
     return <box className="Workspaces">
         {bind(hypr, "workspaces").as(wss => wss
-            .filter(ws => !(ws.id >= -99 && ws.id <= -2)) // filter out special workspaces
+            .filter(ws => !(ws.id >= -99 && ws.id <= -2))
             .sort((a, b) => a.id - b.id)
             .map(ws => (
                 <button
@@ -122,7 +122,7 @@ function FocusedClient() {
     </box>
 }
 
-function Time({ format = "%H:%M - %A %e." }) {
+function Time({ format = "%H:%M" }) {
     const time = Variable<string>("").poll(1000, () =>
         GLib.DateTime.new_now_local().format(format)!)
 
@@ -144,12 +144,12 @@ export default function Bar(monitor: Gdk.Monitor) {
         <centerbox>
             <box hexpand halign={Gtk.Align.START}>
                 <Workspaces />
+                <SysTray />
             </box>
             <box>
                 <Media />
             </box>
             <box hexpand halign={Gtk.Align.END} >
-                <SysTray />
                 <Wifi />
                 <AudioSlider />
                 <BatteryLevel />
