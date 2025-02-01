@@ -8,5 +8,6 @@
     bitwarden-desktop
     killall
     vesktop
+    upower
   ];
 }

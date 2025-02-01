@@ -129,11 +129,11 @@
         "$mainMod, f, fullscreen, 0"
         "$mainMod SHIFT, f, fullscreen, 1"
 
-        "$mainMod SHIFT, Space, togglefloating,"
+        "$mainMod, Space, togglefloating,"
 
         "$mainMod SHIFT, q, exit,"
 
-        "$mainMod SHIFT, r, exec, killall ags & ags run"
+        "$mainMod SHIFT, r, exec, ags quit & ags run"
 
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
