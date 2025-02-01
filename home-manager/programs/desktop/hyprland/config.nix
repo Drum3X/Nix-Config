@@ -1,21 +1,22 @@
-{ ... }: {
+{ ... }:
+{
   wayland.windowManager.hyprland = {
     settings = {
       exec-once = [
+        "ags run"
         "hyprctl setcursor Bibata-Modern-Ice 24"
       ];
-      
+
       input = {
         kb_layout = "us,tr";
-	      kb_options = "grp:alt_caps_toggle";
-	      sensitivity = 0.5;
-	      touchpad = {
-	        natural_scroll = true;
+        kb_options = "grp:alt_caps_toggle";
+        sensitivity = 0.5;
+        touchpad = {
+          natural_scroll = true;
         };
       };
 
       dwindle = {
-        # no_gaps_when_only = false;
         force_split = 0;
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
@@ -35,22 +36,17 @@
         ];
 
         animation = [
-          # name, enable, speed, curve, style
+          "windowsIn,   0, 4, easeOutCubic,  popin 20%"
+          "windowsOut,  0, 4, fluent_decel,  popin 80%"
+          "windowsMove, 1, 2, fluent_decel, slide"
 
-          # Windows
-          "windowsIn,   0, 4, easeOutCubic,  popin 20%" # window open
-          "windowsOut,  0, 4, fluent_decel,  popin 80%" # window close.
-          "windowsMove, 1, 2, fluent_decel, slide" # everything in between, moving, dragging, resizing.
+          "fadeIn,      1, 3,   fade_curve"
+          "fadeOut,     1, 3,   fade_curve"
+          "fadeSwitch,  0, 1,   easeOutCirc"
+          "fadeShadow,  1, 10,  easeOutCirc"
+          "fadeDim,     1, 4,   fluent_decel"
 
-          # Fade
-          "fadeIn,      1, 3,   fade_curve" # fade in (open) -> layers and windows
-          "fadeOut,     1, 3,   fade_curve" # fade out (close) -> layers and windows
-          "fadeSwitch,  0, 1,   easeOutCirc" # fade on changing activewindow and its opacity
-          "fadeShadow,  1, 10,  easeOutCirc" # fade on changing activewindow for shadows
-          "fadeDim,     1, 4,   fluent_decel" # the easing of the dimming of inactive windows
-          # "border,      1, 2.7, easeOutCirc"  # for animating the border's color switch speed
-          # "borderangle, 1, 30,  fluent_decel, once" # for animating the border's gradient angle - styles: once (default), loop
-          "workspaces,  1, 4,   easeOutCubic, fade" # styles: slide, slidevert, fade, slidefade, slidefadevert
+          "workspaces,  1, 4,   easeOutCubic, fade"
         ];
       };
 
@@ -98,7 +94,6 @@
 
         shadow = {
           enabled = true;
-
           ignore_window = true;
           offset = "0 2";
           range = 20;
@@ -108,15 +103,14 @@
       };
 
       bindm = [
-        "Super, mouse:272, movewindow"
-        "Super, mouse:273, resizewindow"
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
       ];
 
       bindl = [
-        "Alt ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle" 
-        "Super ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle" 
-        ",XF86AudioMute, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%" 
-        "Super+Shift,M, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%" 
+        "$mainMod, XF86AudioMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle"
+        ",XF86AudioMute, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%"
+        "$mainMod SHIFT, M, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%"
       ];
 
       bindle = [
@@ -126,13 +120,18 @@
 
       bind = [
         "$mainMod, d, killactive,"
+        "$mainMod, t, exec, kitty"
         "$mainMod, Return, exec, kitty"
+        "$mainMod, z, exec, zen"
+        "$mainMod, v, exec, codium"
         "$mainMod, s, exec, wofi --show drun || pkill wofi"
 
         "$mainMod, f, fullscreen, 0"
         "$mainMod SHIFT, f, fullscreen, 1"
 
-        "$mainMod, t, togglefloating,"
+        "$mainMod SHIFT, Space, togglefloating,"
+
+        "$mainMod SHIFT, q, exit,"
 
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
@@ -172,7 +171,7 @@
         "$mainMod, 9, workspace, 9"
         "$mainMod, 0, workspace, 10"
 
-        "$mainMod SHIFT, 1, movetoworkspacesilent, 1" 
+        "$mainMod SHIFT, 1, movetoworkspacesilent, 1"
         "$mainMod SHIFT, 2, movetoworkspacesilent, 2"
         "$mainMod SHIFT, 3, movetoworkspacesilent, 3"
         "$mainMod SHIFT, 4, movetoworkspacesilent, 4"
@@ -182,15 +181,11 @@
         "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
         "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
         "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
-      ]; 
+      ];
     };
 
     extraConfig = "
-      monitor=eDP-1,1920x1080@144,0x0,1
-
-      xwayland {
-        force_zero_scaling = true
-      }
+      monitor=eDP-1, 1920x1080@144, 0x0, 1
     ";
   };
 }
