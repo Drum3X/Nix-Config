@@ -133,6 +133,8 @@
 
         "$mainMod SHIFT, q, exit,"
 
+        "$mainMod SHIFT, r, exec, killall ags & ags run"
+
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
         "$mainMod, up, movefocus, u"

@@ -5,8 +5,8 @@
 
     neofetch
     neovim
-    firefox
     bitwarden-desktop
-    dissent
+    killall
+    vesktop
   ];
 }
