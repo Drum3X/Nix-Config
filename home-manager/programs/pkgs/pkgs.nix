@@ -10,12 +10,9 @@
     vesktop
     wl-clipboard
     swww
-    pywal
     nautilus
     nwg-look
     pavucontrol
-    python2
-    glib
     adw-gtk3
   ];
 }

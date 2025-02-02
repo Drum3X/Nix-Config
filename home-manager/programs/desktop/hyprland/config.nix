@@ -2,6 +2,8 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
+      source = "~/.cache/wal/colors-hyprland.conf";
+
       exec-once = [
         "ags run"
         "hyprctl setcursor Bibata-Modern-Ice 24"
@@ -55,15 +57,15 @@
         layout = "dwindle";
         gaps_in = 5;
         gaps_out = 10;
-        border_size = 2;
-        "col.active_border" = "rgb(98971A) rgb(CC241D) 45deg";
+        border_size = 4;
+        "col.active_border" = "$color3 $color4 45deg";
         "col.inactive_border" = "0x00000000";
         border_part_of_window = false;
         no_border_on_floating = false;
       };
 
       misc = {
-        disable_autoreload = true;
+        disable_autoreload = false;
         disable_hyprland_logo = true;
         always_follow_on_dnd = true;
         layers_hog_keyboard_focus = true;
@@ -75,14 +77,14 @@
       };
 
       decoration = {
-        rounding = 5;
-        # active_opacity = 0.90;
-        # inactive_opacity = 0.90;
-        # fullscreen_opacity = 1.0;
+        rounding = 10;
+        active_opacity = 0.90;
+        inactive_opacity = 0.90;
+        fullscreen_opacity = 1.0;
 
         blur = {
           enabled = true;
-          size = 3;
+          size = 4;
           passes = 2;
           brightness = 1;
           contrast = 1.4;

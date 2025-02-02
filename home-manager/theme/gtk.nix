@@ -15,7 +15,7 @@
     };
 
     theme = {
-      name = "FlatColor";
+      name = "linea-nord-color";
     };
     iconTheme = {
       name = "Papirus-Dark";
