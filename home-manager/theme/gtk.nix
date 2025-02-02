@@ -15,7 +15,7 @@
     };
 
     theme = {
-      name = "Wal";
+      name = "FlatColor";
     };
     iconTheme = {
       name = "Papirus-Dark";

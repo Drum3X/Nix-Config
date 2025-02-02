@@ -14,5 +14,8 @@
     nautilus
     nwg-look
     pavucontrol
+    python2
+    glib
+    adw-gtk3
   ];
 }

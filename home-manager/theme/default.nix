@@ -1,5 +1,7 @@
-{ ... }: {
-    imports = [
-      ./gtk.nix
-    ];
+{ ... }:
+{
+  imports = [
+    ./gtk.nix
+    ./wpgtk.nix
+  ];
 }
