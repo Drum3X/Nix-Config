@@ -95,12 +95,6 @@ window.Bar {
             border-radius: $radius;
         }
 
-        slider {
-            background-color: $fg;
-            border-radius: $radius;
-            min-height: 1em;
-            min-width: 1em;
-            margin: -.2em;
-        }
+
     }
 }

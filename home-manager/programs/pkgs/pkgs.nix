@@ -9,5 +9,10 @@
     killall
     vesktop
     wl-clipboard
+    swww
+    pywal
+    nautilus
+    nwg-look
+    pavucontrol
   ];
 }
