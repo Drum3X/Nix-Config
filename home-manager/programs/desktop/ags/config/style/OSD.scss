@@ -1,0 +1,24 @@
+@import "/home/drum3x/.cache/wal/colors";
+
+.osd-container {
+    background-color: $background;
+    min-width: 30px;
+    min-height: 200px;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.osd-icon {
+    font-size: 25px;
+}
+
+.osd-slider trough {
+    border-radius: 30px;
+    min-height: 200px;
+    min-width: 30px;
+}
+
+.osd-slider trough highlight {
+    background-color: $color4;
+    border-radius: 30px;
+}

@@ -2,18 +2,19 @@
 {
   home.packages = with pkgs; [
     inputs.zen-browser.packages."${pkgs.system}".default
+    pywalfox-native
 
     neofetch
     neovim
+    nemo
     bitwarden-desktop
-    killall
     vesktop
-    wl-clipboard
-    swww
     nwg-look
     pavucontrol
     obs-studio
     mpv
-    nemo
+    plasma5Packages.kdeconnect-kde
+    tutanota-desktop
+    thunderbird
   ];
 }

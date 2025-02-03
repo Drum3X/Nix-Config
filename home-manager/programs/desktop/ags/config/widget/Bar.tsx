@@ -140,7 +140,8 @@ export default function Bar(monitor: Gdk.Monitor) {
         className="Bar"
         gdkmonitor={monitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
-        anchor={TOP | LEFT | RIGHT}>
+        anchor={TOP | LEFT | RIGHT}
+        margin={6}>
         <centerbox>
             <box hexpand halign={Gtk.Align.START}>
                 <Workspaces />

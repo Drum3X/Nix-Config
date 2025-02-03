@@ -1,16 +1,11 @@
 @use "sass:color";
-
-@import '/home/drum3x/.cache/wal/colors.scss';
-
-$bg: #212223;
-$fg: #f1f1f1;
-$accent: #378DF7;
-$radius: 7px;
+@import "/home/drum3x/.cache/wal/colors";
 
 window.Bar {
     border: none;
     box-shadow: none;
-    background-color: color.adjust($background, $alpha: -0.50);
+    background-color: color.adjust($background, $alpha: -0.0);
+    border-radius: 4px;
     color: $color4;
     font-size: 1.3em;
     font-weight: bold;
@@ -26,7 +21,7 @@ window.Bar {
 
             &:hover label {
                 background-color: color.adjust($color15, $alpha: -0.84);
-                border-color: color.adjust($accent, $alpha: -0.8);
+                border-color: color.adjust($color4, $alpha: -0.8);
             }
 
             &:active label {
@@ -38,7 +33,7 @@ window.Bar {
             transition: 200ms;
             padding: 0 8px;
             margin: 2px;
-            border-radius: $radius;
+            border-radius: 8px;
             border: 1pt solid transparent;
         }
 
@@ -63,7 +58,7 @@ window.Bar {
     .Media .Cover {
         min-height: 1.2em;
         min-width: 1.2em;
-        border-radius: $radius;
+        border-radius: 8px;
         background-position: center;
         background-size: contain;
     }
@@ -88,15 +83,13 @@ window.Bar {
 
         trough {
             background-color: color.adjust($color15, $alpha: -0.8);
-            border-radius: $radius;
+            border-radius: 8px;
         }
 
         highlight {
             background-color: $color4;
             min-height: .8em;
-            border-radius: $radius;
+            border-radius: 8px;
         }
-
-
     }
 }

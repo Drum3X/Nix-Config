@@ -16,6 +16,7 @@
         arrterian.nix-env-selector
         ms-python.python
         ms-vscode.cpptools
+        leonardssh.vscord
       ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {

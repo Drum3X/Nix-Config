@@ -1,5 +1,8 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
+    ./pkgs.nix
+
     ./hyprland
   ];
 }

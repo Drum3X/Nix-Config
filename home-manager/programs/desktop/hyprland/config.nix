@@ -127,6 +127,7 @@
         "$mainMod, Return, exec, kitty"
         "$mainMod, z, exec, zen"
         "$mainMod, v, exec, codium"
+        "$mainMod, e, exec, nemo"
         "$mainMod, s, exec, wofi --show drun || pkill wofi"
 
         "$mainMod, f, fullscreen, 0"

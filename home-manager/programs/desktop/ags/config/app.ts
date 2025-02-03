@@ -1,6 +1,7 @@
 import { App } from "astal/gtk3"
-import style from "./style.scss"
+import style from "./style/main.scss"
 import Bar from "./widget/Bar"
+import OSDWindow from "./widget/OSD"
 
 App.start({
     css: style,
@@ -9,5 +10,10 @@ App.start({
         print(request)
         res("ok")
     },
-    main: () => App.get_monitors().map(Bar),
+    main: () => {
+        const mainMonitor = App.get_monitors()[0]
+
+        App.get_monitors().map(Bar)
+        OSDWindow(mainMonitor)
+    },
 })
