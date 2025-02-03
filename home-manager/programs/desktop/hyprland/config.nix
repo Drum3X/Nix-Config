@@ -6,6 +6,7 @@
 
       exec-once = [
         "ags run"
+        "swww init"
         "hyprctl setcursor Bibata-Modern-Ice 24"
       ];
 
@@ -78,16 +79,16 @@
 
       decoration = {
         rounding = 10;
-        active_opacity = 0.90;
-        inactive_opacity = 0.90;
+        active_opacity = 0.92;
+        inactive_opacity = 0.88;
         fullscreen_opacity = 1.0;
 
         blur = {
           enabled = true;
-          size = 4;
+          size = 6;
           passes = 2;
           brightness = 1;
-          contrast = 1.4;
+          contrast = 1.7;
           ignore_opacity = true;
           noise = 0;
           new_optimizations = true;

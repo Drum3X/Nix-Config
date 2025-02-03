@@ -13,6 +13,7 @@
     nautilus
     nwg-look
     pavucontrol
-    adw-gtk3
+    obs-studio
+    mpv
   ];
 }

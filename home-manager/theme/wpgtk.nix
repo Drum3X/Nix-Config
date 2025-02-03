@@ -85,6 +85,8 @@
   ";
 
   home.activation.symlink = lib.mkAfter "
-    ln -s ~/.cache/wal/discord.css ~/.config/vesktop/themes/discord.css
+    if [ ! -L ~/.config/vesktop/themes/discord.css ]; then
+      ln -s ~/.cache/wal/discord.css ~/.config/vesktop/themes/discord.css
+    fi
   ";
 }

@@ -1,5 +1,7 @@
 @use "sass:color";
 
+@import '/home/drum3x/.cache/wal/colors.scss';
+
 $bg: #212223;
 $fg: #f1f1f1;
 $accent: #378DF7;
@@ -8,8 +10,8 @@ $radius: 7px;
 window.Bar {
     border: none;
     box-shadow: none;
-    background-color: $bg;
-    color: $fg;
+    background-color: color.adjust($background, $alpha: -0.50);
+    color: $color4;
     font-size: 1.3em;
     font-weight: bold;
 
@@ -23,12 +25,12 @@ window.Bar {
             background-color: transparent;
 
             &:hover label {
-                background-color: color.adjust($fg, $alpha: -0.84);
+                background-color: color.adjust($color15, $alpha: -0.84);
                 border-color: color.adjust($accent, $alpha: -0.8);
             }
 
             &:active label {
-                background-color: color.adjust($fg, $alpha: -0.8)
+                background-color: color.adjust($color15, $alpha: -0.8)
             }
         }
 
@@ -41,8 +43,8 @@ window.Bar {
         }
 
         .focused label {
-            color: $accent;
-            border-color: $accent;
+            color: $color4;
+            border-color: $color4;
         }
     }
 
@@ -55,7 +57,7 @@ window.Bar {
     }
 
     .FocusedClient {
-        color: $accent;
+        color: $color4;
     }
 
     .Media .Cover {
@@ -85,12 +87,12 @@ window.Bar {
         }
 
         trough {
-            background-color: color.adjust($fg, $alpha: -0.8);
+            background-color: color.adjust($color15, $alpha: -0.8);
             border-radius: $radius;
         }
 
         highlight {
-            background-color: $accent;
+            background-color: $color4;
             min-height: .8em;
             border-radius: $radius;
         }
