@@ -92,6 +92,18 @@ function Media() {
 
 function Workspaces() {
     const hypr = Hyprland.get_default()
+    const numbers = [
+        "一",
+        "二",
+        "三",
+        "四",
+        "五",
+        "六",
+        "七",
+        "八",
+        "九",
+        "十",
+    ]
 
     return <box className="Workspaces">
         {bind(hypr, "workspaces").as(wss => wss
@@ -102,7 +114,7 @@ function Workspaces() {
                     className={bind(hypr, "focusedWorkspace").as(fw =>
                         ws === fw ? "focused" : "")}
                     onClicked={() => ws.focus()}>
-                    {ws.id}
+                    {numbers.at(ws.id - 1)}
                 </button>
             ))
         )}
@@ -141,20 +153,19 @@ export default function Bar(monitor: Gdk.Monitor) {
         gdkmonitor={monitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
         anchor={TOP | LEFT | RIGHT}
-        margin={6}>
+        margin={10}>
         <centerbox>
             <box hexpand halign={Gtk.Align.START}>
                 <Workspaces />
                 <SysTray />
             </box>
             <box>
-                <Media />
+                <Time />
             </box>
             <box hexpand halign={Gtk.Align.END} >
                 <Wifi />
                 <AudioSlider />
                 <BatteryLevel />
-                <Time />
             </box>
         </centerbox>
     </window>

@@ -78,7 +78,7 @@
       };
 
       decoration = {
-        rounding = 10;
+        rounding = 8;
         active_opacity = 0.92;
         inactive_opacity = 0.88;
         fullscreen_opacity = 1.0;

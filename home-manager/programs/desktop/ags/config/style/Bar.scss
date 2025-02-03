@@ -4,17 +4,19 @@
 window.Bar {
     border: none;
     box-shadow: none;
-    background-color: color.adjust($background, $alpha: -0.0);
-    border-radius: 4px;
+    background-color: color.adjust($background, $alpha: -0.18);
+    border-radius: 8px;
     color: $color4;
     font-size: 1.3em;
     font-weight: bold;
 
     label {
-        margin: 0 8px;
+        padding: 8px;
     }
 
     .Workspaces {
+        margin-left: 8px;
+
         button {
             all: unset;
             background-color: transparent;
@@ -25,7 +27,7 @@ window.Bar {
             }
 
             &:active label {
-                background-color: color.adjust($color15, $alpha: -0.8)
+                background-color: color.adjust($color15, $alpha: -0.8);
             }
         }
 
@@ -38,7 +40,8 @@ window.Bar {
         }
 
         .focused label {
-            color: $color4;
+            color: $background;
+            background-color: $color4;
             border-color: $color4;
         }
     }
@@ -64,6 +67,7 @@ window.Bar {
     }
 
     .Battery label {
+        margin-right: 8px;
         padding-left: 0;
         margin-left: 0;
     }
