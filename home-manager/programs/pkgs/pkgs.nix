@@ -10,10 +10,10 @@
     vesktop
     wl-clipboard
     swww
-    nautilus
     nwg-look
     pavucontrol
     obs-studio
     mpv
+    nemo
   ];
 }
