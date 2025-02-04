@@ -5,12 +5,13 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./programs
     ./theme
   ];
-  
+
   nixpkgs = {
     overlays = [
       outputs.overlays.additions
@@ -26,9 +27,14 @@
     username = "drum3x";
     homeDirectory = "/home/drum3x";
     enableNixpkgsReleaseCheck = false;
+    sessionVariables = {
+      EDITOR = "nvim";
+      BROWSER = "zen";
+      TERMINAL = "kitty";
+    };
   };
 
-  programs.home-manager.enable = true; 
+  programs.home-manager.enable = true;
 
   systemd.user.startServices = "sd-switch";
 
