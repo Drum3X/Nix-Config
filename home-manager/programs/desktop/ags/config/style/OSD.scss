@@ -16,7 +16,7 @@
 .osd-icon {
     font-size: 25px;
     margin-top: 12px;
-    color: $color10;
+    color: gtkalpha($color10, 0.78);
 }
 
 .osd-slider trough {
@@ -26,6 +26,6 @@
 }
 
 .osd-slider trough highlight {
-    background-color: $color10;
+    background-color: gtkalpha($color10, 0.78);
     border-radius: 8px;
 }

@@ -11,8 +11,8 @@ window#launcher {
 
     box.Applauncher {
         background-color: color.adjust($background, $alpha: -0.12);
-        border-radius: 8px;
-        margin: 1rem;
+        border-radius: 16px;
+        margin: 8px;
         padding: .8rem;
 
         entry {
@@ -23,6 +23,7 @@ window#launcher {
             min-width: 0;
             min-height: 0;
             padding: .5rem;
+            border-radius: 8px;
 
             icon {
                 font-size: 3em;
@@ -36,6 +37,14 @@ window#launcher {
 
             label.description {
                 color: gtkalpha($foreground, .8);
+            }
+
+            &:hover {
+                background-color: gtkalpha($color10, 0.78);
+            }
+
+            &:focus {
+                background-color: gtkalpha($color10, 0.78);
             }
         }
 

@@ -19,11 +19,6 @@ App.start({
         App.get_monitors().map(Bar)
         App.get_monitors().map(NotificationPopups)
         OSDWindow(mainMonitor)
+        Applauncher()
     },
-})
-
-App.start({
-    instanceName: "launcher",
-    css: style,
-    main: Applauncher,
 })

@@ -1,8 +1,10 @@
-{ ... }: {
+{ pkgs, ... }:
+{
   users.users = {
     drum3x = {
       isNormalUser = true;
-      extraGroups = ["wheel"];
+      extraGroups = [ "wheel" ];
+      shell = pkgs.zsh;
     };
   };
 

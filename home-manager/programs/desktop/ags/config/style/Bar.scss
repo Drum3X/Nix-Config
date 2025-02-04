@@ -8,10 +8,9 @@
 window.Bar {
     box-shadow: none;
     background-color: gtkalpha($background, 0.88);
-    border-radius: 8px;
+    border-radius: 16px;
     border: 4px;
-    border-color: $color10;
-    color: $color10;
+    color: gtkalpha($color10, 0.78);
     font-size: 1.3em;
     font-weight: bold;
 
@@ -46,8 +45,8 @@ window.Bar {
 
         .focused label {
             color: $background;
-            background-color: $color10;
-            border-color: $color10;
+            background-color: gtkalpha($color10, 0.78);
+            border-color: gtkalpha($color10, 0.78);
         }
     }
 
@@ -90,7 +89,7 @@ window.Bar {
         }
 
         trough highlight {
-            background-color: $color10;
+            background-color: gtkalpha($color10, 0.78);
             min-height: .6em;
             border-radius: 8px;
         }

@@ -78,7 +78,7 @@
       };
 
       decoration = {
-        rounding = 8;
+        rounding = 16;
         active_opacity = 0.92;
         inactive_opacity = 0.88;
         fullscreen_opacity = 1.0;
@@ -201,8 +201,6 @@
 
     extraConfig = "
       monitor=eDP-1, 1920x1080@144, 0x0, 1
-
-      blurls=gtk-layer-shell
     ";
   };
 }
