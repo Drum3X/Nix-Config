@@ -4,7 +4,6 @@
     inputs.zen-browser.packages."${pkgs.system}".default
     pywalfox-native
 
-    neofetch
     neovim
     nemo
     bitwarden-desktop

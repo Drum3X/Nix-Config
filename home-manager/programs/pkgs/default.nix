@@ -6,6 +6,7 @@
     ./git
     ./kitty
     ./zsh
+    ./fastfetch
     ./vscodium
     ./spotify
   ];
