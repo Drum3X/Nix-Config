@@ -1,8 +1,12 @@
-@use "sass:color";
+@use "sass:string";
 @import "/home/drum3x/.cache/wal/colors";
 
+@function gtkalpha($c, $a) {
+    @return string.unquote("alpha(#{$c},#{$a})");
+}
+
 .osd-container {
-    background-color: color.adjust($background, $alpha: -0.12);
+    background-color: gtkalpha($background, 0.88);
     min-width: 30px;
     min-height: 200px;
     border-radius: 16px;

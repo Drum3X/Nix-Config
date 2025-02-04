@@ -1,9 +1,13 @@
-@use "sass:color";
+@use "sass:string";
 @import "/home/drum3x/.cache/wal/colors";
+
+@function gtkalpha($c, $a) {
+    @return string.unquote("alpha(#{$c},#{$a})");
+}
 
 window.Bar {
     box-shadow: none;
-    background-color: color.adjust($background, $alpha: -0.12);
+    background-color: gtkalpha($background, 0.88);
     border-radius: 8px;
     border: 4px;
     border-color: $color10;
@@ -23,12 +27,12 @@ window.Bar {
             background-color: transparent;
 
             &:hover label {
-                background-color: color.adjust($color15, $alpha: -0.84);
-                border-color: color.adjust($color10, $alpha: -0.8);
+                background-color: gtkalpha($color15, 0.16);
+                border-color: gtkalpha($color10, 0.2);
             }
 
             &:active label {
-                background-color: color.adjust($color15, $alpha: -0.8);
+                background-color: gtkalpha($color15, 0.2);
             }
         }
 
@@ -81,7 +85,7 @@ window.Bar {
 
 
         trough {
-            background-color: color.adjust($color15, $alpha: -0.8);
+            background-color: gtkalpha($color15, 0.2);
             border-radius: 8px;
         }
 

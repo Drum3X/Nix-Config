@@ -6,10 +6,6 @@
     @return string.unquote("alpha(#{$c},#{$a})");
 }
 
-$fg-color: #{"@theme_fg_color"};
-$bg-color: #{"@theme_bg_color"};
-$error: red;
-
 window.NotificationPopups {
     all: unset;
 }
@@ -24,11 +20,10 @@ eventbox.Notification {
         margin-bottom: 8px;
     }
 
-    // eventboxes can not take margins so we style its inner box instead
     >box {
         min-width: 400px;
         border-radius: 8px;
-        background-color: color.adjust($background, $alpha: -0.12);
+        background-color: gtkalpha($background, 0.88);
         margin: .5rem 1rem .5rem 1rem;
         box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
     }
