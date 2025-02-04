@@ -5,6 +5,5 @@
 
     ./hyprland
     ./ags
-    ./wofi
   ];
 }

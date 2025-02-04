@@ -13,7 +13,7 @@ window.NotificationPopups {
 eventbox.Notification {
 
     &:first-child>box {
-        margin-top: 8px;
+        margin-top: 16px;
     }
 
     &:last-child>box {
@@ -24,8 +24,7 @@ eventbox.Notification {
         min-width: 400px;
         border-radius: 8px;
         background-color: gtkalpha($background, 0.88);
-        margin: .5rem 1rem .5rem 1rem;
-        box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
+        margin-right: 8px;
     }
 
     &.critical>box {

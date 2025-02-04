@@ -120,6 +120,8 @@
       bindle = [
         ", XF86MonBrightnessUp, exec, brightnessctl set '800+'"
         ", XF86MonBrightnessDown, exec, brightnessctl set '800-'"
+        "$mainMod, XF86AudioRaiseVolume, exec, brightnessctl set '800+'"
+        "$mainMod, XF86AudioLowerVolume, exec, brightnessctl set '800-'"
       ];
 
       bindel = [
@@ -139,10 +141,11 @@
         "$mainMod, f, fullscreen, 0"
         "$mainMod SHIFT, f, fullscreen, 1"
 
-        "$mainMod, Space, togglefloating,"
+        "$mainMod, n, togglefloating,"
 
         "$mainMod SHIFT, q, exit,"
 
+        "$mainMod, Space, exec, ags toggle launcher"
         "$mainMod SHIFT, r, exec, ags quit & ags run"
 
         "$mainMod, left, movefocus, l"
