@@ -57,7 +57,6 @@ function PercentBar({ revealChild }: RevealerProps) {
 }
 
 export default function AudioSlider() {
-
     const revealChild = Variable(false);
 
     return (

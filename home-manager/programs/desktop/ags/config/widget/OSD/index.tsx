@@ -1,8 +1,8 @@
 import { Astal, Gdk, App, Gtk, Widget } from "astal/gtk3";
 import { bind, Binding, timeout, Variable } from "astal";
 import Wp from "gi://AstalWp";
-import { hideWindow, toggleWindow } from "../utils";
-import Brightness from "../objects/Brightness";
+import { hideWindow, toggleWindow } from "../../utils";
+import Brightness from "../../objects/Brightness";
 
 const audio = Wp.get_default()!;
 const brightness = Brightness.get_default();
