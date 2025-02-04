@@ -8,6 +8,8 @@ import Wp from "gi://AstalWp"
 import Network from "gi://AstalNetwork"
 import Tray from "gi://AstalTray"
 
+import AudioSlider from "./modules/AudioSlider"
+
 function SysTray() {
     const tray = Tray.get_default()
 
@@ -38,19 +40,6 @@ function Wifi() {
         ))}
     </box>
 
-}
-
-function AudioSlider() {
-    const speaker = Wp.get_default()?.audio.defaultSpeaker!
-
-    return <box className="AudioSlider" css="min-width: 140px">
-        <icon icon={bind(speaker, "volumeIcon")} />
-        <slider
-            hexpand
-            onDragged={({ value }) => speaker.volume = value}
-            value={bind(speaker, "volume")}
-        />
-    </box>
 }
 
 function BatteryLevel() {

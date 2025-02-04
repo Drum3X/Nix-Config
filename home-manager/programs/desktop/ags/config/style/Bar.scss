@@ -2,11 +2,12 @@
 @import "/home/drum3x/.cache/wal/colors";
 
 window.Bar {
-    border: none;
     box-shadow: none;
-    background-color: color.adjust($background, $alpha: -0.18);
+    background-color: color.adjust($background, $alpha: -0.12);
     border-radius: 8px;
-    color: $color4;
+    border: 4px;
+    border-color: $color10;
+    color: $color10;
     font-size: 1.3em;
     font-weight: bold;
 
@@ -23,7 +24,7 @@ window.Bar {
 
             &:hover label {
                 background-color: color.adjust($color15, $alpha: -0.84);
-                border-color: color.adjust($color4, $alpha: -0.8);
+                border-color: color.adjust($color10, $alpha: -0.8);
             }
 
             &:active label {
@@ -41,8 +42,8 @@ window.Bar {
 
         .focused label {
             color: $background;
-            background-color: $color4;
-            border-color: $color4;
+            background-color: $color10;
+            border-color: $color10;
         }
     }
 
@@ -55,7 +56,7 @@ window.Bar {
     }
 
     .FocusedClient {
-        color: $color4;
+        color: $color10;
     }
 
     .Media .Cover {
@@ -66,34 +67,34 @@ window.Bar {
         background-size: contain;
     }
 
-    .Battery label {
+    .Wifi {
         margin-right: 8px;
-        padding-left: 0;
-        margin-left: 0;
+    }
+
+    .AudioIcon {
+        margin-right: 8px;
     }
 
     .AudioSlider {
-        * {
-            all: unset;
-        }
+        margin-right: 8px;
+        min-width: 60px;
 
-        icon {
-            margin-right: .6em;
-        }
-
-        & {
-            margin: 0 1em;
-        }
 
         trough {
             background-color: color.adjust($color15, $alpha: -0.8);
             border-radius: 8px;
         }
 
-        highlight {
-            background-color: $color4;
-            min-height: .8em;
+        trough highlight {
+            background-color: $color10;
+            min-height: .6em;
             border-radius: 8px;
         }
+    }
+
+    .Battery label {
+        margin-right: 8px;
+        padding-left: 0;
+        margin-left: 0;
     }
 }

@@ -4,5 +4,6 @@
     ./pkgs.nix
 
     ./hyprland
+    ./zsh
   ];
 }

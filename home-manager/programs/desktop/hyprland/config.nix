@@ -59,7 +59,7 @@
         gaps_in = 5;
         gaps_out = 10;
         border_size = 4;
-        "col.active_border" = "$color3 $color4 45deg";
+        "col.active_border" = "$color10 $color9 45deg";
         "col.inactive_border" = "0x00000000";
         border_part_of_window = false;
         no_border_on_floating = false;
@@ -111,13 +111,19 @@
       ];
 
       bindl = [
-        "$mainMod, XF86AudioMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle"
-        ",XF86AudioMute, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%"
-        "$mainMod SHIFT, M, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioPlay, exec, playerctl play-pause"
+        ", XF86AudioPrev, exec, playerctl previous"
+        ", XF86AudioNext, exec, playerctl next"
       ];
 
       bindle = [
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86MonBrightnessUp, exec, brightnessctl set '800+'"
+        ", XF86MonBrightnessDown, exec, brightnessctl set '800-'"
+      ];
+
+      bindel = [
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ];
 
@@ -192,6 +198,8 @@
 
     extraConfig = "
       monitor=eDP-1, 1920x1080@144, 0x0, 1
+
+      blurls=gtk-layer-shell
     ";
   };
 }

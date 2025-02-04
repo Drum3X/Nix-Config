@@ -5,6 +5,7 @@
 
     ./git
     ./kitty
+    ./zsh
     ./vscodium
     ./spotify
   ];

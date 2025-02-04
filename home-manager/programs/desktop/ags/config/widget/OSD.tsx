@@ -34,7 +34,7 @@ function showOSD(name: string, changed: number) {
     })
 }
 
-function OSDItem({ name, property, callback }: OSDItemProps) {
+function OSDItem({ name, icon, property, callback }: OSDItemProps) {
 
     const setup = () => {
         property.subscribe((value) => {
@@ -56,6 +56,7 @@ function OSDItem({ name, property, callback }: OSDItemProps) {
                 hexpand={true}
                 drawValue={false}
             />
+            <icon className="osd-icon" icon={icon} />
         </box>
     )
 }
@@ -86,11 +87,11 @@ export default function OSDWindow(gdkmonitor: Gdk.Monitor) {
                         transitionType={Gtk.StackTransitionType.CROSSFADE}
                         transitionDuration={100}
                     >
-                        <OSDItem name="volume"
+                        <OSDItem name="volume" icon={"audio-volume-medium-symbolic"}
                             property={bind(audio.defaultSpeaker, "volume")}
                             callback={({ value }) => audio.defaultSpeaker.volume = value}
                         />
-                        <OSDItem name="brightness"
+                        <OSDItem name="brightness" icon={"display-brightness-symbolic"}
                             property={bind(brightness, "screen")}
                             callback={({ value }) => brightness.screen = value}
                         />
