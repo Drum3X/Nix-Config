@@ -11,9 +11,8 @@ window.NotificationPopups {
 }
 
 eventbox.Notification {
-
     &:first-child>box {
-        margin-top: 16px;
+        margin-top: 18px;
     }
 
     &:last-child>box {
@@ -22,28 +21,32 @@ eventbox.Notification {
 
     >box {
         min-width: 400px;
-        border-radius: 8px;
+        margin-top: 8px;
+        border: 2px solid $color10;
+        border-radius: 16px;
         background-color: gtkalpha($background, 0.88);
-        margin-right: 8px;
+        margin-right: 18px;
     }
 
     &.critical>box {
+        border: 2px solid $color9;
+
         .header {
 
             .app-name {
-                color: gtkalpha($color11, .8);
+                color: gtkalpha($color9, .8);
 
             }
 
             .app-icon {
-                color: gtkalpha($color11, .6);
+                color: gtkalpha($color9, .6);
             }
         }
     }
 
     .header {
         padding: .5rem;
-        color: gtkalpha($foreground, 0.5);
+        color: gtkalpha($color10, 0.78);
 
         .app-icon {
             margin: 0 .4rem;
@@ -104,6 +107,9 @@ eventbox.Notification {
 
         button {
             margin: 0 .3rem;
+            padding: 4px;
+            background-color: gtkalpha($color10, 0.78);
+            border-radius: 8px;
 
             &:first-child {
                 margin-left: 0;
