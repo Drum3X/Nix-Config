@@ -13,6 +13,7 @@ window.NotificationPopups {
 eventbox.Notification {
     &:first-child>box {
         margin-top: 18px;
+        border-radius: 16px 12px 16px 16px;
     }
 
     &:last-child>box {
