@@ -24,6 +24,7 @@
       inputs.ags.packages.${pkgs.system}.greet
       inputs.ags.packages.${pkgs.system}.river
       inputs.ags.packages.${pkgs.system}.powerprofiles
+      inputs.ags.packages.${pkgs.system}.gjs
     ];
   };
 }

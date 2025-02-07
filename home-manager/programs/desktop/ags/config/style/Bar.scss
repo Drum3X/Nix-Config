@@ -9,7 +9,6 @@ window.Bar {
     box-shadow: none;
     background-color: gtkalpha($background, 0.88);
     border-radius: 16px;
-    border: 4px;
     color: gtkalpha($color10, 0.78);
     font-size: 1.3em;
     font-weight: bold;
@@ -74,6 +73,10 @@ window.Bar {
         margin-right: 8px;
     }
 
+    .volume {
+        padding: 4px;
+    }
+
     .AudioIcon {
         margin-right: 8px;
     }
@@ -82,16 +85,16 @@ window.Bar {
         margin-right: 8px;
         min-width: 60px;
 
-
         trough {
             background-color: gtkalpha($color15, 0.2);
             border-radius: 8px;
+            min-height: 12px;
         }
 
         trough highlight {
             background-color: gtkalpha($color10, 0.78);
-            min-height: .6em;
             border-radius: 8px;
+            min-height: 12px;
         }
     }
 

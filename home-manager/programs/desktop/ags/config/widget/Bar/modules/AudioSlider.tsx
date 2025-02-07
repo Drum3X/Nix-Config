@@ -64,13 +64,7 @@ export default function AudioSlider() {
             className="volume"
             onHover={() => revealChild.set(true)}
             onHoverLost={(widget, event) => {
-                const x = event.x;
-                const y = event.y;
-                const w = widget.get_allocation().width;
-                const h = widget.get_allocation().height;
-                if (x < 0 || x > w || y < 0 || y > h) {
-                    revealChild.set(false);
-                }
+                revealChild.set(false);
             }}
         >
             <box>
