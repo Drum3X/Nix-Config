@@ -138,6 +138,9 @@
         "$mainMod, e, exec, nemo"
         "$mainMod, s, exec, wofi --show drun || pkill wofi"
 
+        "$mainMod, s, exec, screenshot"
+        "$mainMod SHIFT, s, exec, screenshot --full"
+
         "$mainMod, f, fullscreen, 0"
         "$mainMod SHIFT, f, fullscreen, 1"
 
