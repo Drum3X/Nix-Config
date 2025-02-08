@@ -1,5 +1,13 @@
-# Custom packages, that can be defined similarly to ones from nixpkgs
-# You can build them using 'nix build .#example'
 pkgs: {
-  # example = pkgs.callPackage ./example { };
+  screenshot = pkgs.writers.writeNuBin "screenshot" {
+    makeWrapperArgs = with pkgs; [
+      "--prefix PATH : ${
+        lib.makeBinPath [
+          slurp
+          wayshot
+          swappy
+        ]
+      }"
+    ];
+  } (builtins.readFile ./screenshot.nu);
 }

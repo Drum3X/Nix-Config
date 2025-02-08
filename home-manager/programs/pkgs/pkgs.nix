@@ -15,5 +15,10 @@
     plasma5Packages.kdeconnect-kde
     tutanota-desktop
     thunderbird
+    gimp
+    slurp
+    wayshot
+    swappy
+    nushell
   ];
 }
