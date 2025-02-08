@@ -9,5 +9,5 @@ pkgs: {
         ]
       }"
     ];
-  } (builtins.readFile ./screenshot.nu);
+  } (builtins.readFile ./scripts/screenshot.nu);
 }

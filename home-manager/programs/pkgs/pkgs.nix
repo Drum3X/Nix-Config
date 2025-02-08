@@ -20,5 +20,6 @@
     wayshot
     swappy
     nushell
+    screenshot
   ];
 }
