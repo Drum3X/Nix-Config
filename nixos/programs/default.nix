@@ -5,5 +5,7 @@
 
     ./hyprland
     ./zsh
+    ./steam
+    ./localsend
   ];
 }

@@ -6,20 +6,24 @@
 
     neovim
     nemo
+    nautilus
     bitwarden-desktop
-    vesktop
+    stable.vesktop
+    stable.electron-bin
     nwg-look
+    xsettingsd
     pavucontrol
+    blueman
     obs-studio
     mpv
     plasma5Packages.kdeconnect-kde
     tutanota-desktop
     thunderbird
     gimp
-    slurp
-    wayshot
-    swappy
     nushell
     screenshot
+
+    nodejs
+    php
   ];
 }

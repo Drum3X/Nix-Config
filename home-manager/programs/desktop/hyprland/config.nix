@@ -65,6 +65,10 @@
         no_border_on_floating = false;
       };
 
+      cursor = {
+        inactive_timeout = 5;
+      };
+
       misc = {
         disable_autoreload = false;
         disable_hyprland_logo = true;
@@ -78,7 +82,7 @@
       };
 
       decoration = {
-        rounding = 16;
+        rounding = 8;
         active_opacity = 0.92;
         inactive_opacity = 0.88;
         fullscreen_opacity = 1.0;
@@ -135,7 +139,7 @@
         "$mainMod, Return, exec, kitty"
         "$mainMod, z, exec, zen"
         "$mainMod, v, exec, codium"
-        "$mainMod, e, exec, nemo"
+        "$mainMod, e, exec, nautilus"
         "$mainMod, s, exec, wofi --show drun || pkill wofi"
 
         "$mainMod, s, exec, screenshot"

@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   networking = {
     hostName = "nitro";
     networkmanager.enable = true;

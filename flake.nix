@@ -13,6 +13,8 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
     spicetify-nix.url = "github:Gerg-L/spicetify-nix";
+
+    prismlauncher.url = "github:Diegiwg/PrismLauncher-Cracked";
   };
 
   outputs =

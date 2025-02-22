@@ -6,5 +6,6 @@
     ./zapret
     ./dnscrypt
     ./openssh
+    ./blueman
   ];
 }

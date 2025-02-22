@@ -54,7 +54,7 @@
       --purple: {color5};
       --aqua: {color1};
 
-      --font: 'JetBrainsMono Nerd Font';
+      --font: 'Inter Nerd Font';
       letter-spacing: -0.05ch;
       font-weight: 400;
       --label-font-weight: 500;
@@ -82,11 +82,5 @@
       --idle-dot: yellow;
       --streaming-dot: purple;
     }}
-  ";
-
-  home.activation.symlink = lib.mkAfter "
-    if [ ! -L ~/.config/vesktop/themes/discord.css ]; then
-      ln -s ~/.cache/wal/discord.css ~/.config/vesktop/themes/discord.css
-    fi
   ";
 }

@@ -2,6 +2,7 @@
 {
   imports = [
     ./pkgs.nix
+    ./gaming.nix
 
     ./git
     ./kitty
