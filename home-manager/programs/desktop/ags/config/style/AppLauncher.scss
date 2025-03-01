@@ -1,6 +1,6 @@
 @use "sass:string";
 @use "sass:color";
-@import "/home/drum3x/.cache/wal/colors";
+@import "Variables";
 
 @function gtkalpha($c, $a) {
     @return string.unquote("alpha(#{$c},#{$a})");
@@ -10,55 +10,58 @@ window#launcher {
     all: unset;
 
     box.Applauncher {
-        background-color: color.adjust($background, $alpha: -0.12);
-        border-radius: 16px;
+        background-color: $background;
+        border: 2px solid $primary-color;
+        border-radius: $radius-out;
         margin: 8px;
         padding: 16px;
 
         entry {
-            margin-bottom: .8rem;
+            margin-bottom: 16px;
         }
 
         button {
             min-width: 0;
             min-height: 0;
-            padding: .5rem;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: $radius-in;
 
             icon {
-                font-size: 3em;
-                margin-right: .3rem;
+                font-size: 40px;
+                margin-right: 8px;
             }
 
             label.name {
+                font-family: $header-font;
                 font-weight: bold;
-                font-size: 1.1em
+                font-size: 16px;
             }
 
             label.description {
-                color: gtkalpha($foreground, .8);
+                font-family: $text-font;
+                color: gtkalpha($foreground, 0.8);
             }
 
             &:hover {
-                background-color: gtkalpha($color10, 0.78);
+                background-color: gtkalpha($primary-color, 0.78);
             }
 
             &:focus {
-                background-color: gtkalpha($color10, 0.78);
+                background-color: gtkalpha($primary-color, 0.78);
             }
         }
 
         box.not-found {
-            padding: 1rem;
+            padding: 16px;
 
             icon {
-                font-size: 6em;
-                color: gtkalpha($foreground, .7);
+                font-size: 48px;
+                color: gtkalpha($foreground, 0.7);
             }
 
             label {
-                color: gtkalpha($foreground, .9);
-                font-size: 1.2em;
+                color: gtkalpha($foreground, 0.9);
+                font-size: 24px;
             }
         }
     }

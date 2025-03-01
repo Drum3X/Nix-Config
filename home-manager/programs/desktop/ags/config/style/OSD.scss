@@ -1,31 +1,32 @@
 @use "sass:string";
-@import "/home/drum3x/.cache/wal/colors";
+@import "Variables";
 
 @function gtkalpha($c, $a) {
     @return string.unquote("alpha(#{$c},#{$a})");
 }
 
 .osd-container {
-    background-color: gtkalpha($background, 0.88);
+    background-color: $background;
     min-width: 30px;
     min-height: 200px;
-    border-radius: 16px;
+    border: 2px solid $primary-color;
+    border-radius: $radius-out;
     padding: 10px;
 }
 
 .osd-icon {
     font-size: 25px;
     margin-top: 12px;
-    color: gtkalpha($color10, 0.78);
+    color: $primary-color;
 }
 
 .osd-slider trough {
-    border-radius: 8px;
+    border-radius: 12px;
     min-height: 200px;
     min-width: 30px;
 }
 
 .osd-slider trough highlight {
-    background-color: gtkalpha($color10, 0.78);
-    border-radius: 8px;
+    background-color: $primary-color;
+    border-radius: $radius-in;
 }

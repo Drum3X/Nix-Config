@@ -50,6 +50,7 @@ export default function Applauncher() {
         exclusivity={Astal.Exclusivity.IGNORE}
         keymode={Astal.Keymode.ON_DEMAND}
         application={App}
+        layer={Astal.Layer.OVERLAY}
         onShow={(self) => {
             text.set("")
             width.set(self.get_current_monitor().workarea.width)

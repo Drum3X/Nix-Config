@@ -1,6 +1,6 @@
 @use "sass:string";
 @use "sass:color";
-@import "/home/drum3x/.cache/wal/colors";
+@import "Variables";
 
 @function gtkalpha($c, $a) {
     @return string.unquote("alpha(#{$c},#{$a})");
@@ -13,7 +13,7 @@ window.NotificationPopups {
 eventbox.Notification {
     &:first-child>box {
         margin-top: 18px;
-        border-radius: 16px 12px 16px 16px;
+        border-radius: $radius-out;
     }
 
     &:last-child>box {
@@ -23,67 +23,71 @@ eventbox.Notification {
     >box {
         min-width: 400px;
         margin-top: 8px;
-        border: 2px solid $color10;
-        border-radius: 16px;
-        background-color: gtkalpha($background, 0.88);
+        padding: 8px;
+        border: 2px solid $primary-color;
+        border-radius: $radius-out;
+        background-color: $background;
         margin-right: 18px;
     }
 
     &.critical>box {
-        border: 2px solid $color9;
+        border: 2px solid $secondary-color;
 
         .header {
-
             .app-name {
-                color: gtkalpha($color9, .8);
+                color: $secondary-color;
 
             }
 
             .app-icon {
-                color: gtkalpha($color9, .6);
+                color: $secondary-color;
             }
         }
     }
 
     .header {
-        padding: .5rem;
-        color: gtkalpha($color10, 0.78);
+        padding: 6px;
+        color: $primary-color;
 
         .app-icon {
-            margin: 0 .4rem;
+            border-radius: $radius-in;
+            margin: 0 4px;
         }
 
         .app-name {
-            margin-right: .3rem;
+            margin-right: 4px;
+            font-family: $header-font;
+            font-size: 18px;
             font-weight: bold;
 
             &:first-child {
-                margin-left: .4rem;
+                margin-left: 4px;
             }
         }
 
         .time {
-            margin: 0 .4rem;
+            font-family: $header-font;
+            margin: 0 4px;
         }
 
         button {
-            padding: .2rem;
+            padding: 4px;
             min-width: 0;
             min-height: 0;
         }
     }
 
     separator {
-        margin: 0 .4rem;
+        margin: 0 4px;
         background-color: gtkalpha($foreground, .1);
     }
 
     .content {
-        margin: 1rem;
-        margin-top: .5rem;
+        margin: 8px;
+        margin-left: 12px;
 
         .summary {
-            font-size: 1.2em;
+            font-size: 16px;
             color: $foreground;
         }
 
@@ -92,9 +96,9 @@ eventbox.Notification {
         }
 
         .image {
-            border: 1px solid gtkalpha($foreground, .02);
-            margin-right: .5rem;
-            border-radius: 9px;
+            border: 2px solid gtkalpha($foreground, 0.02);
+            margin-right: 4px;
+            border-radius: $radius-in;
             min-width: 100px;
             min-height: 100px;
             background-size: cover;
@@ -103,14 +107,14 @@ eventbox.Notification {
     }
 
     .actions {
-        margin: 1rem;
+        margin: 8px;
         margin-top: 0;
 
         button {
-            margin: 0 .3rem;
+            margin: 0 4px;
             padding: 4px;
-            background-color: gtkalpha($color10, 0.78);
-            border-radius: 8px;
+            background-color: $primary-color;
+            border-radius: $radius-in;
 
             &:first-child {
                 margin-left: 0;

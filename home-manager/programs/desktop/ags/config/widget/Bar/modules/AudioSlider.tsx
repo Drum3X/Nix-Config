@@ -11,26 +11,36 @@ function VolumeIcon() {
     const setupStack = (stack: Widget.Stack) => {
         if (!audio)
             return
+
         audio.get_default_speaker()?.connect("notify", ((speaker) => {
             if (speaker.get_mute()) {
                 stack.shown = "0";
                 return;
             }
 
-            stack.shown = volumeThresholds.find((threshold) => threshold <= speaker.volume * 100)!.toString();
+            const detectedThresholds = volumeThresholds.find(threshold => threshold <= (speaker.volume * 100))
+
+            stack.shown = String(detectedThresholds ?? 0);
         }))
     }
 
-
     return (
         <box className="AudioIcon">
-            <stack setup={(setupStack)}>
-                <icon name="101" icon="audio-volume-overamplified-symbolic" />
-                <icon name="67" icon="audio-volume-high-symbolic" />
-                <icon name="34" icon="audio-volume-medium-symbolic" />
-                <icon name="1" icon="audio-volume-low-symbolic" />
-                <icon name="0" icon="audio-volume-muted-symbolic" />
-            </stack>
+            <button onClick={() => {
+                const speaker = audio?.get_default_speaker();
+                if (!speaker) return;
+
+                const current = speaker.get_mute();
+                speaker.set_mute(!current);
+            }}>
+                <stack setup={(setupStack)}>
+                    <icon name="101" icon="audio-volume-overamplified-symbolic" />
+                    <icon name="67" icon="audio-volume-high-symbolic" />
+                    <icon name="34" icon="audio-volume-medium-symbolic" />
+                    <icon name="1" icon="audio-volume-low-symbolic" />
+                    <icon name="0" icon="audio-volume-muted-symbolic" />
+                </stack>
+            </button>
         </box>
     )
 }
@@ -49,7 +59,10 @@ function PercentBar({ revealChild }: RevealerProps) {
                 hexpand={true}
                 drawValue={false}
                 value={bind(audio!.get_default_speaker()!, "volume")}
-                onDragged={(slider) => audio?.defaultSpeaker.set_volume(slider.get_value())}
+                onDragged={(slider) => {
+                    const value = slider.get_value();
+                    audio?.defaultSpeaker?.set_volume(value);
+                }}
             >
             </slider>
         </revealer>

@@ -2,6 +2,10 @@
 {
   imports = [
     ./desktop
-    ./pkgs
+    ./apps
+    ./terminal
+    ./programming
+    ./gaming
+    ./pkgs.nix
   ];
 }

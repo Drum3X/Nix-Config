@@ -5,6 +5,9 @@
   home.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     inter-nerdfont
+    nerd-fonts.mononoki
+    noto-fonts
+    adw-gtk3
   ];
 
   gtk = {
@@ -15,7 +18,7 @@
     };
 
     theme = {
-      name = "linea-nord-color";
+      name = "adw-gtk3-dark";
     };
 
     iconTheme = {

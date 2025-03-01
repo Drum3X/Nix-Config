@@ -7,6 +7,7 @@
   xdg.configFile."wal/templates/colors-hyprland.conf".text =
     "
     $foreground = rgb({foreground.strip})
+    $background = rgb({background.strip})
     $color0 = rgb({color0.strip})
     $color1 = rgb({color1.strip})
     $color2 = rgb({color2.strip})

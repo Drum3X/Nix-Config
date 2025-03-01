@@ -1,36 +1,37 @@
 @use "sass:string";
-@import "/home/drum3x/.cache/wal/colors";
+@import "Variables";
 
 @function gtkalpha($c, $a) {
     @return string.unquote("alpha(#{$c},#{$a})");
 }
 
 window.Bar {
+    font-family: $header-font;
     box-shadow: none;
-    background-color: gtkalpha($background, 0.88);
-    border-radius: 16px;
-    color: gtkalpha($color10, 0.78);
+    background-color: $background;
+    border-radius: $radius-out;
+    color: $primary-color;
     font-size: 1.3em;
     font-weight: bold;
 
     label {
-        padding: 8px;
+        padding: 12px;
     }
 
     .Workspaces {
-        margin-left: 8px;
+        margin: 4px;
+        margin-left: 24px;
 
         button {
             all: unset;
             background-color: transparent;
 
             &:hover label {
-                background-color: gtkalpha($color15, 0.16);
-                border-color: gtkalpha($color10, 0.2);
+                background-color: gtkalpha($foreground, 0.16);
             }
 
             &:active label {
-                background-color: gtkalpha($color15, 0.2);
+                background-color: gtkalpha($foreground, 0.2);
             }
         }
 
@@ -39,13 +40,11 @@ window.Bar {
             padding: 0 8px;
             margin: 2px;
             border-radius: 8px;
-            border: 1pt solid transparent;
         }
 
         .focused label {
             color: $background;
-            background-color: gtkalpha($color10, 0.78);
-            border-color: gtkalpha($color10, 0.78);
+            background-color: gtkalpha($primary-color, 0.78);
         }
     }
 
@@ -58,13 +57,13 @@ window.Bar {
     }
 
     .FocusedClient {
-        color: $color10;
+        color: $primary-color;
     }
 
     .Media .Cover {
         min-height: 1.2em;
         min-width: 1.2em;
-        border-radius: 8px;
+        border-radius: $radius-in;
         background-position: center;
         background-size: contain;
     }
@@ -86,14 +85,14 @@ window.Bar {
         min-width: 60px;
 
         trough {
-            background-color: gtkalpha($color15, 0.2);
-            border-radius: 8px;
+            background-color: gtkalpha($foreground, 0.2);
+            border-radius: $radius-in;
             min-height: 12px;
         }
 
         trough highlight {
-            background-color: gtkalpha($color10, 0.78);
-            border-radius: 8px;
+            background-color: gtkalpha($primary-color, 0.78);
+            border-radius: $radius-in;
             min-height: 12px;
         }
     }

@@ -71,6 +71,7 @@ export default function OSDWindow(gdkmonitor: Gdk.Monitor) {
             gdkmonitor={gdkmonitor}
             application={App}
             marginRight={25}
+            layer={Astal.Layer.OVERLAY}
         >
             <revealer
                 revealChild={false}

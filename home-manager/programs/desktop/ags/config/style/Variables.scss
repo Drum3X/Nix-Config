@@ -1,0 +1,15 @@
+@import "/home/drum3x/.cache/wal/colors";
+
+@function gtkalpha($c, $a) {
+    @return string.unquote("alpha(#{$c},#{$a})");
+}
+
+$header-font: "Mononoki Nerd Font";
+$text-font: "Inter Nerd Font";
+
+$background: gtkalpha($background, 0.96);
+$foreground: $foreground;
+$primary-color: $color10;
+$secondary-color: $color9;
+$radius-out: 16px;
+$radius-in: 8px;

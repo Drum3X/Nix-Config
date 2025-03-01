@@ -7,9 +7,9 @@
     neovim
     nemo
     nautilus
+    ark
     bitwarden-desktop
     stable.vesktop
-    stable.electron-bin
     nwg-look
     xsettingsd
     pavucontrol
@@ -20,8 +20,10 @@
     tutanota-desktop
     thunderbird
     gimp
+    qbittorrent
     nushell
     screenshot
+    dolphin
 
     nodejs
     php

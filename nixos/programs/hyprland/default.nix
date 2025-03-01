@@ -5,6 +5,8 @@
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
   };
 
+  security.polkit.enable = true;
+
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
