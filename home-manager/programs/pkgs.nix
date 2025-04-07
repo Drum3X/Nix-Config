@@ -1,13 +1,16 @@
 { inputs, pkgs, ... }:
 {
+
   home.packages = with pkgs; [
     inputs.zen-browser.packages."${pkgs.system}".default
     pywalfox-native
 
     neovim
-    nemo
+    gparted
+    ntfs3g
     nautilus
-    ark
+    eog
+    kdePackages.ark
     bitwarden-desktop
     stable.vesktop
     nwg-look
@@ -23,9 +26,10 @@
     qbittorrent
     nushell
     screenshot
-    dolphin
+    glib
 
     nodejs
     php
+
   ];
 }

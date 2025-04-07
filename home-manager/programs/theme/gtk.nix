@@ -7,6 +7,7 @@
     inter-nerdfont
     nerd-fonts.mononoki
     noto-fonts
+    font-awesome
     adw-gtk3
   ];
 
@@ -23,7 +24,7 @@
 
     iconTheme = {
       name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme.override { color = "black"; };
+      package = pkgs.papirus-icon-theme;
     };
 
     cursorTheme = {
@@ -31,9 +32,10 @@
       package = pkgs.bibata-cursors;
       size = 24;
     };
-  };
 
-  home.sessionVariables.GTK_THEME = "linea-nord-color";
+    gtk3.extraCss = "@import 'colors.css';";
+    gtk4.extraCss = "@import 'colors.css';";
+  };
 
   home.pointerCursor = {
     name = "Bibata-Modern-Ice";

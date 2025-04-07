@@ -3,7 +3,7 @@
   programs.kitty = {
     enable = true;
     settings = {
-      include = "~/.cache/wal/colors-kitty.conf";
+      include = "./kitty-colors.conf";
 
       confirm_os_window_close = 0;
 

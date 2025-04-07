@@ -2,22 +2,16 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
-      source = "~/.cache/wal/colors-hyprland.conf";
+      source = "hyprland-colors.conf";
 
       exec-once = [
         "ags run"
         "swww init"
         "hyprctl setcursor Bibata-Modern-Ice 24"
-        "[workspace 1 silent] zen"
-        "[workspace 2 silent] codium"
-        "[workspace 3 silent] kitty"
-        "[workspace 4 silent] vesktop"
-        "[workspace special silent] spotify"
       ];
 
       monitor = [
         "eDP-1, 1920x1080@144, 0x0, 1"
-        "HDMI-A-2, 1920x1080@60, 0x0, 1, mirror, eDP-1"
       ];
 
       general = {
@@ -26,7 +20,7 @@
         gaps_in = 5;
         gaps_out = 10;
         gaps_workspaces = 50;
-        "col.active_border" = "$color10 $color9 45deg";
+        "col.active_border" = "$primary";
         "col.inactive_border" = "$background";
         layout = "dwindle";
         no_focus_fallback = true;
@@ -183,9 +177,9 @@
         merge_groups_on_groupbar = true;
         merge_floated_into_tiled_on_groupbar = false;
         group_on_movetoworkspace = false;
-        "col.border_active" = "$color10 $color9 45deg";
+        "col.border_active" = "$secondary";
         "col.border_inactive" = "$background";
-        "col.border_locked_active" = "$color10 $color9 45deg";
+        "col.border_locked_active" = "$secondary";
         "col.border_locked_inactive" = "$background";
       };
 
@@ -315,20 +309,6 @@
         "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
         "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
         "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
-      ];
-
-      workspace = [
-        "special, floating:true"
-      ];
-
-      windowrulev2 = [
-        "workspace 1, class:^(zen)$"
-        "workspace 2, class:^(VSCodium)$"
-        "workspace 3, class:^(kitty)$"
-        "workspace 4, class:^(vesktop)$"
-        "workspace special, class:^(Spotify)$"
-        "float, class:^(Spotify)$"
-        "size 1080 640, class:^(Spotify)$"
       ];
     };
   };
