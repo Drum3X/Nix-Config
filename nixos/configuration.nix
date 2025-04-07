@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ pkgs, inputs, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -16,6 +16,11 @@
     };
     backupFileExtension = "hm-backup";
   };
+
+  environment.systemPackages = [
+    pkgs.gtk4-layer-shell
+    pkgs.gtk4
+  ];
 
   system.stateVersion = "24.11";
 }

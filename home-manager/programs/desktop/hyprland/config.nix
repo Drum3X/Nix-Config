@@ -15,11 +15,11 @@
       ];
 
       general = {
-        border_size = 2;
+        border_size = 1;
         no_border_on_floating = false;
-        gaps_in = 5;
-        gaps_out = 10;
-        gaps_workspaces = 50;
+        gaps_in = 8;
+        gaps_out = 16;
+        gaps_workspaces = 30;
         "col.active_border" = "$primary";
         "col.inactive_border" = "$background";
         layout = "dwindle";
@@ -39,7 +39,7 @@
       };
 
       decoration = {
-        rounding = 16;
+        rounding = 20;
         rounding_power = 2.0;
         active_opacity = 0.92;
         inactive_opacity = 0.92;

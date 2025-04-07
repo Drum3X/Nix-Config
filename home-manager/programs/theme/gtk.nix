@@ -4,17 +4,15 @@
 
   home.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
-    inter-nerdfont
-    nerd-fonts.mononoki
-    noto-fonts
-    font-awesome
+    nerd-fonts.ubuntu-sans
+
     adw-gtk3
   ];
 
   gtk = {
     enable = true;
     font = {
-      name = "Inter Nerd Font";
+      name = "UbuntuSans Nerd Font";
       size = 11;
     };
 

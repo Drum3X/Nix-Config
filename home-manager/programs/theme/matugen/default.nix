@@ -47,7 +47,7 @@
 
   [templates.drumshell]
   input_path = '~/.config/matugen/templates/drumshell.scss'
-  output_path = '~/.config/ags/drumshell.scss' 
+  output_path = '~/drumshell.scss' 
 
   [templates.kitty]
   input_path = '~/.config/matugen/templates/kitty-colors.conf' 

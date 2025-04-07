@@ -3,12 +3,19 @@
 
   home.packages = with pkgs; [
     inputs.zen-browser.packages."${pkgs.system}".default
+    inputs.ags.packages.${pkgs.system}.io
+
+    tor-browser
+
     pywalfox-native
 
     neovim
     gparted
     ntfs3g
     nautilus
+    file-roller
+    unrar
+    unar
     eog
     kdePackages.ark
     bitwarden-desktop
@@ -27,6 +34,9 @@
     nushell
     screenshot
     glib
+    gpu-screen-recorder
+    gpu-screen-recorder-gtk
+    kdePackages.kdenlive
 
     nodejs
     php
