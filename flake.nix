@@ -47,7 +47,7 @@
         nitro = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = [
-            ./nixos/configuration.nix
+            ./machines/nitro/core
           ];
         };
       };
@@ -57,7 +57,7 @@
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
           modules = [
-            ./home-manager/home.nix
+            ./machines/nitro/home
           ];
         };
       };
