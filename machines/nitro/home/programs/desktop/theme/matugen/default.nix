@@ -26,6 +26,10 @@
   input_path = '~/.config/matugen/templates/kitty-colors.conf' 
   output_path = '~/.config/kitty/kitty-colors.conf'
 
+  [templates.drumshell]
+  input_path = '~/.config/matugen/templates/ghostty'
+  output_path = '~/.config/ghostty/themes/matugen'
+
   [templates.gtk3]
   input_path = '~/.config/matugen/templates/gtk-colors.css'
   output_path = '~/.config/gtk-3.0/colors.css'
