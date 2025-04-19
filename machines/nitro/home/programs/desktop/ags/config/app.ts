@@ -1,24 +1,17 @@
-import { App } from "astal/gtk3"
-import style from "./style/main.scss"
+// Astal
+import { App, } from "astal/gtk4"
 
-import Bar from "./widget/Bar"
-import OSDWindow from "./widget/OSD"
-import NotificationPopups from "./widget/Notification"
-import Applauncher from "./widget/AppLauncher"
+// Styles
+import style from "./style/main.scss";
+
+// Modules
+import { Bar, Corners } from "./widget";
 
 App.start({
     css: style,
-    instanceName: "astal",
-    requestHandler(request, res) {
-        print(request)
-        res("ok")
-    },
-    main: () => {
-        const mainMonitor = App.get_monitors()[0]
+    main() {
+        Bar()
 
-        App.get_monitors().map(Bar)
-        App.get_monitors().map(NotificationPopups)
-        OSDWindow(mainMonitor)
-        Applauncher()
+        App.get_monitors().map(Corners);
     },
 })

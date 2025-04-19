@@ -7,7 +7,7 @@
         "wheel"
         "adbusers"
       ];
-      shell = pkgs.zsh;
+      shell = pkgs.nushell;
     };
   };
 

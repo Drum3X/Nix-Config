@@ -15,11 +15,12 @@
 
   [templates.hyprland]
   input_path = '~/.config/matugen/templates/hyprland-colors.conf'
-  output_path = '~/.config/hypr/hyprland-colors.conf' 
+  output_path = '~/.config/hypr/hyprland-colors.conf'
+  post_hook = 'hyprctl reload'
 
   [templates.drumshell]
   input_path = '~/.config/matugen/templates/drumshell.scss'
-  output_path = '~/drumshell.scss' 
+  output_path = '~/.config/colors.scss'
 
   [templates.kitty]
   input_path = '~/.config/matugen/templates/kitty-colors.conf' 

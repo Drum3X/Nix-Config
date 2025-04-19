@@ -1,6 +1,7 @@
 {
     "name": "astal-shell",
     "dependencies": {
-        "astal": "/home/drum3x/.local/share/ags"
+        "astal": "/home/drum3x/.local/share/ags",
+        "typescript": "^5.7.1-rc"
     }
 }

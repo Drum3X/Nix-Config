@@ -1,8 +1,14 @@
-@use "Bar";
-@use "OSD";
-@use "Notification";
-@use "AppLauncher";
-
 * {
     all: unset;
+    font-family: "UbuntuSans Nerd Font";
 }
+
+@import "colors";
+
+@import "bar/components/box";
+@import "bar/components/menu";
+@import "bar/modules/workspaces";
+@import "bar/modules/systray";
+@import "bar/modules/time";
+@import "bar/modules/player";
+@import "bar/modules/battery";

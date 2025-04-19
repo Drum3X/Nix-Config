@@ -16,5 +16,7 @@
     ./screenshot
     ./email
     ./voice-control
+
+    ./rofi
   ];
 }

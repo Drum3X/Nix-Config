@@ -1,12 +1,8 @@
 { ... }:
 {
   imports = [
-    ./zsh
-    ./nushell
-    ./kitty
-    ./git
-    ./neovim
-    ./fastfetch
-    ./ytdlp
+    ./shell
+    ./emulator
+    ./programs
   ];
 }

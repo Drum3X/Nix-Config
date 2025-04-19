@@ -1,0 +1,36 @@
+@use "sass:color";
+
+.Battery {
+    padding: 0rem;
+
+    label {
+        color: $primary;
+        font-weight: bolder;
+    }
+
+    .LabelLow {
+        color: $error;
+    }
+
+    levelbar {
+        border-radius: 2rem;
+
+        trough {
+            border-radius: 2rem;
+
+            block {
+                &.full {
+                    background-color: color.adjust($color: $primary, $alpha: -0.75);
+                }
+
+                &.high {
+                    background-color: color.adjust($color: $primary, $alpha: -0.80);
+                }
+
+                &.low {
+                    background-color: color.adjust($color: $error, $alpha: -0.10);
+                }
+            }
+        }
+    }
+}

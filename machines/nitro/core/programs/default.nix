@@ -6,7 +6,7 @@
     ./brightnessctl
     ./playerctl
     ./libnotify
-    ./zsh
+    ./shell
     ./steam
     ./localsend
     ./kdeconnect

@@ -1,0 +1,60 @@
+.Time {
+    .TimeLabel {
+        font-weight: bold;
+        color: $primary;
+    }
+
+    calendar {
+        .image-button {
+            color: $primary;
+
+            &:hover {
+                border-radius: 8px;
+                background-color: $surface_container_high;
+            }
+        }
+
+        .month {
+            color: $primary;
+            font-weight: bold;
+        }
+
+        .year {
+            color: $primary;
+            font-weight: bold;
+        }
+
+        .day-name {
+            margin: 6px;
+            color: $primary;
+            font-weight: bold;
+        }
+
+        .week-number {
+            color: $primary;
+            font-weight: bold;
+        }
+
+        .day-number {
+            margin-bottom: 8px;
+            color: $primary_fixed;
+            border-radius: 8px;
+
+            &:hover {
+                background-color: $surface_container_high;
+            }
+
+            &:focus {
+                background-color: $surface_container_high;
+            }
+
+            &:selected {
+                background-color: $surface_container_high;
+            }
+        }
+
+        .other-month {
+            color: $surface_container_highest;
+        }
+    }
+}
