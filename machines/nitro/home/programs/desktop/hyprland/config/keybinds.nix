@@ -29,8 +29,8 @@
 
     bind = [
       "$mainMod, d, killactive,"
-      "$mainMod, t, exec, kitty"
-      "$mainMod, Return, exec, kitty"
+      "$mainMod, t, exec, ghostty"
+      "$mainMod, Return, exec, ghostty"
       "$mainMod, z, exec, zen"
       "$mainMod, v, exec, code"
       "$mainMod, e, exec, nautilus"

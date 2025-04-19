@@ -22,11 +22,7 @@
   input_path = '~/.config/matugen/templates/drumshell.scss'
   output_path = '~/.config/colors.scss'
 
-  [templates.kitty]
-  input_path = '~/.config/matugen/templates/kitty-colors.conf' 
-  output_path = '~/.config/kitty/kitty-colors.conf'
-
-  [templates.drumshell]
+  [templates.ghostty]
   input_path = '~/.config/matugen/templates/ghostty'
   output_path = '~/.config/ghostty/themes/matugen'
 
