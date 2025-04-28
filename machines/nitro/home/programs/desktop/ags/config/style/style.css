@@ -1,0 +1,165 @@
+* {
+  all: unset;
+  font-family: "UbuntuSans Nerd Font";
+}
+
+.WidgetBox {
+  background-color: #141318;
+  margin: 0rem 0.1rem 0rem 0.1rem;
+  padding: 0.5rem 0.8rem 0.5rem 0.8rem;
+  border-radius: 2rem;
+}
+.WidgetBox:hover {
+  transition: 800ms cubic-bezier(0.05, 0.7, 0.1, 1);
+  background-color: #201f24;
+}
+
+.Menu {
+  margin-top: 1.2rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background-color: #201f24;
+}
+
+.Workspaces button {
+  transition: 400ms cubic-bezier(0.05, 0.7, 0.1, 1);
+  min-width: 1rem;
+  min-height: 1rem;
+  margin: 0.2rem;
+  background-color: #cbbeff;
+  border-radius: 0.5rem;
+}
+.Workspaces button:hover {
+  background-color: #e6deff;
+}
+.Workspaces .focused {
+  min-width: 2rem;
+  min-height: 0.8rem;
+  background-color: #615690;
+}
+.Workspaces .focused:hover {
+  background-color: #615690;
+}
+
+.SystemTray * {
+  -gtk-icon-size: 1.2rem;
+}
+.SystemTray popover contents {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  border-radius: 16px;
+  background-color: #201f24;
+  color: #cbbeff;
+  font-weight: bold;
+}
+.SystemTray popover contents modelbutton {
+  transition: 600ms cubic-bezier(0.05, 0.7, 0.1, 1);
+  margin: 0.2rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+}
+.SystemTray popover contents modelbutton:hover {
+  background-color: #2b292f;
+}
+
+.Time .TimeLabel {
+  font-weight: bold;
+  color: #cbbeff;
+}
+.Time calendar .image-button {
+  color: #cbbeff;
+}
+.Time calendar .image-button:hover {
+  border-radius: 8px;
+  background-color: #2b292f;
+}
+.Time calendar .month {
+  color: #cbbeff;
+  font-weight: bold;
+}
+.Time calendar .year {
+  color: #cbbeff;
+  font-weight: bold;
+}
+.Time calendar .day-name {
+  margin: 6px;
+  color: #cbbeff;
+  font-weight: bold;
+}
+.Time calendar .week-number {
+  color: #cbbeff;
+  font-weight: bold;
+}
+.Time calendar .day-number {
+  margin-bottom: 8px;
+  color: #e6deff;
+  border-radius: 8px;
+}
+.Time calendar .day-number:hover {
+  background-color: #2b292f;
+}
+.Time calendar .day-number:focus {
+  background-color: #2b292f;
+}
+.Time calendar .day-number:selected {
+  background-color: #2b292f;
+}
+.Time calendar .other-month {
+  color: #36343a;
+}
+
+.Cava {
+  padding: 0rem;
+}
+.Cava .Player {
+  background-color: rgba(15, 13, 19, 0.8);
+  border-radius: 2rem;
+}
+.Cava .PlayerButton {
+  transition: 600ms cubic-bezier(0.05, 0.7, 0.1, 1);
+  color: #cbbeff;
+  margin: 0.3rem;
+  padding: 0.3rem 1.4rem;
+  border-radius: 1rem;
+}
+.Cava .PlayerButton:hover {
+  background-color: rgba(203, 190, 255, 0.2);
+}
+.Cava .PlayerButton:active {
+  background-color: rgba(54, 52, 58, 0.7);
+}
+.Cava .PlayerButtonInactive {
+  color: #36343a;
+}
+
+.GraphBin {
+  color: #cbbeff;
+}
+
+.Battery {
+  padding: 0rem;
+}
+.Battery label {
+  color: #cbbeff;
+  font-weight: bolder;
+}
+.Battery .LabelLow {
+  color: #ffb4ab;
+}
+.Battery levelbar {
+  border-radius: 2rem;
+}
+.Battery levelbar trough {
+  border-radius: 2rem;
+}
+.Battery levelbar trough block.full {
+  background-color: rgba(203, 190, 255, 0.25);
+}
+.Battery levelbar trough block.high {
+  background-color: rgba(203, 190, 255, 0.2);
+}
+.Battery levelbar trough block.low {
+  background-color: rgba(255, 180, 171, 0.9);
+}
+
+/*# sourceMappingURL=style.css.map */

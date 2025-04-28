@@ -5,6 +5,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -12,17 +17,19 @@
 
     ags.url = "github:aylur/ags";
 
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     spicetify-nix.url = "github:Gerg-L/spicetify-nix";
-
-    prismlauncher.url = "github:Diegiwg/PrismLauncher-Cracked";
   };
 
   outputs =
     {
       self,
       nixpkgs,
+      disko,
       home-manager,
       ...
     }@inputs:
@@ -48,6 +55,7 @@
           specialArgs = { inherit inputs outputs; };
           modules = [
             ./machines/nitro/core
+            disko.nixosModules.disko
           ];
         };
       };

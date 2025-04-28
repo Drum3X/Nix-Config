@@ -7,6 +7,7 @@
     ./gparted
     ./bitwarden
     ./discord
+    ./fractal
     ./qbittorrent
   ];
 }

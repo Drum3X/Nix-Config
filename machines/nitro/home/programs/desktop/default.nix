@@ -6,8 +6,10 @@
     ./ags
     ./wallpaper
     ./clipboard-manager
+    ./rofi
     ./browser
     ./file-manager
+    ./clock
     ./image-viewer
     ./image-editor
     ./video-player
@@ -16,7 +18,6 @@
     ./screenshot
     ./email
     ./voice-control
-
-    ./rofi
+    ./ebook-reader
   ];
 }

@@ -1,0 +1,4 @@
+{ ... }:
+{
+  services.xserver.videoDriver = [ "nvidia" ];
+}

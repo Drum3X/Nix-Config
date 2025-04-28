@@ -27,7 +27,7 @@
       touchpad = {
         disable_while_typing = true;
         natural_scroll = true;
-        scroll_factor = 0.4;
+        scroll_factor = 0.3;
         middle_button_emulation = false;
         clickfinger_behavior = false;
         tap-to-click = true;

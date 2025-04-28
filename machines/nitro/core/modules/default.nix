@@ -2,11 +2,13 @@
 {
   imports = [
     ./hardware.nix
+    ./boot.nix
+    ./bootloader.nix
     ./nixos.nix
+    ./disko.nix
     ./graphics.nix
     ./users.nix
     ./networking.nix
-    ./boot.nix
     ./time.nix
     ./nixpkgs.nix
     ./security.nix

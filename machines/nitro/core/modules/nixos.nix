@@ -12,9 +12,11 @@
     {
       settings = {
         experimental-features = "nix-command flakes";
+        warn-dirty = false;
         nix-path = config.nix.nixPath;
         auto-optimise-store = true;
       };
+
       channel.enable = false;
 
       registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;

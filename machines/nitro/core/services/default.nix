@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./xserver
     ./pipewire
     ./greetd
     ./upower
@@ -14,5 +15,6 @@
     ./dnscrypt
     ./openssh
     ./blueman
+    ./ananicy
   ];
 }

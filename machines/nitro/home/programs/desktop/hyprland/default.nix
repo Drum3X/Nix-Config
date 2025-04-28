@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./config
+    ./modules
   ];
 
   wayland.windowManager.hyprland = {

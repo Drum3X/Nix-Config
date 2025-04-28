@@ -18,7 +18,7 @@
         passes = 2;
         ignore_opacity = true;
         new_optimizations = true;
-        xray = true;
+        xray = false;
         noise = 0.01;
         contrast = 1;
         brightness = 1;
