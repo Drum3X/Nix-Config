@@ -13,8 +13,8 @@
     };
 
     iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.adwaita-icon-theme;
+      name = "MoreWaita";
+      package = pkgs.morewaita-icon-theme;
     };
 
     cursorTheme = {
