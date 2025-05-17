@@ -2,5 +2,6 @@
 {
   imports = [
     ./vscodium
+    ./python
   ];
 }

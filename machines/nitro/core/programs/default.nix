@@ -3,14 +3,15 @@
   imports = [
     ./home-manager
     ./hyprland
+    ./nix-ld
+    ./bash
     ./brightnessctl
     ./playerctl
     ./libnotify
-    ./shell
+    ./appimage
     ./steam
     ./localsend
     ./kdeconnect
     ./adb
-    ./gparted
   ];
 }

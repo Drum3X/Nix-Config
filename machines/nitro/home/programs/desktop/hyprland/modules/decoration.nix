@@ -32,7 +32,7 @@
       };
 
       shadow = {
-        enabled = true;
+        enabled = false;
         range = 16;
         render_power = 2;
         sharp = false;

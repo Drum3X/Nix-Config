@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = [
-    pkgs.eog
+    pkgs.loupe
   ];
 }

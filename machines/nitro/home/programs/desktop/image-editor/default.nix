@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
   home.packages = [
-    pkgs.gimp
+    (pkgs.gimp-with-plugins.override {
+      plugins = with pkgs.gimpPlugins; [
+        gmic
+      ];
+    })
   ];
 }

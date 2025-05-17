@@ -4,7 +4,7 @@
     extraSpecialArgs = {
       inherit inputs;
     };
+
     backupFileExtension = "hm-backup";
   };
-
 }

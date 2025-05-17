@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = [
-    pkgs.gparted
+    pkgs.gnome-text-editor
   ];
 }

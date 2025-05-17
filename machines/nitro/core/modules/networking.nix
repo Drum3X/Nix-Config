@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ lib, ... }:
 {
   networking = {
     hostName = "nitro";
     networkmanager.enable = true;
-  };
 
-  environment.systemPackages = with pkgs; [ networkmanagerapplet ];
+    useDHCP = lib.mkDefault true;
+  };
 }

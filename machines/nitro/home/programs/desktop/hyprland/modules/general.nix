@@ -6,7 +6,7 @@
       no_border_on_floating = false;
       gaps_in = 8;
       gaps_out = 16;
-      gaps_workspaces = 30;
+      gaps_workspaces = 0;
       "col.active_border" = "$primary";
       "col.inactive_border" = "$background";
       layout = "dwindle";

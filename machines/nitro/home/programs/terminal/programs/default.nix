@@ -5,6 +5,7 @@
     ./neovim
     ./fastfetch
     ./lshw
+    ./ffmpeg
     ./ytdlp
   ];
 }

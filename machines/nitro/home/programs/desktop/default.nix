@@ -9,15 +9,25 @@
     ./rofi
     ./browser
     ./file-manager
+    ./disk-manager
+    ./text-editor
+    ./system-monitor
+    ./camera
     ./clock
     ./image-viewer
     ./image-editor
     ./video-player
     ./video-editor
+    ./audio-player
     ./screen-recorder
+    ./document-viewer
+    ./document-scanner
+    ./ebook-reader
     ./screenshot
+    ./calendar
+    ./calculator
+    ./characters
     ./email
     ./voice-control
-    ./ebook-reader
   ];
 }

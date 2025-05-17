@@ -15,5 +15,7 @@
     ./bluetooth.nix
     ./garbage.nix
     ./home.nix
+    ./variables.nix
+    ./xdg.nix
   ];
 }

@@ -10,5 +10,4 @@
       shell = pkgs.nushell;
     };
   };
-
 }
