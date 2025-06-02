@@ -3,11 +3,13 @@
   boot = {
     consoleLogLevel = 3;
 
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
     kernelModules = [ "kvm-intel" ];
     kernelParams = [
       "quiet"
-      "mem_sleep_default=deep"
+      "nvidia.NVreg_DynamicPowerManagement=0x01" # 0x00: off, 0x01: performance, 0x02: efficiency
+      "nvidia-drm.modeset=1"
+      "nvidia-drm.fbdev=1"
     ];
 
     initrd = {

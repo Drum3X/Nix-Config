@@ -2,7 +2,6 @@
 {
   imports = [
     ./hyprland
-    ./theme
     ./ags
     ./wallpaper
     ./clipboard-manager
@@ -15,11 +14,8 @@
     ./camera
     ./clock
     ./image-viewer
-    ./image-editor
     ./video-player
-    ./video-editor
     ./audio-player
-    ./screen-recorder
     ./document-viewer
     ./document-scanner
     ./ebook-reader

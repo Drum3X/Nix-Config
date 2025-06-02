@@ -11,6 +11,7 @@ in
       adblockify
       hidePodcasts
       shuffle
+      copyToClipboard
     ];
     theme = spicePkgs.themes.defaultDynamic;
   };

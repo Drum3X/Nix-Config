@@ -7,6 +7,8 @@
         ids = [ "*" ];
         settings = {
           main = {
+            leftshift = "leftshift";
+            rightshift = "rightshift";
             rightcontrol = "layer(altgr)";
           };
         };

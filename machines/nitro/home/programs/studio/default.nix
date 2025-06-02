@@ -1,0 +1,8 @@
+{ ... }:
+{
+  imports = [
+    ./graphics
+    ./audio
+    ./video
+  ];
+}

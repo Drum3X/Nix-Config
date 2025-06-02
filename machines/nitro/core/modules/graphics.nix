@@ -1,7 +1,5 @@
 { config, ... }:
 {
-  services.xserver.videoDrivers = [ "nvidia" ];
-
   hardware = {
     graphics.enable = true;
 
@@ -9,7 +7,7 @@
       modesetting.enable = true;
       open = true;
       nvidiaSettings = false;
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.production;
 
       powerManagement = {
         enable = true;

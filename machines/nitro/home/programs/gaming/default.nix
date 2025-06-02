@@ -1,9 +1,11 @@
-{ pkgs, ... }:
+{ ... }:
 {
-  home.packages = with pkgs; [
-    steam
-    lutris
-    bottles
-    protonup
+  imports = [
+    ./steam
+    ./lutris
+    ./prism-launcher
+    ./gamescope
+    ./mangohud
+    ./protonup
   ];
 }

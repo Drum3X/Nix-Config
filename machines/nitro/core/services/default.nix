@@ -5,12 +5,13 @@
     ./pipewire
     ./systemd-suspend
     ./greetd
+    ./polkit
+    ./keyring
     ./power-profiles
     ./upower
     ./udisks2
     ./devmon
     ./gvfs
-    ./polkit
     ./keyd
     ./zapret
     ./dnscrypt

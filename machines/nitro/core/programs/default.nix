@@ -10,6 +10,7 @@
     ./libnotify
     ./appimage
     ./steam
+    ./gamescope
     ./localsend
     ./kdeconnect
     ./adb
