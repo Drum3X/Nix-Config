@@ -25,9 +25,7 @@
       inputs.ags.packages.${pkgs.system}.astal3
       inputs.ags.packages.${pkgs.system}.astal4
       inputs.ags.packages.${pkgs.system}.io
-      pkgs.gtk4
-      pkgs.gtk4-layer-shell
-      pkgs.libadwaita
+      pkgs.stable.libadwaita
     ];
   };
 }

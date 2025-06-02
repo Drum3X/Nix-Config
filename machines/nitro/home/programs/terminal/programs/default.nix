@@ -3,7 +3,7 @@
   imports = [
     ./git
     ./neovim
-    ./htop
+    ./btop
     ./fastfetch
     ./lshw
     ./ffmpeg
