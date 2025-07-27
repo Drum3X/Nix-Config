@@ -7,6 +7,15 @@
         content = {
           type = "gpt";
           partitions = {
+            win = {
+              size = "200G";
+              content = {
+                type = "filesystem";
+                format = "ntfs";
+                mountPoint = "/windows";
+              };
+            };
+
             ESP = {
               type = "EF00";
               size = "1G";

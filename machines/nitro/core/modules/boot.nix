@@ -24,6 +24,8 @@
       ];
     };
 
+    supportedFilesystems = [ "ntfs" ];
+
     plymouth.enable = true;
   };
 }
