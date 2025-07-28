@@ -8,7 +8,7 @@
           type = "gpt";
           partitions = {
             win = {
-              size = "200G";
+              size = "256G";
               content = {
                 type = "filesystem";
                 format = "ntfs";
