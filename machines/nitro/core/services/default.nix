@@ -1,7 +1,12 @@
-{ ... }:
-{
+{...}: {
   imports = [
-    ./xserver.nix
-    ./pipewire.nix
+    ./dnscrypt
+    ./greetd
+    ./gvfs
+    ./gnome
+    ./pipewire
+    ./upower
+    ./xserver
+    ./zapret
   ];
 }

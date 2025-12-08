@@ -1,4 +1,3 @@
-{ ... }:
-{
+{...}: {
   time.timeZone = "Europe/Istanbul";
 }

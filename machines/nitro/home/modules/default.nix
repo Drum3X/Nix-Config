@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./manager.nix
     ./nixpkgs.nix

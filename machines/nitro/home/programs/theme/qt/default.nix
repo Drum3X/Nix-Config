@@ -1,0 +1,3 @@
+{...}: {
+  qt.enable = true;
+}
