@@ -1,16 +1,20 @@
 {pkgs, ...}: {
+  home.packages = [
+    pkgs.papirus-icon-theme
+  ];
+
   gtk = {
     enable = true;
 
     font = {
       name = "Inter";
       package = pkgs.google-fonts.override {fonts = ["Inter"];};
-      size = 9;
+      size = 10;
     };
 
     iconTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
+      name = "Papirus";
+      package = pkgs.papirus-icon-theme;
     };
 
     theme = {

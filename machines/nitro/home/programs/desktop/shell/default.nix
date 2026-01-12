@@ -13,7 +13,7 @@ in {
       pkgs.kdePackages.kirigami.unwrapped
     ];
 
-    sessionVariables.QML_IMPORT_PATH = lib.concatStringsSep ":" [
+    sessionVariables.QML2_IMPORT_PATH = lib.concatStringsSep ":" [
       "${quickshell}/lib/qt-6/qml"
       "${pkgs.kdePackages.qtdeclarative}/lib/qt-6/qml"
       "${pkgs.kdePackages.kirigami.unwrapped}/lib/qt-6/qml"

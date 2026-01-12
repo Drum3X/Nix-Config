@@ -3,7 +3,6 @@
     ./bluetooth.nix
     ./boot.nix
     ./bootloader.nix
-    ./filesystems.nix
     ./fonts.nix
     ./garbage-collector.nix
     ./hardware.nix
