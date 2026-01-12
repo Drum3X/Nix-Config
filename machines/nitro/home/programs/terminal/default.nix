@@ -1,0 +1,6 @@
+{...}: {
+  imports = [
+    ./emulators
+    ./programs
+  ];
+}

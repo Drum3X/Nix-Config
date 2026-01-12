@@ -1,15 +1,14 @@
-{ ... }:
-{
-  fileSystems = { 
-    "/" = { 
-      device = "/dev/disk/by-uuid/2c6a94b5-de78-42fe-9af9-d7a272ef0982";
+{...}: {
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/616635af-c76b-40e7-83b5-71cd605df76b";
       fsType = "ext4";
     };
 
-    "/boot" = { 
-      device = "/dev/disk/by-uuid/2c6a94b5-de78-42fe-9af9-d7a272ef0982";
+    "/boot" = {
+      device = "/dev/disk/by-uuid/F746-DA84";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = ["fmask=0077" "dmask=0077"];
     };
   };
 }

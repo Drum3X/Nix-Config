@@ -1,11 +1,10 @@
-{ inputs, ... }:
-{
+{inputs, ...}: {
   imports = [
     inputs.home-manager.nixosModules.default
 
     ./modules
-    ./services
     ./programs
+    ./services
   ];
 
   system.stateVersion = "25.05";

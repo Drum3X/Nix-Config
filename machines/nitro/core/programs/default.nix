@@ -1,6 +1,7 @@
-{ ... }:
-{
+{...}: {
   imports = [
-    ./gnome
+    ./dconf
+    ./git
+    ./home-manager
   ];
 }
