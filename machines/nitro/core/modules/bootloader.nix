@@ -2,7 +2,7 @@
   boot.loader = {
     efi = {
       canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot"; 
+      efiSysMountPoint = "/boot/efi"; 
     };
     
     grub = {
@@ -13,4 +13,4 @@
       configurationLimit = 10; 
     };
   };
-};
+}
