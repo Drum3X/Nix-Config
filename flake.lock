@@ -214,10 +214,8 @@
         "disko": "disko",
         "helix": "helix",
         "home-manager": "home-manager",
-        "niri": "niri",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable_2",
-        "quickshell": "quickshell",
         "vicinae": "vicinae",
         "zen-browser": "zen-browser"
       }

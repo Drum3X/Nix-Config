@@ -1,7 +1,7 @@
 {...}: {
   imports = [
     ./dnscrypt
-    ./greetd
+    ./gdm
     ./gvfs
     ./gnome
     ./pipewire

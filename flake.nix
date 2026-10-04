@@ -15,11 +15,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -27,11 +22,6 @@
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    quickshell = {
-      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
