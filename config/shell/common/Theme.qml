@@ -1,0 +1,81 @@
+pragma Singleton
+
+import QtQuick
+import Quickshell
+import qs.services
+
+// Every color, size and duration in the shell. Two palettes, chosen by
+// ThemeState.dark (darkman, or the toggle in the control center).
+Singleton {
+    id: root
+
+    readonly property bool dark: ThemeState.dark
+
+    // ----- glass ----------------------------------------------------------
+    // Silhouette fill of every compositor-glass surface. Its alpha must stay
+    // equal to ISLAND_GLASS_OPTIONS.surfaceOpacity (0.20) in
+    // config/shojiwm/src/effect/island-glass.ts: ShojiWM divides by it to
+    // recover the antialiased edge.
+    readonly property real glassAlpha: 0.20
+    readonly property color glassTint: dark ? Qt.rgba(0.07, 0.08, 0.13, glassAlpha)
+                                            : Qt.rgba(1, 1, 1, glassAlpha)
+    // Drawn inside the silhouette: a hairline rim and a soft top sheen.
+    readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.70)
+    readonly property color glassSheen: dark ? Qt.rgba(1, 1, 1, 0.05) : Qt.rgba(1, 1, 1, 0.22)
+    // Hover / pressed / selected wash on items inside glass.
+    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.38)
+    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.55)
+    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.50)
+
+    // QML-side glass (lock screen, greeter): drawn by the shell itself over
+    // the wallpaper it owns, so it can be more opaque.
+    readonly property color frostTint: dark ? Qt.rgba(0.08, 0.09, 0.15, 0.34) : Qt.rgba(1, 1, 1, 0.30)
+
+    // ----- text -------------------------------------------------------------
+    readonly property color text: dark ? "#f3f2fa" : "#262838"
+    readonly property color textDim: dark ? "#b4b6c8" : "#5d6075"
+    readonly property color textFaint: dark ? "#80839a" : "#8a8ca0"
+    // Text straight on the wallpaper (lock clock, greeter).
+    readonly property color onWallpaper: "#ffffff"
+
+    readonly property color accent: dark ? "#a9b8ff" : "#5b6cf0"
+    readonly property color accentText: "#ffffff"
+    readonly property color danger: dark ? "#ff8f9c" : "#e0465c"
+    readonly property color success: dark ? "#8fe3b0" : "#2fa56a"
+
+    // ----- type -------------------------------------------------------------
+    readonly property string font: "Inter"
+    readonly property string fontMono: "JetBrains Mono Nerd Font"
+    readonly property string iconFont: "Material Symbols Rounded"
+
+    readonly property int textXs: 11
+    readonly property int textBar: 13
+    readonly property int textSm: 12
+    readonly property int textMd: 13
+    readonly property int textLg: 15
+    readonly property int textXl: 20
+
+    // ----- geometry ---------------------------------------------------------
+    readonly property int gap: 8
+    readonly property int pad: 12
+    readonly property int edge: 10          // distance of bar / dock from the screen edge
+
+    readonly property int barHeight: 34
+    readonly property int barRadius: barHeight / 2
+    readonly property int barExclusive: edge + barHeight + 4
+
+    readonly property int dockIcon: 48
+    readonly property int dockPad: 10
+    readonly property int dockHeight: dockIcon + dockPad * 2
+    readonly property int dockRadius: 24
+
+    readonly property int panelRadius: 22
+    readonly property int tileRadius: 14
+
+    // ----- motion -----------------------------------------------------------
+    readonly property int fast: 140
+    readonly property int normal: 220
+    readonly property int slow: 380
+    // A soft spring-like curve used for every open/close.
+    readonly property var emphasized: [0.2, 0.0, 0.0, 1.0, 1.0, 1.0]
+}

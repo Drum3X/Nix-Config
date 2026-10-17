@@ -1,22 +1,22 @@
 {
-  description = "Drum3X's personal config.";
+  description = "Hyalo: Drum3X's NixOS desktop (ShojiWM + Quickshell, liquid glass).";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    vicinae = {
-      url = "github:vicinaehq/vicinae";
+    shojiwm = {
+      url = "github:bea4dev/ShojiWM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -24,52 +24,30 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    helix = {
-      url = "github:helix-editor/helix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
     self,
     nixpkgs,
-    disko,
-    home-manager,
     ...
   } @ inputs: let
-    inherit (self) outputs;
-    systems = [
-      "aarch64-linux"
-      "i686-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-    forAllSystems = nixpkgs.lib.genAttrs systems;
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      overlays = [self.overlays.default];
+    };
+    hyaloLib = import ./lib {inherit inputs self;};
   in {
-    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
-
     overlays = import ./overlays {inherit inputs;};
 
-    nixosConfigurations = {
-      nitro = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [
-          ./machines/nitro/core
-          disko.nixosModules.disko
-        ];
-      };
-    };
+    packages.${system} = import ./pkgs {inherit pkgs;};
 
-    homeConfigurations = {
-      "drum3x@nitro" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
-        modules = [
-          ./machines/nitro/home
-        ];
+    formatter.${system} = pkgs.alejandra;
+
+    nixosConfigurations = {
+      nitro = hyaloLib.mkHost {
+        hostName = "nitro";
+        inherit system;
       };
     };
   };

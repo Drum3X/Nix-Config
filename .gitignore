@@ -1,0 +1,10 @@
+# Nix
+result
+result-*
+
+# Live config mode writes these into the checkout
+config/shell/shaders/*.qsb
+config/shojiwm/node_modules/
+config/shojiwm/package.json
+config/shojiwm/tsconfig.json
+*.hm-backup

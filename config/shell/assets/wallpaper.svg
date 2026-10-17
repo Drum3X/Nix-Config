@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- Hyalo: pastel glass mountains. Only SVG Tiny features (gradients,
+       opacity, strokes), so Qt's own SVG renderer draws it at any size. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="0.55">
+      <stop offset="0" stop-color="#c3d4f6"/>
+      <stop offset="0.45" stop-color="#d9d6f4"/>
+      <stop offset="0.8" stop-color="#ecd4e8"/>
+      <stop offset="1" stop-color="#f3d2df"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.42" cy="0.08" r="0.55">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lilac" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6e3fb" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#b9b6e6" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c6d9f4" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#a9afe2" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5e3ee" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#d5c0dc" stop-opacity="0.78"/>
+    </linearGradient>
+    <linearGradient id="mauve" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ece6f6" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#c8bfe0" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="peach" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#f4e9e4" stop-opacity="0.95"/>
+      <stop offset="0.6" stop-color="#ddd2e4" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#c3bde3" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+
+  <!-- back: centre peak (blue) -->
+  <path d="M 520 1080 C 640 760, 820 120, 932 88 C 990 72, 1030 120, 1080 210 C 1240 500, 1420 820, 1560 1080 Z"
+        fill="url(#blue)" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.4"/>
+  <!-- right peak (rose) -->
+  <path d="M 980 1080 C 1080 860, 1180 330, 1300 278 C 1350 258, 1400 285, 1460 335 C 1640 480, 1830 760, 1920 900 L 1920 1080 Z"
+        fill="url(#rose)" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.4"/>
+  <!-- left peak (lilac) -->
+  <path d="M -40 1080 C 120 760, 330 220, 470 178 C 520 164, 560 185, 610 228 C 820 420, 1000 760, 1120 1080 Z"
+        fill="url(#lilac)" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.4"/>
+  <!-- far right peak (mauve) -->
+  <path d="M 1300 1080 C 1420 860, 1520 470, 1640 418 C 1690 398, 1740 410, 1800 450 C 1860 490, 1900 520, 1920 540 L 1920 1080 Z"
+        fill="url(#mauve)" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.4"/>
+  <!-- front left peak (peach) -->
+  <path d="M -60 1080 C 40 900, 200 470, 320 452 C 370 445, 410 470, 470 520 C 640 680, 830 900, 960 1080 Z"
+        fill="url(#peach)" stroke="#ffffff" stroke-opacity="0.9" stroke-width="2.4"/>
+
+  <!-- light catching the left flanks -->
+  <path d="M -60 1080 C 40 900, 200 470, 320 452 C 250 520, 150 820, 60 1080 Z" fill="url(#sheen)"/>
+  <path d="M 520 1080 C 640 760, 820 120, 932 88 C 860 170, 720 620, 640 1080 Z" fill="url(#sheen)"/>
+  <path d="M 980 1080 C 1080 860, 1180 330, 1300 278 C 1240 360, 1130 760, 1080 1080 Z" fill="url(#sheen)"/>
+</svg>
