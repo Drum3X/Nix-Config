@@ -44,7 +44,7 @@ Item {
             Icon {
                 anchors.centerIn: parent
                 name: root.icon
-                size: 24
+                size: 27
                 filled: true
                 color: root.checked ? Theme.accent : Theme.text
             }

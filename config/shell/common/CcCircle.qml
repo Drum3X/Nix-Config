@@ -38,7 +38,7 @@ Item {
             Icon {
                 anchors.horizontalCenter: parent.horizontalCenter
                 name: root.icon
-                size: root.label.length > 0 ? 22 : 26
+                size: root.label.length > 0 ? 25 : 30
                 filled: true
                 color: root.iconColor
             }

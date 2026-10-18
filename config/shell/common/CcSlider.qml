@@ -18,11 +18,11 @@ Item {
 
     GlassPanel {
         anchors.fill: parent
-        radius: 26
+        radius: 30
 
         Text {
-            x: 16
-            y: 11
+            x: 18
+            y: 13
             text: root.title
             color: Theme.text
             font.family: Theme.font
@@ -46,7 +46,7 @@ Item {
             anchors.leftMargin: 6
             anchors.right: high.left
             anchors.rightMargin: 6
-            y: parent.height - 21 - height / 2
+            y: parent.height - 24 - height / 2
             height: 8
             radius: height / 2
             color: Theme.sliderTrack

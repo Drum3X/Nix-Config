@@ -179,7 +179,7 @@ Scope {
                     GlassPanel {
                         width: parent.width
                         height: networks.implicitHeight + 16
-                        radius: 26
+                        radius: 30
                         visible: window.wifiExpanded && Net.wifiEnabled
 
                         Column {
@@ -408,14 +408,14 @@ Scope {
     component NowPlaying: GlassPanel {
         width: Theme.ccUnit * 2 + Theme.ccGap
         height: Theme.ccUnit * 2 + Theme.ccGap
-        radius: 28
+        radius: 32
 
         ClippingRectangle {
             id: art
-            x: 14
-            y: 14
-            width: 44
-            height: 44
+            x: 16
+            y: 16
+            width: 52
+            height: 52
             radius: 10
             color: Theme.buttonOff
 
@@ -436,10 +436,10 @@ Scope {
         }
 
         Column {
-            x: 14
+            x: 16
             anchors.top: art.bottom
-            anchors.topMargin: 8
-            width: parent.width - 28
+            anchors.topMargin: 10
+            width: parent.width - 32
 
             Text {
                 width: parent.width
