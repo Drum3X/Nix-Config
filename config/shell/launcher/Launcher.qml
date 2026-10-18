@@ -93,9 +93,7 @@ Scope {
                 Rectangle {
                     anchors.fill: parent
                     radius: 16
-                    color: "transparent"
-                    border.width: 1
-                    border.color: Theme.line
+                    color: Theme.hover
                 }
 
                 Icon {

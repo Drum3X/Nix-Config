@@ -4,7 +4,7 @@ import Quickshell.Wayland
 import qs.common
 import qs.services
 
-// Volume / brightness, shown for a moment above the dock when they change.
+// Volume / brightness, shown for a moment under the menu bar when they change.
 PanelWindow {
     id: root
 
@@ -12,8 +12,11 @@ PanelWindow {
     screen: modelData
     visible: Osd.shown || pill.opacity > 0
 
-    anchors.bottom: true
-    margins.bottom: Theme.dockHeight + Theme.edge * 2 + 14
+    anchors.top: true
+    anchors.right: true
+    // Under the menu bar on the right, where macOS Tahoe shows it.
+    margins.top: Theme.barExclusive - 2
+    margins.right: Theme.edge
     implicitWidth: 260
     implicitHeight: 48
     exclusionMode: ExclusionMode.Ignore
@@ -54,9 +57,7 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             height: 6
             radius: 3
-            color: "transparent"
-            border.width: 1
-            border.color: Theme.line
+            color: Theme.hover
 
             Rectangle {
                 width: track.width * Math.max(0, Math.min(1, Osd.value))

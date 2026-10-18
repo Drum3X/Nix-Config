@@ -1,9 +1,8 @@
 import QtQuick
 
-// A line-drawn slider, as in shoji-bar-3: the icon, a hairline track, the
-// filled part in the text colour and a small round knob. Nothing is filled
-// behind it, so the glass stays clear. `value` is 0..1; `moved` reports drags
-// and wheel turns.
+// A macOS Control Center slider: a capsule track with a white fill that ends
+// in a round knob, and the icon inside the track on the left. `value` is
+// 0..1; `moved` reports drags and wheel turns.
 Item {
     id: root
 
@@ -11,62 +10,50 @@ Item {
     property string icon: ""
     signal moved(real value)
 
-    implicitHeight: 24
+    implicitHeight: 28
 
     readonly property real clamped: Math.max(0, Math.min(1, value))
-    readonly property real knob: 12
 
-    Icon {
-        id: glyph
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        width: 20
-        name: root.icon
-        size: 17
+    Rectangle {
+        id: track
+        anchors.fill: parent
+        radius: height / 2
+        color: Theme.sliderTrack
     }
 
-    Item {
-        id: track
-        anchors.left: glyph.right
-        anchors.leftMargin: 10
-        anchors.right: parent.right
-        anchors.rightMargin: root.knob / 2
+    Rectangle {
+        id: fill
+        height: track.height
+        width: Math.max(track.height, track.height + (track.width - track.height) * root.clamped)
+        radius: height / 2
+        color: "#ffffff"
+        opacity: Theme.dark ? 0.92 : 1
+        Behavior on width {
+            enabled: !drag.pressed
+            NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+        }
+
+        // The knob, at the end of the fill.
+        Rectangle {
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            width: track.height
+            height: track.height
+            radius: height / 2
+            color: "#ffffff"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.10)
+        }
+    }
+
+    Icon {
+        anchors.left: parent.left
+        anchors.leftMargin: 7
         anchors.verticalCenter: parent.verticalCenter
-        height: root.knob
-
-        Rectangle {
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 2
-            radius: 1
-            color: Theme.lineFaint
-        }
-
-        Rectangle {
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width * root.clamped
-            height: 2
-            radius: 1
-            color: Theme.text
-            opacity: 0.85
-            Behavior on width {
-                enabled: !drag.pressed
-                NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
-            }
-        }
-
-        Rectangle {
-            x: parent.width * root.clamped - width / 2
-            anchors.verticalCenter: parent.verticalCenter
-            width: root.knob
-            height: root.knob
-            radius: width / 2
-            color: Theme.text
-            Behavior on x {
-                enabled: !drag.pressed
-                NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
-            }
-        }
+        name: root.icon
+        size: 15
+        filled: true
+        color: "#5d6075"
     }
 
     MouseArea {
@@ -74,8 +61,8 @@ Item {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         function update(x: real): void {
-            const local = x - track.x;
-            root.moved(Math.max(0, Math.min(1, local / Math.max(1, track.width))));
+            const span = width - track.height;
+            root.moved(Math.max(0, Math.min(1, (x - track.height / 2) / Math.max(1, span))));
         }
         onPressed: (event) => update(event.x)
         onPositionChanged: (event) => { if (pressed) update(event.x); }

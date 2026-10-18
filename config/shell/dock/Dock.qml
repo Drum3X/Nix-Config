@@ -21,7 +21,7 @@ Scope {
 
     // ----- layout -------------------------------------------------------------
     readonly property real base: Theme.dockIcon
-    readonly property real spacing: 4
+    readonly property real spacing: 10
     readonly property real magnify: 1.6          // largest icon, relative to base
     readonly property real reach: base * 2.6     // how far the wave spreads
     readonly property real headroom: base * (magnify - 1) + 34   // room above the shelf
@@ -70,7 +70,7 @@ Scope {
 
     // Shelf geometry, shared by both surfaces (they are the same size).
     readonly property real shelfWidth: iconRow.implicitWidth + Theme.dockPad * 2
-    readonly property real surfaceHeight: Theme.dockHeight + Theme.edge + headroom
+    readonly property real surfaceHeight: Theme.dockHeight + Theme.dockGap + headroom
 
     // ----- the glass shelf ------------------------------------------------------
     PanelWindow {
@@ -81,7 +81,7 @@ Scope {
         anchors.left: true
         anchors.right: true
         implicitHeight: root.surfaceHeight
-        exclusiveZone: Theme.dockHeight + Theme.edge + 4
+        exclusiveZone: Theme.dockHeight + Theme.dockGap + 4
         color: "transparent"
 
         WlrLayershell.layer: WlrLayer.Top
@@ -96,7 +96,7 @@ Scope {
             id: shelfGlass
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: Theme.edge
+            anchors.bottomMargin: Theme.dockGap
             width: root.shelfWidth
             height: Theme.dockHeight
             radius: Theme.dockRadius
@@ -122,16 +122,16 @@ Scope {
         // The shelf, and while hovering also the space the icons rise into.
         mask: Region {
             x: Math.round((iconWindow.width - root.shelfWidth) / 2)
-            y: root.hovering ? 0 : Math.round(iconWindow.height - Theme.edge - Theme.dockHeight)
+            y: root.hovering ? 0 : Math.round(iconWindow.height - Theme.dockGap - Theme.dockHeight)
             width: Math.round(root.shelfWidth)
-            height: root.hovering ? iconWindow.height : Theme.dockHeight + Theme.edge
+            height: root.hovering ? iconWindow.height : Theme.dockHeight + Theme.dockGap
         }
 
         Item {
             id: shelf
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: Theme.edge
+            anchors.bottomMargin: Theme.dockGap
             width: root.shelfWidth
             height: Theme.dockHeight
 
@@ -232,16 +232,17 @@ Scope {
                             anchors.bottomMargin: 8
                             width: label.implicitWidth + 18
                             height: label.implicitHeight + 8
-                            radius: 7
-                            color: Theme.dark ? Qt.rgba(0.16, 0.16, 0.18, 0.88) : Qt.rgba(0.96, 0.96, 0.97, 0.9)
+                            radius: height / 2
+                            // The macOS dock label: a grey pill with white type.
+                            color: Qt.rgba(0.42, 0.43, 0.50, 0.78)
                             border.width: 1
-                            border.color: Theme.dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08)
+                            border.color: Qt.rgba(1, 1, 1, 0.18)
 
                             Text {
                                 id: label
                                 anchors.centerIn: parent
                                 text: slot.isTrash ? "Trash" : (slot.modelData.name || "")
-                                color: Theme.text
+                                color: "#ffffff"
                                 font.family: Theme.font
                                 font.weight: Font.Medium
                                 font.pixelSize: Theme.textSm

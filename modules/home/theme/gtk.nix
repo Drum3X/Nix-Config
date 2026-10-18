@@ -36,6 +36,6 @@
   };
 
   dconf.settings."org/gnome/desktop/wm/preferences" = {
-    button-layout = ":minimize,maximize,close";
+    button-layout = "close,minimize,maximize:";
   };
 }

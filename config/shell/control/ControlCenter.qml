@@ -59,7 +59,7 @@ Scope {
         }
 
         readonly property var battery: UPower.displayDevice
-        readonly property bool hasBattery: battery && battery.isPresent && battery.isLaptopBattery
+        readonly property bool hasBattery: !!(battery && battery.isPresent && battery.isLaptopBattery)
         readonly property var adapter: Bluetooth.defaultAdapter
         readonly property var btConnected: Bluetooth.devices
             ? Bluetooth.devices.values.filter((d) => d.connected) : []
@@ -285,8 +285,6 @@ Scope {
                                         height: 32
                                         radius: 10
                                         color: Theme.sliderTrack
-                                        border.width: 1
-                                        border.color: Theme.line
 
                                         TextInput {
                                             id: psk
@@ -360,8 +358,6 @@ Scope {
                                 height: 48
                                 radius: 10
                                 color: Theme.buttonOff
-                                border.width: 1
-                                border.color: Theme.line
 
                                 Image {
                                     anchors.fill: parent

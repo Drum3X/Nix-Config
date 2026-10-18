@@ -13,7 +13,7 @@ Image {
         const data = Quickshell.env("XDG_DATA_HOME") || ((Quickshell.env("HOME") || "") + "/.local/share");
         return "file://" + data + "/hyalo/wallpaper";
     }
-    readonly property string bundled: Qt.resolvedUrl("../assets/wallpaper.svg")
+    readonly property string bundled: Qt.resolvedUrl("../assets/wallpaper.jpg")
 
     source: userWallpaper ? userPath : bundled
     onStatusChanged: {
@@ -26,8 +26,6 @@ Image {
     cache: true
     smooth: true
     mipmap: true
-    // Rendered at the screen's size, so an SVG stays sharp.
-    sourceSize: Qt.size(width * Screen.devicePixelRatio, height * Screen.devicePixelRatio)
 
     // Dusk over the pastel picture in the dark palette.
     Rectangle {

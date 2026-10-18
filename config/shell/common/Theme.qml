@@ -22,17 +22,17 @@ Singleton {
     readonly property color glassTint: Qt.rgba(0.5, 0.5, 0.5, glassAlpha)
     // Kept for popups drawn outside compositor glass (dock labels).
     readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.45)
-    // Nothing inside the glass is filled: modules, off buttons and slider
-    // tracks are drawn as hairlines, so the glass itself carries no colour.
+    // Hairlines (dividers).
     readonly property color line: dark ? Qt.rgba(1, 1, 1, 0.42) : Qt.rgba(0.15, 0.16, 0.22, 0.38)
     readonly property color lineFaint: dark ? Qt.rgba(1, 1, 1, 0.22) : Qt.rgba(0.15, 0.16, 0.22, 0.18)
-    readonly property color module: "transparent"
-    readonly property color buttonOff: "transparent"
-    readonly property color sliderTrack: "transparent"
-    // Hover / pressed / selected: the faintest wash, only while interacting.
-    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.06) : Qt.rgba(1, 1, 1, 0.14)
-    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(1, 1, 1, 0.24)
-    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.20)
+    // macOS Control Center platters and controls, on the dimmed glass.
+    readonly property color module: dark ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(1, 1, 1, 0.24)
+    readonly property color buttonOff: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.42)
+    readonly property color sliderTrack: dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(1, 1, 1, 0.34)
+    // Hover / pressed / selected washes inside glass.
+    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.26)
+    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.38)
+    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.32)
 
     // QML-side glass (lock screen, greeter): just a whisper of tint.
     readonly property color frostTint: dark ? Qt.rgba(0, 0, 0, 0.06) : Qt.rgba(1, 1, 1, 0.06)
@@ -66,14 +66,16 @@ Singleton {
     readonly property int pad: 12
     readonly property int edge: 10          // distance of bar / dock from the screen edge
 
-    readonly property int barHeight: 34
+    readonly property int barHeight: 32
     readonly property int barRadius: barHeight / 2
-    readonly property int barExclusive: edge + barHeight + 4
+    // Where panels hanging from the menu bar start.
+    readonly property int barExclusive: barHeight + 8
 
-    readonly property int dockIcon: 48
-    readonly property int dockPad: 10
+    readonly property int dockIcon: 52
+    readonly property int dockPad: 9
     readonly property int dockHeight: dockIcon + dockPad * 2
-    readonly property int dockRadius: 24
+    readonly property int dockRadius: 19
+    readonly property int dockGap: 6          // dock above the bottom edge
 
     readonly property int panelRadius: 22
     readonly property int tileRadius: 14

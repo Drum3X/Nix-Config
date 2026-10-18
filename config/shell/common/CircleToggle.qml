@@ -26,8 +26,6 @@ Item {
         height: root.circle
         radius: width / 2
         color: root.checked ? Theme.accent : Theme.buttonOff
-        border.width: root.checked ? 0 : 1
-        border.color: Theme.line
         scale: buttonMouse.pressed ? 0.92 : 1
         Behavior on color { ColorAnimation { duration: Theme.normal } }
         Behavior on scale { NumberAnimation { duration: Theme.fast } }

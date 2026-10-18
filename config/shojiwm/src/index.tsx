@@ -49,7 +49,7 @@ import {
   WINDOW_STATE_WORKSPACE_OFFSET_Y,
   WINDOW_STATE_WORKSPACE_OPACITY,
 } from "./window-manager";
-import { ISLAND_GLASS } from "./effect/island-glass";
+import { ISLAND_GLASS, ISLAND_GLASS_DARK } from "./effect/island-glass";
 import { createFlip3D } from "./flip-3d";
 import { createWindowGrid } from "./window-grid";
 import { installDragAndDrop } from "./drag-and-drop";
@@ -69,7 +69,7 @@ COMPOSITOR.cursor.configure({
 });
 
 COMPOSITOR.process.once("GTK-CSD-control-buttons", {
-  command: "gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'",
+  command: "gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'",
   runPolicy: "once-per-session",
 });
 
@@ -662,11 +662,11 @@ const LAYER_BLUR_MASK = compileLayerEffect({
 
 COMPOSITOR.effect.layer = (layer) => {
   const namespace = layer.namespace();
-  // hyalo-shell's surfaces draw only a translucent silhouette (alpha 0.20,
+  // hyalo-shell's surfaces draw only a faint silhouette (Theme.glassAlpha ==
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    return { behind: ISLAND_GLASS };
+    return { behind: themeDark() ? ISLAND_GLASS_DARK : ISLAND_GLASS };
   }
   // The wallpaper, and anything else that wants no glass at all.
   if (namespace === "no_blur") {
@@ -878,8 +878,8 @@ function naturalRootRect(window: WaylandWindow): ManagedWindowRect {
  * The title bar's button size, padding and gap. `titlebarButtonAt` finds the
  * buttons with the same numbers, so change them here.
  */
-const TITLEBAR_BUTTON_SIZE = 16;
-const TITLEBAR_PADDING_X = 8;
+const TITLEBAR_BUTTON_SIZE = 13;
+const TITLEBAR_PADDING_X = 12;
 const TITLEBAR_GAP = 8;
 
 COMPOSITOR.window.composition = (window: WaylandWindow) => {
@@ -910,11 +910,11 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     () => minimizeVisualIdle() || (!workspaceVisible() && !tileDragging()),
   );
 
-  // Hyalo glass: a thin light rim on a frosted title bar, in both palettes.
+  // macOS: a hairline outline around the window, dark on light and light on dark.
   const borderColor = computed(() =>
     window.isFocused()
-      ? themeDark() ? "#ffffff59" : "#ffffffd9"
-      : themeDark() ? "#ffffff26" : "#ffffff80",
+      ? themeDark() ? "#ffffff30" : "#00000030"
+      : themeDark() ? "#ffffff1c" : "#0000001f",
   );
   // A soft drop shadow under the frame; the focused window floats a bit higher.
   // The window selected in the window switcher glows white instead (it fits
@@ -977,9 +977,6 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   // textures: there is nothing under a window there to blur.
   const blurSuspended = WINDOW_SWITCHER.blurSuspended();
 
-  const appIcon = (
-    <AppIcon icon={window.icon} style={{ width: 16, height: 16 }} />
-  );
   const label = (
     <Label
       text={window.title}
@@ -991,6 +988,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
         flexGrow: 1,
         flexShrink: 1,
         minWidth: 0,
+        textAlign: "center",
       }}
     />
   );
@@ -998,12 +996,14 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   const maximizeButton = <MaximizeButton window={window} />;
   const closeButton = <CloseButton window={window} />;
 
+  // macOS order: the traffic lights on the left, the title centred on the
+  // window (the spacer on the right balances the buttons).
   const titlebarContent = [
-    appIcon,
-    label,
+    closeButton,
     minimizeButton,
     maximizeButton,
-    closeButton,
+    label,
+    <Box style={{ width: TITLEBAR_BUTTON_SIZE * 3 + TITLEBAR_GAP * 2, flexShrink: 0 }} />,
   ];
   var innerComponents = (
     <Box direction="column">
@@ -1142,8 +1142,8 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
 
 /**
  * The title bar button at `(x, y)`, logical px from the top-left corner of
- * `window.rect` (the frame: border, then the title bar). From the right:
- * close, maximize, minimize. Each button takes the whole title bar height
+ * `window.rect` (the frame: border, then the title bar). From the left, as on
+ * macOS: close, minimize, maximize. Each button takes the whole title bar height
  * and half the gap on both sides, so a scaled-down card still has a usable
  * target.
  */
@@ -1157,11 +1157,11 @@ function titlebarButtonAt(window: WaylandWindow, x: number, y: number): Titlebar
   if (y < WINDOW_BORDER_PX || y > WINDOW_BORDER_PX + TITLEBAR_HEIGHT) {
     return null;
   }
-  const buttons: TitlebarButton[] = ["close", "maximize", "minimize"];
+  const buttons: TitlebarButton[] = ["close", "minimize", "maximize"];
   const pitch = TITLEBAR_BUTTON_SIZE + TITLEBAR_GAP;
-  const right = window.rect.width - WINDOW_BORDER_PX - TITLEBAR_PADDING_X;
+  const left = WINDOW_BORDER_PX + TITLEBAR_PADDING_X;
   for (let i = 0; i < buttons.length; i++) {
-    const center = right - TITLEBAR_BUTTON_SIZE / 2 - i * pitch;
+    const center = left + TITLEBAR_BUTTON_SIZE / 2 + i * pitch;
     if (Math.abs(x - center) <= pitch / 2) {
       return buttons[i];
     }
@@ -1172,7 +1172,9 @@ function titlebarButtonAt(window: WaylandWindow, x: number, y: number): Titlebar
 const CloseButton = ({ window }: { window: WaylandWindow }) => {
   const [hover, setHover] = useState(false);
 
-  const borderColor = hover((hover) => (hover ? "#00000000" : "#F0808030"));
+  // macOS traffic lights: coloured on the focused window, grey otherwise.
+  const buttonBackground = window.isFocused((focused) => (focused ? "#ff5f57" : "#c8c7cc"));
+  const borderColor = window.isFocused((focused) => (focused ? "#e2463f" : "#b6b5ba"));
 
   var icon: CompositionRenderable | null = null;
   if (hover()) {
@@ -1197,8 +1199,8 @@ const CloseButton = ({ window }: { window: WaylandWindow }) => {
         style={{
           width: TITLEBAR_BUTTON_SIZE,
           height: TITLEBAR_BUTTON_SIZE,
-          borderRadius: 8,
-          background: "#FFFFFF20",
+          borderRadius: TITLEBAR_BUTTON_SIZE / 2,
+          background: buttonBackground,
           border: { px: 1, color: borderColor },
         }}
         onClick={window.close}
@@ -1253,12 +1255,12 @@ const TitlebarTooltip = ({
 const MaximizeButton = ({ window }: { window: WaylandWindow }) => {
   const [hover, setHover] = useState(false);
 
-  const borderColor = computed(() => {
-    if (!window.isResizable()) {
-      return "#00000000";
-    }
-    return hover() ? "#00000000" : "#00BFFF30";
-  });
+  const buttonBackground = computed(() =>
+    window.isFocused() && window.isResizable() ? "#28c840" : "#c8c7cc",
+  );
+  const borderColor = computed(() =>
+    window.isFocused() && window.isResizable() ? "#1aab29" : "#b6b5ba",
+  );
   const shouldHover = computed(() => hover() && window.isResizable());
 
   var icon: CompositionRenderable | null = null;
@@ -1288,8 +1290,8 @@ const MaximizeButton = ({ window }: { window: WaylandWindow }) => {
         style={{
           width: TITLEBAR_BUTTON_SIZE,
           height: TITLEBAR_BUTTON_SIZE,
-          borderRadius: 8,
-          background: "#FFFFFF20",
+          borderRadius: TITLEBAR_BUTTON_SIZE / 2,
+          background: buttonBackground,
           border: { px: 1, color: borderColor },
         }}
         onClick={() => {
@@ -1319,7 +1321,8 @@ const MaximizeButton = ({ window }: { window: WaylandWindow }) => {
 const MinimizeButton = ({ window }: { window: WaylandWindow }) => {
   const [hover, setHover] = useState(false);
 
-  const borderColor = hover((hover) => (hover ? "#00000000" : "#F8FF7530"));
+  const buttonBackground = window.isFocused((focused) => (focused ? "#febc2e" : "#c8c7cc"));
+  const borderColor = window.isFocused((focused) => (focused ? "#e1a116" : "#b6b5ba"));
 
   var icon: CompositionRenderable | null = null;
   if (hover()) {
@@ -1344,8 +1347,8 @@ const MinimizeButton = ({ window }: { window: WaylandWindow }) => {
         style={{
           width: TITLEBAR_BUTTON_SIZE,
           height: TITLEBAR_BUTTON_SIZE,
-          borderRadius: 8,
-          background: "#FFFFFF20",
+          borderRadius: TITLEBAR_BUTTON_SIZE / 2,
+          background: buttonBackground,
           border: { px: 1, color: borderColor },
         }}
         onClick={() => window.minimize()}
