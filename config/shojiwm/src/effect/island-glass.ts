@@ -25,10 +25,6 @@ export const ISLAND_GLASS_OPTIONS = {
   edgeSoftness: 2,
   bevelWidth: 10,
   bevelShadow: 0,
-  // A dark band inside the edge of the light glass (GLASS_TINT.light and
-  // controlLight), the counterpart of the rim light; none on dark glass.
-  edgeShade: 0.22,
-  edgeShadeWidth: 6,
   // 0: glass, 1: mask, 2: distance, 3: surface gradient.
   debugView: 0,
 };
@@ -42,7 +38,7 @@ const distanceField = stateTexture("island-distance-v2", {
 });
 
 // One compiled glass per tint (GLASS_TINT, light and dark appearance) and fade.
-function islandGlass(tint: readonly [number, number, number, number], fade: number, edgeShade: number) {
+function islandGlass(tint: readonly [number, number, number, number], fade: number) {
   return compileLayerEffect({
     input: backdropSource(),
     // The surface is fixed-size and mostly transparent; its input mask follows
@@ -160,8 +156,6 @@ function islandGlass(tint: readonly [number, number, number, number], fade: numb
           bevel_shadow: ISLAND_GLASS_OPTIONS.bevelShadow,
           glass_tint: tint,
           glass_fade: fade,
-          edge_shade: edgeShade,
-          edge_shade_width_px: ISLAND_GLASS_OPTIONS.edgeShadeWidth,
         },
       }),
     ],
@@ -172,11 +166,11 @@ function islandGlass(tint: readonly [number, number, number, number], fade: numb
 // fixed per compiled effect, and 1/GLASS_FADE_STEPS steps over a 140 ms fade
 // do not show.
 export const GLASS_FADE_STEPS = 10;
-const levels = (tint: string, edgeShade: number) =>
-  Array.from({ length: GLASS_FADE_STEPS + 1 }, (_, i) => islandGlass(tintVec4(tint), i / GLASS_FADE_STEPS, edgeShade));
-const LIGHT_LEVELS = levels(GLASS_TINT.light, ISLAND_GLASS_OPTIONS.edgeShade);
-const DARK_LEVELS = levels(GLASS_TINT.dark, 0);
-const CONTROL_LIGHT_LEVELS = levels(GLASS_TINT.controlLight, ISLAND_GLASS_OPTIONS.edgeShade);
+const levels = (tint: string) =>
+  Array.from({ length: GLASS_FADE_STEPS + 1 }, (_, i) => islandGlass(tintVec4(tint), i / GLASS_FADE_STEPS));
+const LIGHT_LEVELS = levels(GLASS_TINT.light);
+const DARK_LEVELS = levels(GLASS_TINT.dark);
+const CONTROL_LIGHT_LEVELS = levels(GLASS_TINT.controlLight);
 const LEVELS = { light: LIGHT_LEVELS, dark: DARK_LEVELS, controlLight: CONTROL_LIGHT_LEVELS };
 
 export const ISLAND_GLASS_LIGHT = LIGHT_LEVELS[GLASS_FADE_STEPS];

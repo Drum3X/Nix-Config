@@ -19,11 +19,6 @@ uniform vec4 glass_tint;
 // 0..1: how much of the glass shows. The shell fades a panel in and out with
 // it (glass.fade), since fading the surface itself would lose the silhouette.
 uniform float glass_fade;
-// The light appearance: a dark band just inside the edge, the glass
-// reflecting its darker surroundings; strongest away from the light. 0 on
-// dark glass.
-uniform float edge_shade;
-uniform float edge_shade_width_px;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -122,8 +117,6 @@ vec4 shader_main(EffectContext effect) {
     float innerBand = exp(-pow((distance - bevel * 0.5) / (bevel * 0.45), 2.0)) * coherence;
     color *= 1.0 - clamp(bevel_shadow, 0.0, 0.6) * innerBand * (0.5 + 0.5 * max(-light, 0.0));
     color = mix(color, glass_tint.rgb, glass_tint.a);
-    float shadeBand = exp(-distance / max(edge_shade_width_px, 0.5)) * coherence;
-    color *= 1.0 - clamp(edge_shade, 0.0, 1.0) * shadeBand * (0.6 + 0.4 * max(-light, 0.0));
     // Screen, not add: brightens dark glass the most and never clips to a
     // flat white line over bright content. Laid over the tint, so the rim
     // still lights up when dark glass sits on a white window (the Control
