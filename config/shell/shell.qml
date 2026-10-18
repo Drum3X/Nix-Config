@@ -81,4 +81,19 @@ ShellRoot {
         model: Quickshell.screens
         Toasts {}
     }
+
+    // Rounded screen corners, over everything.
+    Variants {
+        model: Quickshell.screens
+
+        Scope {
+            id: corners
+            required property var modelData
+
+            ScreenCorner { screen: corners.modelData; corner: 0 }
+            ScreenCorner { screen: corners.modelData; corner: 1 }
+            ScreenCorner { screen: corners.modelData; corner: 2 }
+            ScreenCorner { screen: corners.modelData; corner: 3 }
+        }
+    }
 }

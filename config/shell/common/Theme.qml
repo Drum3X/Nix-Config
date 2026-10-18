@@ -73,6 +73,7 @@ Singleton {
     readonly property int gap: 8
     readonly property int pad: 12
     readonly property int edge: 10          // distance of bar / dock from the screen edge
+    readonly property int screenRadius: 12  // the fake rounded screen corners
 
     readonly property int barHeight: 32
     readonly property int barRadius: barHeight / 2
