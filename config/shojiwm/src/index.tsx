@@ -29,6 +29,8 @@ import {
   Popup,
   type ReadonlySignal,
   DefaultComposition,
+  animationVariable,
+  easeOutCubic,
 } from "shoji_wm";
 import type { CompositionRenderable, ManagedWindowRect } from "shoji_wm/types";
 import { createIpcServer } from "shoji_wm/ipc";
@@ -781,6 +783,7 @@ COMPOSITOR.event.onClose((window) => {
 
 COMPOSITOR.event.onFocus((window, focused) => {
   HYBRID_WINDOW_MANAGER.onFocus(window, focused);
+  startFocusAnimation(window, focused);
   if (focused) {
     HYBRID_WINDOW_MANAGER.recordFocus(window.id);
     scheduleWorkspaceBroadcast();
@@ -897,6 +900,60 @@ function naturalRootRect(window: WaylandWindow): ManagedWindowRect {
  * The title bar's button size, padding and gap. `titlebarButtonAt` finds the
  * buttons with the same numbers, so change them here.
  */
+// ---- focus transition ----
+// Gaining or losing focus crossfades the frame (rim, shadow, title, traffic
+// lights) with the shell's ease-out curve instead of switching at once.
+const FOCUS_ANIMATION_MS = 220;
+// Progress of the running focus change: 1 when it starts, 0 once settled, so a
+// window that never animated (or survived a hot reload) shows its state as is.
+const FOCUS_CHANGE = animationVariable("focus-change");
+
+function focusAmount(window: WaylandWindow): ReadonlySignal<number> {
+  const change = window.animation.variable(FOCUS_CHANGE);
+  return computed(() => (window.isFocused() ? 1 - change() : change()));
+}
+
+const lastFocusState = new WeakMap<WaylandWindow, boolean>();
+
+function startFocusAnimation(window: WaylandWindow, focused: boolean): void {
+  // Repeated focus events for the same state must not replay the fade.
+  if ((lastFocusState.get(window) ?? !focused) === focused) {
+    return;
+  }
+  lastFocusState.set(window, focused);
+  // Pick up from where an interrupted change left off, so it reverses smoothly.
+  const remaining = window.animation.variable(FOCUS_CHANGE)();
+  window.animation.start(FOCUS_CHANGE, {
+    duration: FOCUS_ANIMATION_MS,
+    from: 1 - remaining,
+    to: 0,
+    easing: easeOutCubic,
+  });
+}
+
+function parseHexColor(hex: string): [number, number, number, number] {
+  const v = hex.replace("#", "");
+  const a = v.length === 8 ? parseInt(v.slice(6, 8), 16) : 255;
+  return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16), a];
+}
+
+/** Mix two `#rrggbb[aa]` colors: `t` 0 gives `from`, 1 gives `to`. */
+function mixColor(from: string, to: string, t: number): string {
+  const a = parseHexColor(from);
+  const b = parseHexColor(to);
+  return (
+    "#" +
+    a
+      .map((c, i) => Math.round(c + (b[i] - c) * t).toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
+
+function focusMix(window: WaylandWindow, from: string, to: string): ReadonlySignal<string> {
+  const focus = focusAmount(window);
+  return computed(() => mixColor(from, to, focus()));
+}
+
 const TITLEBAR_BUTTON_SIZE = 13;
 const TITLEBAR_PADDING_X = 12;
 const TITLEBAR_GAP = 8;
@@ -929,22 +986,27 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     () => minimizeVisualIdle() || (!workspaceVisible() && !tileDragging()),
   );
 
+  // 0 unfocused … 1 focused, eased over FOCUS_ANIMATION_MS on every change.
+  const focus = focusAmount(window);
   // The edge of the glass, as on the bar and dock: a light rim.
   const borderColor = computed(() =>
-    window.isFocused()
-      ? themeDark() ? "#ffffff55" : "#ffffffb3"
-      : themeDark() ? "#ffffff2b" : "#ffffff66",
+    themeDark()
+      ? mixColor("#ffffff2b", "#ffffff55", focus())
+      : mixColor("#ffffff66", "#ffffffb3", focus()),
   );
-  // A soft drop shadow under the frame; the focused window floats a bit higher.
-  // The window selected in the window switcher glows white instead (it fits
-  // in the switcher's texture margin).
-  const windowShadow = computed(() =>
-    WINDOW_SWITCHER.selectedWindowId() === window.id
-      ? [{ blur: 28, spread: 4, color: "#ffffffd0" }]
-      : window.isFocused()
-        ? [{ y: 12, blur: 36, spread: -4, color: themeDark() ? "#00000090" : "#3a3f6a40" }]
-        : [{ y: 4, blur: 18, spread: -4, color: themeDark() ? "#00000060" : "#3a3f6a26" }],
-  );
+  // A soft drop shadow under the frame; the focused window floats a bit higher
+  // and rises into it as it takes focus. The window selected in the window
+  // switcher glows white instead (it fits in the switcher's texture margin).
+  const windowShadow = computed(() => {
+    if (WINDOW_SWITCHER.selectedWindowId() === window.id) {
+      return [{ blur: 28, spread: 4, color: "#ffffffd0" }];
+    }
+    const t = focus();
+    const color = themeDark()
+      ? mixColor("#00000060", "#00000090", t)
+      : mixColor("#3a3f6a26", "#3a3f6a40", t);
+    return [{ y: 4 + 8 * t, blur: 18 + 18 * t, spread: -4, color }];
+  });
   // A light tint over the frame glass, as on macOS: enough that the title
   // stays readable over a dark window behind (VS Code) or a light one. The
   // same when unfocused: a thinner tint turned muddy grey over dark windows.
@@ -955,8 +1017,8 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   );
   const titleColor = computed(() =>
     themeDark()
-      ? window.isFocused() ? "#f2f1f8" : "#d0d1da"
-      : window.isFocused() ? "#262838" : "#4a4b55",
+      ? mixColor("#d0d1da", "#f2f1f8", focus())
+      : mixColor("#4a4b55", "#262838", focus()),
   );
 
   const titlebarStyle: SSDStyle = {
@@ -1210,8 +1272,8 @@ const CloseButton = ({ window }: { window: WaylandWindow }) => {
   const [hover, setHover] = useState(false);
 
   // macOS traffic lights: coloured on the focused window, grey otherwise.
-  const buttonBackground = window.isFocused((focused) => (focused ? "#ff5f57" : "#c8c7cc"));
-  const borderColor = window.isFocused((focused) => (focused ? "#e2463f" : "#b6b5ba"));
+  const buttonBackground = focusMix(window, "#c8c7cc", "#ff5f57");
+  const borderColor = focusMix(window, "#b6b5ba", "#e2463f");
 
   var icon: CompositionRenderable | null = null;
   if (hover()) {
@@ -1292,12 +1354,9 @@ const TitlebarTooltip = ({
 const MaximizeButton = ({ window }: { window: WaylandWindow }) => {
   const [hover, setHover] = useState(false);
 
-  const buttonBackground = computed(() =>
-    window.isFocused() && window.isResizable() ? "#28c840" : "#c8c7cc",
-  );
-  const borderColor = computed(() =>
-    window.isFocused() && window.isResizable() ? "#1aab29" : "#b6b5ba",
-  );
+  const lit = computed(() => (window.isResizable() ? focusAmount(window)() : 0));
+  const buttonBackground = computed(() => mixColor("#c8c7cc", "#28c840", lit()));
+  const borderColor = computed(() => mixColor("#b6b5ba", "#1aab29", lit()));
   const shouldHover = computed(() => hover() && window.isResizable());
 
   var icon: CompositionRenderable | null = null;
@@ -1358,8 +1417,8 @@ const MaximizeButton = ({ window }: { window: WaylandWindow }) => {
 const MinimizeButton = ({ window }: { window: WaylandWindow }) => {
   const [hover, setHover] = useState(false);
 
-  const buttonBackground = window.isFocused((focused) => (focused ? "#febc2e" : "#c8c7cc"));
-  const borderColor = window.isFocused((focused) => (focused ? "#e1a116" : "#b6b5ba"));
+  const buttonBackground = focusMix(window, "#c8c7cc", "#febc2e");
+  const borderColor = focusMix(window, "#b6b5ba", "#e1a116");
 
   var icon: CompositionRenderable | null = null;
   if (hover()) {
