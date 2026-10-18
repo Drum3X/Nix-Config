@@ -903,7 +903,7 @@ function naturalRootRect(window: WaylandWindow): ManagedWindowRect {
 // ---- focus transition ----
 // Gaining or losing focus crossfades the frame (rim, shadow, title, traffic
 // lights) with the shell's ease-out curve instead of switching at once.
-const FOCUS_ANIMATION_MS = 220;
+const FOCUS_ANIMATION_MS = 700;
 // Progress of the running focus change: 1 when it starts, 0 once settled, so a
 // window that never animated (or survived a hot reload) shows its state as is.
 const FOCUS_CHANGE = animationVariable("focus-change");
