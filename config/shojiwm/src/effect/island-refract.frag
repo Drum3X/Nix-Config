@@ -13,6 +13,7 @@ uniform float blur_mix;
 uniform float edge_softness_px;
 uniform float bevel_width_px;
 uniform float bevel_shadow;
+uniform float saturation;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -96,6 +97,11 @@ vec4 shader_main(EffectContext effect) {
     vec3 color = vec3(backgroundAt(uv + offset + dispersion, size, edgeBlur).r,
                       backgroundAt(uv + offset, size, edgeBlur).g,
                       backgroundAt(uv + offset - dispersion, size, edgeBlur).b);
+
+    // Vibrancy, as on macOS: the backdrop seen through the glass is a little
+    // more saturated, so it reads as glass rather than as a grey film.
+    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+    color = clamp(mix(vec3(luma), color, saturation), 0.0, 1.0);
 
     // Light from the upper left catches the rim facing it, and, weaker, the
     // opposite one where it leaves the glass; the sides facing away stay

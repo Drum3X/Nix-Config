@@ -1,5 +1,5 @@
 import QtQuick
-
+import QtQuick.Effects
 
 // The face shared by the lock screen and the greeter.
 //
@@ -71,13 +71,22 @@ Item {
         anchors.fill: parent
         userWallpaper: root.userWallpaper
     }
-    // What the glass refracts: the wallpaper itself, sharp. Like the
-    // compositor glass, it only bends the picture; it neither blurs nor tints.
+    // What the glass refracts: the wallpaper, frosted to the same level as
+    // the compositor glass (macOS "regular" material). Never shown itself.
+    MultiEffect {
+        id: frosted
+        anchors.fill: parent
+        source: wall
+        autoPaddingEnabled: false
+        blurEnabled: true
+        blurMax: 32
+        blur: 0.8
+    }
     ShaderEffectSource {
         id: backdrop
         anchors.fill: parent
-        sourceItem: wall
-        live: true
+        sourceItem: frosted
+        hideSource: true
         visible: false
     }
 

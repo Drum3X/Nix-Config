@@ -60,6 +60,10 @@ void main() {
                       sampleAt(px + offset).g,
                       sampleAt(px + offset * 0.94).b);
 
+    // Vibrancy, as on macOS (and as in the compositor glass).
+    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+    color = clamp(mix(vec3(luma), color, 1.35), 0.0, 1.0);
+
     color = mix(color, tint.rgb / max(tint.a, 0.0001), tint.a);
 
     // Thin rim light, brighter where it faces the light (upper left).

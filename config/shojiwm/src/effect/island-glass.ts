@@ -7,20 +7,23 @@ import {
 // silhouette: no shape count, positions, or corner radii come from QuickShell.
 export const ISLAND_GLASS_OPTIONS = {
   // Match Theme.glassAlpha in hyalo-shell; required to retain its edge AA.
-  // Kept low so the silhouette adds no visible white/black tint: the glass
-  // shows only the refracted backdrop.
+  // Kept low so the silhouette adds no visible white/black tint.
   surfaceOpacity: 0.04,
-  rimWidth: 80,
-  refraction: 80,
-  chromaticShift: 1.90,
-  highlight: 0.6,
-  // Width of the rim light along the edge.
-  highlightWidth: 2,
-  blurRadius: 2,
-  blurPasses: 1,
-  // 0: refract the sharp backdrop, no frosting at all (as in shoji-bar-3's look
-  // without its tint).
-  blurMix: 0,
+  // macOS Liquid Glass: a slab with a rounded edge. Only a narrow band along
+  // the rim bends the picture (strongly, like the edge of a lens); the middle
+  // is flat and just frosted.
+  rimWidth: 28,
+  refraction: 22,
+  chromaticShift: 1.2,
+  // Thin specular rim, lit from the upper left.
+  highlight: 0.75,
+  highlightWidth: 1.5,
+  // The "regular" glass material: clearly frosted, but not milky.
+  blurRadius: 4,
+  blurPasses: 3,
+  blurMix: 1,
+  // Vibrancy: what shows through the glass keeps (and slightly gains) its colour.
+  saturation: 1.35,
   normalSmoothing: 3,
   edgeSoftness: 2,
   bevelWidth: 10,
@@ -152,6 +155,7 @@ export const ISLAND_GLASS = compileLayerEffect({
         edge_softness_px: ISLAND_GLASS_OPTIONS.edgeSoftness,
         bevel_width_px: ISLAND_GLASS_OPTIONS.bevelWidth,
         bevel_shadow: ISLAND_GLASS_OPTIONS.bevelShadow,
+        saturation: ISLAND_GLASS_OPTIONS.saturation,
       },
     }),
   ],
