@@ -11,7 +11,10 @@ in {
       hardware.graphics = {
         enable = true;
         enable32Bit = true;
-        extraPackages = [pkgs.intel-media-driver];
+        extraPackages = with pkgs; [
+          intel-media-driver # VA-API
+          vpl-gpu-rt # Quick Sync (oneVPL) on Gen12+ / Raptor Lake
+        ];
       };
     }
 
