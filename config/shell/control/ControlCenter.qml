@@ -29,7 +29,18 @@ Scope {
     PanelWindow {
         id: window
         screen: root.modelData
-        visible: root.open || panel.opacity > 0
+        visible: root.open || reveal > 0
+
+        // 0 closed, 1 open. Every piece of glass grows from its centre with it,
+        // all at once; opening springs a little past full size, as on macOS.
+        property real reveal: root.open ? 1 : 0
+        Behavior on reveal {
+            NumberAnimation {
+                duration: root.open ? 380 : 220
+                easing.type: root.open ? Easing.OutBack : Easing.OutCubic
+                easing.overshoot: 1.1
+            }
+        }
 
         anchors.top: true
         anchors.right: true
@@ -103,12 +114,6 @@ Scope {
             anchors.fill: parent
             focus: true
 
-            opacity: root.open ? 1 : 0
-            scale: root.open ? 1 : 0.97
-            transformOrigin: Item.TopRight
-            Behavior on opacity { NumberAnimation { duration: Theme.normal; easing.type: Easing.OutCubic } }
-            Behavior on scale { NumberAnimation { duration: Theme.normal; easing.type: Easing.OutCubic } }
-
             Keys.onEscapePressed: Ui.controlScreen = ""
 
             Flickable {
@@ -130,6 +135,7 @@ Scope {
                             spacing: Theme.ccGap
 
                             CcPill {
+                                reveal: window.reveal
                                 icon: Net.wired ? "lan" : Net.wifiEnabled ? "wifi" : "wifi_off"
                                 label: "Wi-Fi"
                                 detail: Net.wired ? "Ethernet" : !Net.wifiEnabled ? "Off" : (Net.name || "Not Connected")
@@ -140,6 +146,7 @@ Scope {
                             }
 
                             CcPill {
+                                reveal: window.reveal
                                 icon: window.btConnected.length > 0 ? "bluetooth_connected"
                                     : window.btEnabled ? "bluetooth" : "bluetooth_disabled"
                                 label: "Bluetooth"
@@ -152,7 +159,7 @@ Scope {
                             }
                         }
 
-                        NowPlaying {}
+                        NowPlaying { reveal: window.reveal }
                     }
 
                     // ----- Focus, Appearance, Energy, battery --------------------
@@ -160,24 +167,28 @@ Scope {
                         spacing: Theme.ccGap
 
                         CcCircle {
+                            reveal: window.reveal
                             icon: "dark_mode"
                             checked: Notifs.doNotDisturb
                             onClicked: Notifs.doNotDisturb = !Notifs.doNotDisturb
                         }
 
                         CcCircle {
+                            reveal: window.reveal
                             icon: "contrast"
                             checked: Theme.dark
                             onClicked: ThemeState.toggle()
                         }
 
                         CcCircle {
+                            reveal: window.reveal
                             icon: window.profiles[window.profileIndex].icon
                             checked: PowerProfiles.profile !== PowerProfile.Balanced
                             onClicked: window.nextProfile()
                         }
 
                         CcCircle {
+                            reveal: window.reveal
                             interactive: false
                             icon: !window.hasBattery ? "power"
                                 : window.battery.state === UPowerDeviceState.Charging ? "battery_charging_full" : "battery_full"
@@ -187,6 +198,7 @@ Scope {
 
                     // ----- Wi-Fi networks ----------------------------------------
                     GlassPanel {
+                        reveal: window.reveal
                         width: parent.width
                         height: networks.implicitHeight + 16
                         radius: 30
@@ -330,6 +342,7 @@ Scope {
 
                     // ----- Bluetooth devices -------------------------------------
                     GlassPanel {
+                        reveal: window.reveal
                         width: parent.width
                         height: devices.implicitHeight + 16
                         radius: 30
@@ -472,6 +485,7 @@ Scope {
 
                     // ----- Display / Sound ---------------------------------------
                     CcSlider {
+                        reveal: window.reveal
                         width: parent.width
                         visible: Brightness.available
                         title: "Display"
@@ -482,6 +496,7 @@ Scope {
                     }
 
                     CcSlider {
+                        reveal: window.reveal
                         width: parent.width
                         title: "Sound"
                         iconLow: Audio.muted ? "volume_off" : "volume_mute"
@@ -494,10 +509,10 @@ Scope {
                     Row {
                         spacing: Theme.ccGap
 
-                        PowerCircle { icon: "lock"; confirm: false; onRun: Lock.lock() }
-                        PowerCircle { icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
-                        PowerCircle { icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
-                        PowerCircle { icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
+                        PowerCircle { reveal: window.reveal; icon: "lock"; confirm: false; onRun: Lock.lock() }
+                        PowerCircle { reveal: window.reveal; icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
+                        PowerCircle { reveal: window.reveal; icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
+                        PowerCircle { reveal: window.reveal; icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
                     }
 
                     // ----- notifications -----------------------------------------
@@ -505,6 +520,7 @@ Scope {
                         width: parent.width
                         height: 22
                         visible: Notifs.count > 0
+                        opacity: Math.min(1, window.reveal * window.reveal)
 
                         Text {
                             x: 6
@@ -549,6 +565,7 @@ Scope {
                         model: Notifs.list.slice().reverse().slice(0, 6)
 
                         delegate: GlassPanel {
+                            reveal: window.reveal
                             id: card
                             required property var modelData
                             width: content.width

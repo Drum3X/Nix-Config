@@ -10,6 +10,7 @@ Item {
     property string iconLow: ""
     property string iconHigh: ""
     property real value: 0
+    property real reveal: 1
     signal moved(real value)
 
     implicitHeight: Theme.ccUnit + 4
@@ -18,6 +19,7 @@ Item {
 
     GlassPanel {
         anchors.fill: parent
+        reveal: root.reveal
         radius: 30
 
         Text {

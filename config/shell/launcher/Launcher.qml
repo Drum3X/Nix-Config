@@ -24,7 +24,7 @@ Scope {
     PanelWindow {
         id: window
         screen: root.modelData
-        visible: root.open || panel.opacity > 0
+        visible: root.open || panel.reveal > 0
 
         implicitWidth: 640
         implicitHeight: 480
@@ -75,10 +75,16 @@ Scope {
             height: Math.min(parent.height, 76 + list.contentHeight + (list.count > 0 ? 12 : 0))
             radius: Theme.panelRadius
 
-            opacity: root.open ? 1 : 0
-            scale: root.open ? 1 : 0.96
-            Behavior on opacity { NumberAnimation { duration: Theme.normal; easing.type: Easing.OutCubic } }
-            Behavior on scale { NumberAnimation { duration: Theme.normal; easing.type: Easing.OutCubic } }
+            // Grows from its centre, glass and all (see GlassPanel), springing a
+            // little past full size on the way in.
+            reveal: root.open ? 1 : 0
+            Behavior on reveal {
+                NumberAnimation {
+                    duration: root.open ? 380 : 220
+                    easing.type: root.open ? Easing.OutBack : Easing.OutCubic
+                    easing.overshoot: 1.1
+                }
+            }
             Behavior on height { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
 
             // Search field.

@@ -13,6 +13,7 @@ Item {
     property bool checked: false
     property bool expandable: false
 
+    property real reveal: 1
     signal toggled()
     signal detailsRequested()
 
@@ -21,6 +22,7 @@ Item {
 
     GlassPanel {
         anchors.fill: parent
+        reveal: root.reveal
         radius: height / 2
 
         // The capsule's own wash, for the text side.

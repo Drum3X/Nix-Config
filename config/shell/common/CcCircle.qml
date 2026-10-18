@@ -11,6 +11,7 @@ Item {
     property bool checked: false
     property bool alert: false
     property bool interactive: true
+    property real reveal: 1
     property color iconColor: root.alert ? "#ffffff" : root.checked ? Theme.accent : Theme.text
 
     signal clicked()
@@ -21,8 +22,9 @@ Item {
     GlassPanel {
         anchors.fill: parent
         radius: width / 2
-        scale: mouse.pressed ? 0.94 : 1
-        Behavior on scale { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
+        reveal: root.reveal
+        squeeze: mouse.pressed ? 0.94 : 1
+        Behavior on squeeze { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
 
         Rectangle {
             anchors.fill: parent
