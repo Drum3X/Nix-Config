@@ -986,7 +986,7 @@ function focusMix(window: WaylandWindow, from: string, to: string): ReadonlySign
 // focused window. It stays attached (switching it on and off as focus moves
 // did not take), except on fullscreen windows, which keep direct scanout.
 const UNFOCUSED_DIM_DARK = 0.18;
-const UNFOCUSED_DIM_LIGHT = 0.08;
+const UNFOCUSED_DIM_LIGHT = 0.05;
 const WINDOW_DIM_SHADER = loadShader("./src/effect/window-dim.frag");
 
 // A fresh effect with a plain number each time: the compositor does not
