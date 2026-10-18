@@ -26,18 +26,14 @@ Scope {
         screen: root.modelData
         visible: motion.shown
 
-        // Room for the panel to spill over while it comes and goes (PanelMotion
-        // scales it about its centre, by up to 10%).
-        readonly property int motionPad: 40
-
         PanelMotion {
             id: motion
             open: root.open
             namespace: "hyalo-launcher"
         }
 
-        implicitWidth: 640 + motionPad * 2
-        implicitHeight: 480 + motionPad * 2
+        implicitWidth: 640
+        implicitHeight: 480
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -45,12 +41,7 @@ Scope {
         WlrLayershell.namespace: "hyalo-launcher"
         WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-        mask: Region { item: motion.settled ? panel : motionArea }
-
-        Item {
-            id: motionArea
-            anchors.fill: parent
-        }
+        mask: Region { item: panel }
 
         property string query: ""
         property int selected: 0
@@ -85,19 +76,12 @@ Scope {
 
         GlassPanel {
             id: panel
-            x: window.motionPad
-            y: window.motionPad
-            width: parent.width - window.motionPad * 2
-            height: Math.min(parent.height - window.motionPad * 2, 76 + list.contentHeight + (list.count > 0 ? 12 : 0))
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            height: Math.min(parent.height, 76 + list.contentHeight + (list.count > 0 ? 12 : 0))
             radius: Theme.panelRadius
 
             reveal: motion.fade
-            transform: Scale {
-                origin.x: panel.width / 2
-                origin.y: panel.height / 2
-                xScale: motion.xScale
-                yScale: motion.yScale
-            }
             Behavior on height { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
 
             // Search field.

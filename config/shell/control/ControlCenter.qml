@@ -31,10 +31,6 @@ Scope {
         screen: root.modelData
         visible: motion.shown
 
-        // Room for the panel to spill over while it comes and goes (PanelMotion
-        // scales it about its top right corner, by up to 10%).
-        readonly property int motionPad: 40
-
         PanelMotion {
             id: motion
             open: root.open
@@ -47,9 +43,9 @@ Scope {
         anchors.right: true
         margins.top: Theme.barExclusive
         margins.right: Theme.edge
-        implicitWidth: window.span(4) + motionPad
+        implicitWidth: window.span(4)
         implicitHeight: Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
-                                 content.implicitHeight) + motionPad
+                                 content.implicitHeight)
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -57,12 +53,7 @@ Scope {
         WlrLayershell.namespace: "hyalo-control"
         WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-        mask: Region { item: motion.settled ? panel : motionArea }
-
-        Item {
-            id: motionArea
-            anchors.fill: parent
-        }
+        mask: Region { item: panel }
 
         // Width of `cells` grid cells and the gaps between them.
         function span(cells: int): real {
@@ -117,16 +108,8 @@ Scope {
 
         Item {
             id: panel
-            x: window.motionPad
-            width: parent.width - window.motionPad
-            height: parent.height - window.motionPad
+            anchors.fill: parent
             focus: true
-            transform: Scale {
-                origin.x: panel.width
-                origin.y: 0
-                xScale: motion.xScale
-                yScale: motion.yScale
-            }
 
             Keys.onEscapePressed: Ui.controlScreen = ""
 
