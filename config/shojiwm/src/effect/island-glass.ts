@@ -6,8 +6,11 @@ import {
 // All distances are framebuffer pixels. This pipeline knows only the alpha
 // silhouette: no shape count, positions, or corner radii come from QuickShell.
 export const ISLAND_GLASS_OPTIONS = {
-  // Match LiquidIslandQS LiquidGroup.tint.a; required to retain its edge AA.
-  surfaceOpacity: 0.20,
+  // Match Theme.glassAlpha in hyalo-shell; required to retain its edge AA.
+  // The only change from ShojiWM's stock glass: a near-invisible silhouette,
+  // so the glass stays as clear over a light wallpaper as shoji-bar-3's dark
+  // tint looks over its dark one.
+  surfaceOpacity: 0.04,
   rimWidth: 80,
   refraction: 80,
   chromaticShift: 1.90,

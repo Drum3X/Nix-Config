@@ -16,10 +16,11 @@ Singleton {
     // equal to ISLAND_GLASS_OPTIONS.surfaceOpacity (0.20) in
     // config/shojiwm/src/effect/island-glass.ts: ShojiWM divides by it to
     // recover the antialiased edge.
-    // shoji-bar-3's material, exactly: #1a2433 at 35%, over ShojiWM's stock
-    // ISLAND_GLASS (whose surfaceOpacity is 0.20, as upstream).
-    readonly property real glassAlpha: 0.35
-    readonly property color glassTint: Qt.rgba(0x1a / 255, 0x24 / 255, 0x33 / 255, glassAlpha)
+    // ShojiWM's stock glass (shoji-bar-3's lens and blur) with a neutral,
+    // near-invisible silhouette: shoji-bar-3's #1a2433 tint only disappears
+    // over a dark wallpaper; over a light one it reads as a dark film.
+    readonly property real glassAlpha: 0.04
+    readonly property color glassTint: Qt.rgba(0.5, 0.5, 0.5, glassAlpha)
     // Kept for popups drawn outside compositor glass (dock labels).
     readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.45)
     // Hairlines (dividers).
