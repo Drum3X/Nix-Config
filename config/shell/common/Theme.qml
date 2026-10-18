@@ -48,10 +48,6 @@ Singleton {
     readonly property color glassTintDark: "#5908080a"    // #08080a59
     readonly property color glassTintLight: "#80f6f6f8"   // #f6f6f880
     readonly property color frostTint: dark ? glassTintDark : glassTintLight
-    // GLASS_AMBIENT in glass-tint.ts, for the same glass: the luma range
-    // the backdrop may read at under it. Keep equal to it.
-    readonly property real glassAmbientCeiling: 0.78
-    readonly property real glassAmbientFloor: 0.12
 
     // ----- text -------------------------------------------------------------
     readonly property color text: dark ? "#f3f2fa" : "#262838"

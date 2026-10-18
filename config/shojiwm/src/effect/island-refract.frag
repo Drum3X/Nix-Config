@@ -1,8 +1,6 @@
 uniform sampler2D sharp_scene;
 uniform sampler2D soft_scene;
 uniform sampler2D edge_scene;
-// A wide blur of the backdrop: its brightness around each point.
-uniform sampler2D ambient_scene;
 uniform sampler2D silhouette;
 uniform highp sampler2D distance_field;
 uniform float rim_width_px;
@@ -21,9 +19,6 @@ uniform vec4 glass_tint;
 // 0..1: how much of the glass shows. The shell fades a panel in and out with
 // it (glass.fade), since fading the surface itself would lose the silhouette.
 uniform float glass_fade;
-// GLASS_AMBIENT (glass-tint.ts): the luma range the backdrop may read at.
-uniform float ambient_ceiling;
-uniform float ambient_floor;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -46,20 +41,6 @@ float filteredCircularLens(float distancePx, float widthPx) {
                  + circularLens(distancePx - 0.125, widthPx)
                  + circularLens(distancePx + 0.125, widthPx)
                  + circularLens(distancePx + 0.375, widthPx));
-}
-
-// Over a backdrop brighter than the ceiling (a white window) the glass is
-// darkened until its average sits there, over one darker than the floor it
-// is lifted, so the glass still reads apart from what is behind it. Only the
-// brightness changes, the hue and the detail stay. The same step is in
-// liquid-glass.frag (window frames) and the shell's frost.frag.
-vec3 adaptToAmbient(vec3 color, vec3 ambient) {
-    float luma = dot(ambient, vec3(0.2126, 0.7152, 0.0722));
-    if (luma > ambient_ceiling)
-        return color * (ambient_ceiling / luma);
-    if (luma < ambient_floor)
-        return 1.0 - (1.0 - color) * ((1.0 - ambient_floor) / (1.0 - luma));
-    return color;
 }
 
 vec3 backgroundAt(vec2 uv, vec2 size, float edgeBlur) {
@@ -121,7 +102,6 @@ vec4 shader_main(EffectContext effect) {
     vec3 color = vec3(backgroundAt(uv + offset + dispersion, size, edgeBlur).r,
                       backgroundAt(uv + offset, size, edgeBlur).g,
                       backgroundAt(uv + offset - dispersion, size, edgeBlur).b);
-    color = adaptToAmbient(color, texture2D(ambient_scene, uv).rgb);
 
     // Light from the upper left catches the rim facing it, and, weaker, the
     // opposite one where it leaves the glass; the sides facing away stay

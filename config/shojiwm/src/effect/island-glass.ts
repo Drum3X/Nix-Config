@@ -2,7 +2,7 @@ import {
   backdropSource, compileLayerEffect, dualKawaseBlur, get, layerSource,
   loadShader, save, shaderStage, renderToIfDirty, stateSource, stateTexture,
 } from "shoji_wm";
-import { GLASS_AMBIENT, GLASS_TINT, tintVec4 } from "../glass-tint";
+import { GLASS_TINT, tintVec4 } from "../glass-tint";
 
 // All distances are framebuffer pixels. This pipeline knows only the alpha
 // silhouette: no shape count, positions, or corner radii come from QuickShell.
@@ -56,10 +56,6 @@ function islandGlass(tint: readonly [number, number, number, number], fade: numb
       save("island-soft"),
       //dualKawaseBlur({ radius: 3, passes: 2 }),
       save("island-edge-soft"),
-      // A wide average of the backdrop: how bright it is around each point,
-      // without the detail (text) in it. See GLASS_AMBIENT.
-      dualKawaseBlur({ radius: 6, passes: 4 }),
-      save("island-ambient"),
       shaderStage(loadShader("./src/effect/island-mask.frag"), {
         textures: { layer_mask: layerSource() },
         uniforms: { surface_opacity: ISLAND_GLASS_OPTIONS.surfaceOpacity },
@@ -144,7 +140,6 @@ function islandGlass(tint: readonly [number, number, number, number], fade: numb
           sharp_scene: get("island-sharp"),
           soft_scene: get("island-soft"),
           edge_scene: get("island-edge-soft"),
-          ambient_scene: get("island-ambient"),
           silhouette: get("island-mask"),
           distance_field: stateSource(distanceField),
         },
@@ -160,8 +155,6 @@ function islandGlass(tint: readonly [number, number, number, number], fade: numb
           bevel_width_px: ISLAND_GLASS_OPTIONS.bevelWidth,
           bevel_shadow: ISLAND_GLASS_OPTIONS.bevelShadow,
           glass_tint: tint,
-          ambient_ceiling: GLASS_AMBIENT.ceiling,
-          ambient_floor: GLASS_AMBIENT.floor,
           glass_fade: fade,
         },
       }),

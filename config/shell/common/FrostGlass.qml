@@ -47,8 +47,6 @@ Item {
         property real rimWidth: root.rimWidth
         property color tint: root.tint
         property color rimColor: root.rimColor
-        property real ambientCeiling: Theme.glassAmbientCeiling
-        property real ambientFloor: Theme.glassAmbientFloor
 
         fragmentShader: Qt.resolvedUrl("../shaders/frost.frag.qsb")
         onStatusChanged: {
