@@ -24,7 +24,9 @@ Scope {
     readonly property real spacing: 10
     readonly property real magnify: 1.0          // no magnification (1 = off)
     readonly property real reach: base * 2.6     // how far the wave spreads
-    readonly property real headroom: base * (magnify - 1) + 34   // room above the shelf for the label
+    readonly property real lift: 5               // px a hovered icon rises
+    readonly property real labelGap: 14          // hovered icon top to the label
+    readonly property real headroom: base * (magnify - 1) + lift + 2   // room above the shelf for a raised icon
 
     // Apps, then a divider, then the trash.
     readonly property var entries: DockModel.items.concat([{ divider: true }, { trash: true }])
@@ -36,6 +38,29 @@ Scope {
         ? tracker.point.position.x - (iconWindow.width - restWidth) / 2
         : -1000
     readonly property bool hovering: tracker.hovered
+
+    // The name above the hovered icon, on a pill of glass. It is a surface of
+    // its own: as a second shape on the shelf surface, its glass and the
+    // shelf's ran together into one.
+    property int hoveredIndex: -1
+    property bool pressing: false
+    readonly property var hoveredEntry: hoveredIndex >= 0 && hoveredIndex < entries.length ? entries[hoveredIndex] : null
+    readonly property bool labelShown: hoveredEntry !== null && !hoveredEntry.divider && !pressing
+    readonly property string labelText: !hoveredEntry ? "" : hoveredEntry.trash ? "Trash" : (hoveredEntry.name || "")
+    readonly property real labelWidth: labelMetrics.width + 22
+    readonly property real labelHeight: 26
+    readonly property real labelX: hoveredIndex < 0 ? 0
+        : Math.round((shelfWindow.width - shelfWidth) / 2 + restCentres[hoveredIndex] - labelWidth / 2)
+    // Distance of the label's bottom edge from the bottom of the screen.
+    readonly property real labelBottom: Theme.dockGap + Theme.dockPad + base + lift + labelGap
+
+    TextMetrics {
+        id: labelMetrics
+        text: root.labelText
+        font.family: Theme.font
+        font.weight: Font.Medium
+        font.pixelSize: Theme.textSm
+    }
 
     function slotWidth(entry): real {
         return entry.divider ? 13 : base;
@@ -101,6 +126,7 @@ Scope {
             height: Theme.dockHeight
             radius: Theme.dockRadius
         }
+
     }
 
     // ----- the icons --------------------------------------------------------------
@@ -155,6 +181,9 @@ Scope {
                         readonly property bool running: !isDivider && !isTrash && modelData.windows.length > 0
                         readonly property real magnification: root.scaleAt(index)
                         readonly property bool hovered: hover.containsMouse
+                        // The hovered icon rises a little.
+                        property real lift: hovered && !isDivider ? root.lift : 0
+                        Behavior on lift { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
                         width: isDivider ? 13 : root.base * magnification
                         height: root.base
@@ -178,7 +207,7 @@ Scope {
                             visible: !slot.isDivider
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
-                            anchors.bottomMargin: bounce.offset
+                            anchors.bottomMargin: bounce.offset + slot.lift
                             implicitSize: root.base * slot.magnification
                             source: slot.isTrash ? Quickshell.iconPath("user-trash", "user-trash-full")
                                 : slot.isDivider ? "" : slot.modelData.icon
@@ -211,11 +240,12 @@ Scope {
                         }
                         onRunningChanged: if (running) bouncing.complete()
 
-                        // Running indicator.
+                        // Running indicator, halfway between the resting icon
+                        // and the bottom of the shelf.
                         Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: parent.bottom
-                            anchors.topMargin: 3
+                            anchors.topMargin: (Theme.dockPad - height) / 2
                             width: 4
                             height: 4
                             radius: 2
@@ -224,29 +254,11 @@ Scope {
                             Behavior on opacity { NumberAnimation { duration: Theme.normal } }
                         }
 
-                        // Name, above the hovered icon.
-                        Rectangle {
-                            visible: slot.hovered && !slot.isDivider && !hover.pressed
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.bottom: icon.top
-                            anchors.bottomMargin: 8
-                            width: label.implicitWidth + 18
-                            height: label.implicitHeight + 8
-                            radius: height / 2
-                            // The macOS dock label: a grey pill with white type.
-                            color: Qt.rgba(0.42, 0.43, 0.50, 0.78)
-                            border.width: 1
-                            border.color: Qt.rgba(1, 1, 1, 0.18)
-
-                            Text {
-                                id: label
-                                anchors.centerIn: parent
-                                text: slot.isTrash ? "Trash" : (slot.modelData.name || "")
-                                color: "#ffffff"
-                                font.family: Theme.font
-                                font.weight: Font.Medium
-                                font.pixelSize: Theme.textSm
-                            }
+                        onHoveredChanged: {
+                            if (hovered)
+                                root.hoveredIndex = index;
+                            else if (root.hoveredIndex === index)
+                                root.hoveredIndex = -1;
                         }
 
                         MouseArea {
@@ -256,6 +268,7 @@ Scope {
                             hoverEnabled: true
                             acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                             cursorShape: Qt.PointingHandCursor
+                            onPressedChanged: root.pressing = pressed
                             onClicked: (event) => {
                                 if (slot.isTrash) {
                                     Quickshell.execDetached(["nautilus", "trash:///"]);
@@ -278,6 +291,44 @@ Scope {
         // pointer alongside the icons' own hover areas instead of taking it.
         HoverHandler {
             id: tracker
+        }
+    }
+
+    // ----- the name label -----------------------------------------------------------
+    PanelWindow {
+        id: labelWindow
+        screen: root.modelData
+        visible: root.labelShown
+
+        anchors.bottom: true
+        anchors.left: true
+        anchors.right: true
+        margins.bottom: root.labelBottom
+        implicitHeight: root.labelHeight
+        exclusionMode: ExclusionMode.Ignore
+        color: "transparent"
+
+        WlrLayershell.layer: WlrLayer.Top
+        WlrLayershell.namespace: "hyalo-dock-label"
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+
+        mask: Region { item: labelGlass }
+
+        GlassPanel {
+            id: labelGlass
+            x: root.labelX
+            width: root.labelWidth
+            height: root.labelHeight
+            radius: root.labelHeight / 2
+
+            Text {
+                anchors.centerIn: parent
+                text: root.labelText
+                color: Theme.text
+                font.family: Theme.font
+                font.weight: Font.Medium
+                font.pixelSize: Theme.textSm
+            }
         }
     }
 }
