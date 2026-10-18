@@ -949,8 +949,8 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   // stays readable over a dark window behind (VS Code) or a light one.
   const titlebarBackground = computed(() =>
     themeDark()
-      ? window.isFocused() ? "#1c1c1eb3" : "#2a2a2e99"
-      : window.isFocused() ? "#f6f6f8b3" : "#ececf099",
+      ? window.isFocused() ? "#1c1c1e80" : "#2a2a2e66"
+      : window.isFocused() ? "#f6f6f880" : "#ececf066",
   );
   const titleColor = computed(() =>
     themeDark()
