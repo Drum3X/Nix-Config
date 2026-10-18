@@ -1,4 +1,5 @@
 import {
+  animationVariable,
   createWindowStack,
   createWindowState,
   dropWindowState,
@@ -84,6 +85,17 @@ export const WINDOW_STATE_WORKSPACE_OPACITY = createWindowState<number>(
   "workspaceOpacity",
   {
     default: 1,
+  },
+);
+
+// Hyalo: the workspace fade is driven here in TypeScript (window.animation)
+// rather than as a compositor-side opacity override, so the config sees each
+// frame's value and can fade a window's content and its glass separately.
+export const WORKSPACE_FADE = animationVariable("workspace-fade");
+export const WINDOW_STATE_WORKSPACE_FADING = createWindowState<boolean>(
+  "workspaceFading",
+  {
+    default: false,
   },
 );
 export const WINDOW_STATE_TILE_DRAGGING = createWindowState<boolean>(
@@ -5868,16 +5880,15 @@ function scheduleWorkspaceVisualAnimation(
       mode: "add",
     },
   });
-  window.scheduleAnimation({
-    channel: WORKSPACE_VISUAL_OPACITY_ANIMATION_CHANNEL,
-    opacity: {
-      from: fromOpacity,
-      to: toOpacity,
-      duration,
-      easing,
-      mode: "override",
-    },
-  });
+  window.animation.set(WORKSPACE_FADE, fromOpacity);
+  window.state[WINDOW_STATE_WORKSPACE_FADING].set(true);
+  void window.animation
+    .start(WORKSPACE_FADE, { from: fromOpacity, to: toOpacity, duration, easing })
+    .then((done) => {
+      if (done) {
+        window.state[WINDOW_STATE_WORKSPACE_FADING].set(false);
+      }
+    });
 }
 
 function resetWorkspaceVisualState(
@@ -5894,4 +5905,6 @@ function cancelWorkspaceVisualAnimation(window: WaylandWindow): void {
   window.cancelAnimation(WORKSPACE_VISUAL_ANIMATION_CHANNEL);
   window.cancelAnimation(WORKSPACE_VISUAL_RECT_ANIMATION_CHANNEL);
   window.cancelAnimation(WORKSPACE_VISUAL_OPACITY_ANIMATION_CHANNEL);
+  window.animation.stop(WORKSPACE_FADE);
+  window.state[WINDOW_STATE_WORKSPACE_FADING].set(false);
 }
