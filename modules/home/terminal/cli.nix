@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     alejandra
     btop
+    claude-code
     fastfetch
     fd
     nil
