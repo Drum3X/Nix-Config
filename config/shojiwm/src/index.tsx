@@ -982,13 +982,11 @@ function focusMix(window: WaylandWindow, from: string, to: string): ReadonlySign
 }
 
 // Unfocused windows sit a little dimmer and brighten with the focus fade:
-// a grey veil in front of the client (effect/window-dim.frag), at 0 on the
+// a black veil in front of the client (effect/window-dim.frag), at 0 on the
 // focused window. It stays attached (switching it on and off as focus moves
 // did not take), except on fullscreen windows, which keep direct scanout.
-// Opacity and grey level of the veil. Light: white 255 -> 242, black 18 -> 29.
-// Dark: white 255 -> 216, black 18 -> 31.
-const UNFOCUSED_DIM_DARK = { dim: 0.22, veil: 0.3 };
-const UNFOCUSED_DIM_LIGHT = { dim: 0.1, veil: 0.5 };
+const UNFOCUSED_DIM_DARK = 0.18;
+const UNFOCUSED_DIM_LIGHT = 0.05;
 const WINDOW_DIM_SHADER = loadShader("./src/effect/window-dim.frag");
 
 // A fresh effect with a plain number each time: the compositor does not
@@ -998,12 +996,11 @@ function windowDimEffect(window: WaylandWindow) {
   const primary = primaryWindow(window);
   const change = primary.animation.variable(FOCUS_CHANGE)();
   const focus = primary.isFocused() ? 1 - change : change;
-  const look = themeDark() ? UNFOCUSED_DIM_DARK : UNFOCUSED_DIM_LIGHT;
-  const dim = (1 - focus) * look.dim;
+  const dim = (1 - focus) * (themeDark() ? UNFOCUSED_DIM_DARK : UNFOCUSED_DIM_LIGHT);
   return compileWindowEffect({
     input: windowSource(),
     alpha: "preserve",
-    pipeline: [shaderStage(WINDOW_DIM_SHADER, { uniforms: { dim, veil: look.veil } })],
+    pipeline: [shaderStage(WINDOW_DIM_SHADER, { uniforms: { dim } })],
   });
 }
 
