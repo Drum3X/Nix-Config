@@ -103,7 +103,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatTime(root.now, "HH:mm")
             color: Theme.onWallpaper
-            font.family: Theme.font
+            font.family: Theme.fontDisplay
             font.weight: Font.Thin
             font.pixelSize: Math.round(root.height * 0.15)
             font.letterSpacing: -2

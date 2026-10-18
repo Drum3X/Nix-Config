@@ -2,7 +2,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      font-family = "JetBrains Mono Nerd Font";
+      font-family = ["SF Mono" "Symbols Nerd Font"];
       font-size = 11;
       # Follows the system color scheme that darkman switches.
       theme = "light:Adwaita,dark:Adwaita Dark";

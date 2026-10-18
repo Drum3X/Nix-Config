@@ -910,11 +910,11 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     () => minimizeVisualIdle() || (!workspaceVisible() && !tileDragging()),
   );
 
-  // macOS: a hairline outline around the window, dark on light and light on dark.
+  // The edge of the glass, as on the bar and dock: a light rim.
   const borderColor = computed(() =>
     window.isFocused()
-      ? themeDark() ? "#ffffff30" : "#00000030"
-      : themeDark() ? "#ffffff1c" : "#0000001f",
+      ? themeDark() ? "#ffffff55" : "#ffffffb3"
+      : themeDark() ? "#ffffff2b" : "#ffffff66",
   );
   // A soft drop shadow under the frame; the focused window floats a bit higher.
   // The window selected in the window switcher glows white instead (it fits
@@ -928,8 +928,8 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   );
   const titlebarBackground = computed(() =>
     themeDark()
-      ? window.isFocused() ? "#1c1f2e99" : "#24283a80"
-      : window.isFocused() ? "#ffffff8c" : "#f4f2fa73",
+      ? window.isFocused() ? "#0000000f" : "#00000008"
+      : window.isFocused() ? "#ffffff0f" : "#ffffff08",
   );
   const titleColor = computed(() =>
     themeDark()
@@ -950,15 +950,19 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     capturePadding: 24,
     invalidate: { kind: "on-source-damage-box", damagePadding: 8 },
     pipeline: [
-      dualKawaseBlur({ radius: 4, passes: 2 }),
+      // Hyalo: the same glass as the bar and dock (ISLAND_GLASS): the same light
+      // blur, a lens at the rim, its colour fringe and specular line, no tint.
+      dualKawaseBlur({ radius: 2, passes: 1 }),
       shaderStage(loadShader("./src/effect/liquid-glass.frag"), {
         uniforms: {
           // Follow the window's rounded corners.
           glass_radius_px: -1.0,
-          distortion_depth: 0.2,
-          distortion_strength: 0.15,
-          chromatic_shift_px: 3.0,
-          glass_tint: 0.9,
+          distortion_depth: 0.12,
+          distortion_strength: 0.03,
+          chromatic_shift_px: 1.9,
+          glass_tint: 1.0,
+          highlight_strength: 0.6,
+          highlight_width_px: 2.0,
         },
       }),
       backdropFade(),
@@ -982,7 +986,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
       text={window.title}
       style={{
         color: titleColor,
-        fontFamily: ["Inter", "Noto Sans CJK JP", "Noto Color Emoji"],
+        fontFamily: ["SF Pro Text", "Noto Sans CJK JP", "Noto Color Emoji"],
         fontSize: 13,
         fontWeight: 600,
         flexGrow: 1,
@@ -1024,9 +1028,9 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     </Box>
   );
 
-  const TERMINALS = ["kitty", "ghostty"];
-
-  if (TERMINALS.includes(window.appId() ?? "")) {
+  // Every server-decorated window is framed in the glass (it shows through
+  // the title bar, and behind translucent clients such as the terminal).
+  {
     const terminalContent = [
       <Box direction="row" style={titlebarStyle}>
         {titlebarContent}
@@ -1244,7 +1248,7 @@ const TitlebarTooltip = ({
         text={text}
         style={{
           color: "#e6e9ef",
-          fontFamily: ["Inter", "Noto Sans CJK JP", "Noto Color Emoji"],
+          fontFamily: ["SF Pro Text", "Noto Sans CJK JP", "Noto Color Emoji"],
           fontSize: 12,
         }}
       />

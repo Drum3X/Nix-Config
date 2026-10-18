@@ -51,8 +51,10 @@ Singleton {
     readonly property color success: dark ? "#8fe3b0" : "#2fa56a"
 
     // ----- type -------------------------------------------------------------
-    readonly property string font: "Inter"
-    readonly property string fontMono: "JetBrains Mono Nerd Font"
+    // macOS: SF Pro Text for UI, SF Pro Display for large sizes, SF Mono.
+    readonly property string font: "SF Pro Text"
+    readonly property string fontDisplay: "SF Pro Display"
+    readonly property string fontMono: "SF Mono"
     readonly property string iconFont: "Material Symbols Rounded"
 
     readonly property int textXs: 11

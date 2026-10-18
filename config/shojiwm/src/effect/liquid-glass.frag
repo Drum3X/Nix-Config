@@ -9,6 +9,10 @@ uniform float distortion_depth;
 uniform float distortion_strength;
 uniform float chromatic_shift_px;
 uniform float glass_tint;
+// Hyalo: the specular rim of the shell's glass (island-refract.frag), so window
+// frames and the bar/dock catch the light the same way.
+uniform float highlight_strength;
+uniform float highlight_width_px;
 
 float sdf(vec2 p, vec2 b, float r) {
     vec2 d = abs(p) - b + vec2(r);
@@ -76,5 +80,13 @@ vec4 shader_main(EffectContext effect) {
     );
 
     glassColor *= vec3(glass_tint);
+
+    // Rim light from the upper left, fainter on the far side, as on the bar.
+    float distancePx = inversedSDF * size;
+    float light = dot(normalizedGlassCoord, normalize(vec2(-0.45, -0.89)));
+    float glint = 0.12 + 0.88 * pow(max(light, 0.0), 1.5) + 0.5 * pow(max(-light, 0.0), 1.5);
+    float band = exp(-distancePx / max(highlight_width_px, 0.5));
+    float shine = clamp(highlight_strength * glint * band * 1.2, 0.0, 1.0);
+    glassColor = 1.0 - (1.0 - glassColor) * (1.0 - shine * vec3(0.94, 0.97, 1.0));
     return vec4(glassColor, 1.0);
 }

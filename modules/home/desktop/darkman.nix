@@ -19,6 +19,11 @@
       then "adw-gtk3-dark"
       else "adw-gtk3"
     }'"
+    ${lib.getExe pkgs.dconf} write /org/gnome/desktop/interface/icon-theme "'${
+      if dark
+      then "Colloid-Dark"
+      else "Colloid-Light"
+    }'"
 
     kvconfig="''${XDG_CONFIG_HOME:-$HOME/.config}/Kvantum/kvantum.kvconfig"
     mkdir -p "$(dirname "$kvconfig")"

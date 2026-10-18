@@ -22,9 +22,9 @@ Scope {
     // ----- layout -------------------------------------------------------------
     readonly property real base: Theme.dockIcon
     readonly property real spacing: 10
-    readonly property real magnify: 1.6          // largest icon, relative to base
+    readonly property real magnify: 1.0          // no magnification (1 = off)
     readonly property real reach: base * 2.6     // how far the wave spreads
-    readonly property real headroom: base * (magnify - 1) + 34   // room above the shelf
+    readonly property real headroom: base * (magnify - 1) + 34   // room above the shelf for the label
 
     // Apps, then a divider, then the trash.
     readonly property var entries: DockModel.items.concat([{ divider: true }, { trash: true }])

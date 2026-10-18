@@ -9,14 +9,13 @@
     enable = true;
 
     font = {
-      name = "Inter";
-      package = pkgs.inter;
+      name = "SF Pro Text";
       size = 10;
     };
 
     iconTheme = {
-      name = "Papirus";
-      package = pkgs.papirus-icon-theme;
+      name = "Colloid";
+      package = pkgs.colloid-icon-theme;
     };
 
     theme = {
@@ -32,7 +31,7 @@
     cursor-theme = config.home.pointerCursor.name;
     cursor-size = config.home.pointerCursor.size;
     font-name = "${config.gtk.font.name} ${toString config.gtk.font.size}";
-    monospace-font-name = "JetBrains Mono Nerd Font 10";
+    monospace-font-name = "SF Mono 10";
   };
 
   dconf.settings."org/gnome/desktop/wm/preferences" = {
