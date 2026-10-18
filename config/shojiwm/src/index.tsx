@@ -53,7 +53,7 @@ import {
   WINDOW_STATE_WORKSPACE_OFFSET_Y,
   WINDOW_STATE_WORKSPACE_OPACITY,
 } from "./window-manager";
-import { ISLAND_GLASS_DARK, ISLAND_GLASS_LIGHT } from "./effect/island-glass";
+import { islandGlassAt } from "./effect/island-glass";
 import { GLASS_TINT } from "./glass-tint";
 import { createFlip3D } from "./flip-3d";
 import { createWindowGrid } from "./window-grid";
@@ -388,6 +388,27 @@ WORKSPACE_IPC.handle("theme.set", (params) => {
   setThemeDark((params as { mode?: string } | undefined)?.mode === "dark");
 });
 
+// How much of a hyalo-* surface's glass shows, by layer namespace. The shell
+// fades its panels in and out by sending
+//   glass.fade  { namespace, value }   (value 0..1)
+// as it animates: the glass cannot fade with the surface, since its shape is
+// read from the surface's alpha.
+const glassFades = new Map<string, ReturnType<typeof signal<number>>>();
+function glassFadeEntry(namespace: string) {
+  let entry = glassFades.get(namespace);
+  if (!entry) {
+    entry = signal(1);
+    glassFades.set(namespace, entry);
+  }
+  return entry;
+}
+const glassFade = (namespace: string) => glassFadeEntry(namespace)[0];
+WORKSPACE_IPC.handle("glass.fade", (params) => {
+  const { namespace, value } = (params ?? {}) as { namespace?: string; value?: number };
+  if (typeof namespace === "string" && typeof value === "number")
+    glassFadeEntry(namespace)[1](value);
+});
+
 // The active keyboard layout, for the bar's layout indicator.
 //   keyboard.get     -> { index, name }   (request/response)
 //   keyboard.layout  -> { index, name }   (broadcast)
@@ -684,7 +705,7 @@ COMPOSITOR.effect.layer = (layer) => {
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    return { behind: themeDark() ? ISLAND_GLASS_DARK : ISLAND_GLASS_LIGHT };
+    return { behind: islandGlassAt(themeDark(), glassFade(namespace)()) };
   }
   // The wallpaper, and anything else that wants no glass at all.
   if (namespace === "no_blur") {

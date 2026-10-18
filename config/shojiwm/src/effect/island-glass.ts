@@ -37,8 +37,8 @@ const distanceField = stateTexture("island-distance-v2", {
   format: "rgba16f", scale: 1, resize: "clear",
 });
 
-// One compiled glass per tint (GLASS_TINT, light and dark appearance).
-function islandGlass(tint: readonly [number, number, number, number]) {
+// One compiled glass per tint (GLASS_TINT, light and dark appearance) and fade.
+function islandGlass(tint: readonly [number, number, number, number], fade: number) {
   return compileLayerEffect({
     input: backdropSource(),
     // The surface is fixed-size and mostly transparent; its input mask follows
@@ -155,11 +155,27 @@ function islandGlass(tint: readonly [number, number, number, number]) {
           bevel_width_px: ISLAND_GLASS_OPTIONS.bevelWidth,
           bevel_shadow: ISLAND_GLASS_OPTIONS.bevelShadow,
           glass_tint: tint,
+          glass_fade: fade,
         },
       }),
     ],
   });
 }
 
-export const ISLAND_GLASS_LIGHT = islandGlass(tintVec4(GLASS_TINT.light));
-export const ISLAND_GLASS_DARK = islandGlass(tintVec4(GLASS_TINT.dark));
+// A panel fading in or out (glass.fade) steps through these: the uniform is
+// fixed per compiled effect, and 1/GLASS_FADE_STEPS steps over a 140 ms fade
+// do not show.
+export const GLASS_FADE_STEPS = 10;
+const levels = (tint: string) =>
+  Array.from({ length: GLASS_FADE_STEPS + 1 }, (_, i) => islandGlass(tintVec4(tint), i / GLASS_FADE_STEPS));
+const LIGHT_LEVELS = levels(GLASS_TINT.light);
+const DARK_LEVELS = levels(GLASS_TINT.dark);
+
+export const ISLAND_GLASS_LIGHT = LIGHT_LEVELS[GLASS_FADE_STEPS];
+export const ISLAND_GLASS_DARK = DARK_LEVELS[GLASS_FADE_STEPS];
+
+/** The glass at `fade` (0..1), rounded to the nearest step. */
+export function islandGlassAt(dark: boolean, fade: number) {
+  const step = Math.round(Math.max(0, Math.min(1, fade)) * GLASS_FADE_STEPS);
+  return (dark ? DARK_LEVELS : LIGHT_LEVELS)[step];
+}

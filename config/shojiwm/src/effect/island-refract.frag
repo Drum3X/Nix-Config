@@ -16,6 +16,9 @@ uniform float bevel_shadow;
 // Hyalo: GLASS_TINT (glass-tint.ts), straight alpha, laid over the glass the
 // way the window title bars lay theirs.
 uniform vec4 glass_tint;
+// 0..1: how much of the glass shows. The shell fades a panel in and out with
+// it (glass.fade), since fading the surface itself would lose the silhouette.
+uniform float glass_fade;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -125,5 +128,5 @@ vec4 shader_main(EffectContext effect) {
     // coverage twice makes corners thicker/darker. Solve source-over so the
     // combined coverage stays mask: a + (1-a)*behindAlpha = mask.
     float behindAlpha = clamp((mask - sourceMask.g) / max(1.0 - sourceMask.g, 0.0001), 0.0, 1.0);
-    return vec4(color * behindAlpha, behindAlpha);
+    return vec4(color * behindAlpha, behindAlpha) * glass_fade;
 }

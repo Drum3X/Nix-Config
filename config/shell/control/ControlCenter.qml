@@ -29,26 +29,27 @@ Scope {
     PanelWindow {
         id: window
         screen: root.modelData
-        visible: root.open || reveal > 0
+        visible: motion.shown
 
-        // 0 closed, 1 open. Every piece of glass grows from its centre with it,
-        // all at once; opening springs a little past full size, as on macOS.
-        property real reveal: root.open ? 1 : 0
-        Behavior on reveal {
-            NumberAnimation {
-                duration: root.open ? 380 : 220
-                easing.type: root.open ? Easing.OutBack : Easing.OutCubic
-                easing.overshoot: 1.1
-            }
+        // Room for the panel to spill over while it comes and goes (PanelMotion
+        // scales it about its top right corner, by up to 10%).
+        readonly property int motionPad: 40
+
+        PanelMotion {
+            id: motion
+            open: root.open
+            namespace: "hyalo-control"
         }
+        // The content of every piece of glass fades with the panel.
+        readonly property real reveal: motion.fade
 
         anchors.top: true
         anchors.right: true
         margins.top: Theme.barExclusive
         margins.right: Theme.edge
-        implicitWidth: window.span(4)
+        implicitWidth: window.span(4) + motionPad
         implicitHeight: Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
-                                 content.implicitHeight)
+                                 content.implicitHeight) + motionPad
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -56,7 +57,12 @@ Scope {
         WlrLayershell.namespace: "hyalo-control"
         WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-        mask: Region { item: panel }
+        mask: Region { item: motion.settled ? panel : motionArea }
+
+        Item {
+            id: motionArea
+            anchors.fill: parent
+        }
 
         // Width of `cells` grid cells and the gaps between them.
         function span(cells: int): real {
@@ -111,8 +117,16 @@ Scope {
 
         Item {
             id: panel
-            anchors.fill: parent
+            x: window.motionPad
+            width: parent.width - window.motionPad
+            height: parent.height - window.motionPad
             focus: true
+            transform: Scale {
+                origin.x: panel.width
+                origin.y: 0
+                xScale: motion.xScale
+                yScale: motion.yScale
+            }
 
             Keys.onEscapePressed: Ui.controlScreen = ""
 
