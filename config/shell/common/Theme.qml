@@ -39,7 +39,7 @@ Singleton {
     // glass (and the window title bars) from GLASS_TINT in
     // config/shojiwm/src/glass-tint.ts; keep these two equal to it. Used here
     // by the glass the shell draws itself: the lock screen and the greeter.
-    readonly property color glassTintDark: "#cc08080a"    // #08080acc
+    readonly property color glassTintDark: "#9908080a"    // #08080a99
     readonly property color glassTintLight: "#80f6f6f8"   // #f6f6f880
     readonly property color frostTint: dark ? glassTintDark : glassTintLight
 

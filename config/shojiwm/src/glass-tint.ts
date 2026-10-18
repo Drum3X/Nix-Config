@@ -4,7 +4,7 @@
 // the same values: keep Theme.glassTintDark / glassTintLight in
 // config/shell/common/Theme.qml equal to these.
 export const GLASS_TINT = {
-  dark: "#08080acc",
+  dark: "#08080a99",
   light: "#f6f6f880",
 };
 
