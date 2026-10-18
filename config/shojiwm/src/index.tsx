@@ -69,7 +69,7 @@ COMPOSITOR.cursor.configure({
 });
 
 COMPOSITOR.process.once("GTK-CSD-control-buttons", {
-  command: "gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'",
+  command: "gsettings set org.gnome.desktop.wm.preferences button-layout ':'",
   runPolicy: "once-per-session",
 });
 
@@ -946,16 +946,17 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
         : [{ y: 4, blur: 18, spread: -4, color: themeDark() ? "#00000060" : "#3a3f6a26" }],
   );
   // A light tint over the frame glass, as on macOS: enough that the title
-  // stays readable over a dark window behind (VS Code) or a light one.
+  // stays readable over a dark window behind (VS Code) or a light one. The
+  // same when unfocused: a thinner tint turned muddy grey over dark windows.
   const titlebarBackground = computed(() =>
     themeDark()
-      ? window.isFocused() ? "#1c1c1e80" : "#2a2a2e66"
-      : window.isFocused() ? "#f6f6f880" : "#ececf066",
+      ? "#1c1c1e80"
+      : "#f6f6f880",
   );
   const titleColor = computed(() =>
     themeDark()
-      ? window.isFocused() ? "#f2f1f8" : "#b9bccb"
-      : window.isFocused() ? "#262838" : "#6b6e80",
+      ? window.isFocused() ? "#f2f1f8" : "#d0d1da"
+      : window.isFocused() ? "#262838" : "#4a4b55",
   );
 
   const titlebarStyle: SSDStyle = {

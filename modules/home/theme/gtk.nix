@@ -24,6 +24,10 @@
     };
 
     gtk4.theme = null;
+
+    # GTK3 reads this from settings.ini rather than dconf.
+    gtk3.extraConfig.gtk-decoration-layout = ":";
+    gtk4.extraConfig.gtk-decoration-layout = ":";
   };
 
   dconf.settings."org/gnome/desktop/interface" = {
@@ -35,6 +39,7 @@
   };
 
   dconf.settings."org/gnome/desktop/wm/preferences" = {
-    button-layout = "close,minimize,maximize:";
+    # No window buttons in GTK headerbars: ShojiWM draws the traffic lights.
+    button-layout = ":";
   };
 }
