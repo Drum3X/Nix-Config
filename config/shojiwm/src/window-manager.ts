@@ -415,6 +415,9 @@ export const MAXIMIZED_WINDOW_PADDING = {
   left: 8,
 };
 
+/** How long the pointer rests on a floating window before it takes focus. */
+const FLOATING_HOVER_FOCUS_DELAY_MS = 400;
+
 export class HybridWindowManager {
   private readonly workspaces = new Map<string, Workspace>();
   private readonly activeWorkspaceByMonitor = new Map<string, number>();
@@ -466,6 +469,10 @@ export class HybridWindowManager {
   private workspaceGestureSpeed = { ...DEFAULT_WORKSPACE_GESTURE_SPEED };
   private lastPointerPosition: PointerMoveEvent["position"] | null = null;
   private lastPointerTarget: PointerMoveEvent["target"] = { kind: "none" };
+  // Floating focus-follows-mouse: the window the pointer rests on, and the
+  // token of its pending focus timer (a newer hover invalidates it).
+  private hoverFocusWindowId: string | null = null;
+  private hoverFocusToken = 0;
   // Broadcasts the active snap-zone preview rect to external clients (the bar).
   private snapPreviewBroadcaster: SnapPreviewBroadcaster | null = null;
   private workspaceChangeBroadcaster: WorkspaceChangeBroadcaster | null = null;
@@ -2453,6 +2460,7 @@ export class HybridWindowManager {
     monitorHint?: string,
   ) {
     if (target.kind !== "window") {
+      this.cancelHoverFocus();
       return;
     }
 
@@ -2461,10 +2469,15 @@ export class HybridWindowManager {
     );
     const window = workspace?.findWindowById(target.windowId);
     if (!workspace || !window) {
+      this.cancelHoverFocus();
       return;
     }
 
-    if (!workspace.isTiled || !workspace.isActive()) {
+    if (!workspace.isActive()) {
+      return;
+    }
+    if (!workspace.isTiled) {
+      this.scheduleHoverFocus(workspace, window);
       return;
     }
 
@@ -2477,6 +2490,50 @@ export class HybridWindowManager {
       monitorHint && COMPOSITOR.output.list.includes(monitorHint)
         ? monitorHint
         : workspace.monitor;
+  }
+
+  /**
+   * Floating mode: focus (and raise) the window under the pointer once the
+   * pointer has rested on it for FLOATING_HOVER_FOCUS_DELAY_MS. Moving onto
+   * another window restarts the wait; leaving it cancels it.
+   */
+  private scheduleHoverFocus(workspace: Workspace, window: WaylandWindow) {
+    if (this.hoverFocusWindowId === window.id) {
+      return;
+    }
+    this.hoverFocusWindowId = window.id;
+    const token = ++this.hoverFocusToken;
+    if (read(window.isFocused)) {
+      return;
+    }
+    setTimeout(() => {
+      if (token !== this.hoverFocusToken) {
+        return;
+      }
+      const target = this.lastPointerTarget;
+      if (
+        target.kind !== "window" ||
+        target.windowId !== window.id ||
+        workspace.isTiled ||
+        !workspace.isActive() ||
+        !workspace.hasWindow(window) ||
+        window.state[WINDOW_STATE_MINIMIZED]() ||
+        read(window.isFocused)
+      ) {
+        return;
+      }
+      // Never raise a parent over its own dialog.
+      const focused = workspace.focusedWindow();
+      if (focused && workspace.areTransientRelatives(focused, window)) {
+        return;
+      }
+      window.focus();
+    }, FLOATING_HOVER_FOCUS_DELAY_MS);
+  }
+
+  private cancelHoverFocus() {
+    this.hoverFocusWindowId = null;
+    this.hoverFocusToken++;
   }
 
   private focusWindowAtPointerPosition(
@@ -4456,7 +4513,7 @@ export class Workspace {
     return window;
   }
 
-  private areTransientRelatives(a: WaylandWindow, b: WaylandWindow): boolean {
+  public areTransientRelatives(a: WaylandWindow, b: WaylandWindow): boolean {
     return (
       this.isTransientChildOf(a, b) ||
       this.isTransientChildOf(b, a) ||
