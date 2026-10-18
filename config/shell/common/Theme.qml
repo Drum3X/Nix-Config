@@ -16,10 +16,10 @@ Singleton {
     // equal to ISLAND_GLASS_OPTIONS.surfaceOpacity (0.20) in
     // config/shojiwm/src/effect/island-glass.ts: ShojiWM divides by it to
     // recover the antialiased edge.
-    // Neutral and nearly invisible: like macOS, the glass is clear and only
-    // bends and lightly blurs what is behind it; it adds no white or black.
-    readonly property real glassAlpha: 0.04
-    readonly property color glassTint: Qt.rgba(0.5, 0.5, 0.5, glassAlpha)
+    // shoji-bar-3's material, exactly: #1a2433 at 35%, over ShojiWM's stock
+    // ISLAND_GLASS (whose surfaceOpacity is 0.20, as upstream).
+    readonly property real glassAlpha: 0.35
+    readonly property color glassTint: Qt.rgba(0x1a / 255, 0x24 / 255, 0x33 / 255, glassAlpha)
     // Kept for popups drawn outside compositor glass (dock labels).
     readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.45)
     // Hairlines (dividers).
@@ -34,8 +34,8 @@ Singleton {
     readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.38)
     readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.32)
 
-    // QML-side glass (lock screen, greeter): just a whisper of tint.
-    readonly property color frostTint: dark ? Qt.rgba(0, 0, 0, 0.06) : Qt.rgba(1, 1, 1, 0.06)
+    // QML-side glass (lock screen, greeter): the same tint.
+    readonly property color frostTint: glassTint
 
     // ----- text -------------------------------------------------------------
     readonly property color text: dark ? "#f3f2fa" : "#262838"

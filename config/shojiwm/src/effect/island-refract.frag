@@ -13,8 +13,6 @@ uniform float blur_mix;
 uniform float edge_softness_px;
 uniform float bevel_width_px;
 uniform float bevel_shadow;
-uniform float saturation;
-uniform float shade;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -99,18 +97,11 @@ vec4 shader_main(EffectContext effect) {
                       backgroundAt(uv + offset, size, edgeBlur).g,
                       backgroundAt(uv + offset - dispersion, size, edgeBlur).b);
 
-    // Vibrancy, as on macOS: the backdrop seen through the glass is a little
-    // more saturated, so it reads as glass rather than as a grey film.
-    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-    color = clamp(mix(vec3(luma), color, saturation), 0.0, 1.0);
-    color *= shade;
-
-    // Light from the upper left catches the rim facing it most, the opposite
-    // one where it leaves the glass less, and the sides in between still
-    // show a fainter line.
+    // Light from the upper left catches the rim facing it, and, weaker, the
+    // opposite one where it leaves the glass; the sides facing away stay
+    // nearly dark.
     float light = dot(-inward, normalize(vec2(-0.45, -0.89)));
-    // Apple's rim stays visible all the way round, so the base is not near zero.
-    float glint = 0.38 + 0.62 * pow(max(light, 0.0), 1.5) + 0.4 * pow(max(-light, 0.0), 1.5);
+    float glint = 0.12 + 0.88 * pow(max(light, 0.0), 1.5) + 0.5 * pow(max(-light, 0.0), 1.5);
     // A soft band rather than a hairline: several pixels wide with no hard
     // inner edge, so it stays smooth on low-density screens. A broader sheen
     // follows the curvature of the lens.

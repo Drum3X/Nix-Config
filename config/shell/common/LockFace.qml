@@ -72,15 +72,15 @@ Item {
         userWallpaper: root.userWallpaper
     }
     // What the glass refracts: the wallpaper, frosted to the same level as
-    // the compositor glass: light, details stay recognisable. Never shown.
+    // ShojiWM's glass (radius 2, one pass). Never shown.
     MultiEffect {
         id: frosted
         anchors.fill: parent
         source: wall
         autoPaddingEnabled: false
         blurEnabled: true
-        blurMax: 16
-        blur: 0.6
+        blurMax: 8
+        blur: 0.5
     }
     ShaderEffectSource {
         id: backdrop

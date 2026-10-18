@@ -13,8 +13,8 @@ Item {
     property real radius: Theme.panelRadius
     property color tint: Theme.frostTint
     property color rimColor: Theme.glassRim
-    property real refraction: 22     // px the rim pulls the picture inward
-    property real rimWidth: 28       // px over which it does
+    property real refraction: 80     // px the rim pulls the picture inward (as ISLAND_GLASS)
+    property real rimWidth: 80       // px over which it does
     default property alias content: inner.data
 
     // Where this item sits on the backdrop, kept current every frame while it

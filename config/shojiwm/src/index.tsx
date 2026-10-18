@@ -49,7 +49,7 @@ import {
   WINDOW_STATE_WORKSPACE_OFFSET_Y,
   WINDOW_STATE_WORKSPACE_OPACITY,
 } from "./window-manager";
-import { ISLAND_GLASS, ISLAND_GLASS_DARK } from "./effect/island-glass";
+import { ISLAND_GLASS } from "./effect/island-glass";
 import { createFlip3D } from "./flip-3d";
 import { createWindowGrid } from "./window-grid";
 import { installDragAndDrop } from "./drag-and-drop";
@@ -666,7 +666,7 @@ COMPOSITOR.effect.layer = (layer) => {
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    return { behind: themeDark() ? ISLAND_GLASS_DARK : ISLAND_GLASS };
+    return { behind: ISLAND_GLASS };
   }
   // The wallpaper, and anything else that wants no glass at all.
   if (namespace === "no_blur") {
