@@ -14,6 +14,8 @@ import {
   windowSource,
   compileLayerEffect,
   dualKawaseBlur,
+  save,
+  get,
   type SSDStyle,
   type WaylandWindow,
   type WindowDecorationState,
@@ -54,7 +56,7 @@ import {
   WINDOW_STATE_WORKSPACE_OPACITY,
 } from "./window-manager";
 import { islandGlassAt } from "./effect/island-glass";
-import { GLASS_TINT } from "./glass-tint";
+import { GLASS_AMBIENT, GLASS_TINT } from "./glass-tint";
 import { createFlip3D } from "./flip-3d";
 import { createWindowGrid } from "./window-grid";
 import { installDragAndDrop } from "./drag-and-drop";
@@ -1115,7 +1117,12 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
       // Hyalo: the same glass as the bar and dock (ISLAND_GLASS): the same light
       // blur, a lens at the rim, its colour fringe and specular line, no tint.
       dualKawaseBlur({ radius: 2, passes: 1 }),
+      save("frame-scene"),
+      // A wide average of the backdrop, how bright it is behind the frame
+      // (GLASS_AMBIENT).
+      dualKawaseBlur({ radius: 6, passes: 4 }),
       shaderStage(loadShader("./src/effect/liquid-glass.frag"), {
+        textures: { scene: get("frame-scene") },
         uniforms: {
           // Follow the window's rounded corners.
           glass_radius_px: -1.0,
@@ -1125,6 +1132,8 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
           glass_tint: 1.0,
           highlight_strength: 0.6,
           highlight_width_px: 2.0,
+          ambient_ceiling: GLASS_AMBIENT.ceiling,
+          ambient_floor: GLASS_AMBIENT.floor,
         },
       }),
       backdropFade(),

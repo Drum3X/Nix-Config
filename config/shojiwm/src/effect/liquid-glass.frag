@@ -13,6 +13,12 @@ uniform float glass_tint;
 // frames and the bar/dock catch the light the same way.
 uniform float highlight_strength;
 uniform float highlight_width_px;
+// Hyalo: `tex` is a wide blur of the backdrop (its brightness around each
+// point) and `scene` the lightly blurred backdrop the glass shows. See
+// GLASS_AMBIENT in glass-tint.ts and adaptToAmbient in island-refract.frag.
+uniform sampler2D scene;
+uniform float ambient_ceiling;
+uniform float ambient_floor;
 
 float sdf(vec2 p, vec2 b, float r) {
     vec2 d = abs(p) - b + vec2(r);
@@ -31,7 +37,16 @@ vec3 getTextureColorAt(EffectContext effect, vec2 content_coord) {
         vec2(0.0),
         vec2(1.0)
     );
-    return texture2D(tex, sample_uv).rgb;
+    return texture2D(scene, sample_uv).rgb;
+}
+
+vec3 adaptToAmbient(vec3 color, vec3 ambient) {
+    float luma = dot(ambient, vec3(0.2126, 0.7152, 0.0722));
+    if (luma > ambient_ceiling)
+        return color * (ambient_ceiling / luma);
+    if (luma < ambient_floor)
+        return 1.0 - (1.0 - color) * ((1.0 - ambient_floor) / (1.0 - luma));
+    return color;
 }
 
 vec4 shader_main(EffectContext effect) {
@@ -79,6 +94,7 @@ vec4 shader_main(EffectContext effect) {
         getTextureColorAt(effect, glassColorCoord + shift).b
     );
 
+    glassColor = adaptToAmbient(glassColor, texture2D(tex, effect.texture_uv).rgb);
     glassColor *= vec3(glass_tint);
 
     // Rim light from the upper left, fainter on the far side, as on the bar.

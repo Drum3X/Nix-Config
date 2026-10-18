@@ -14,3 +14,14 @@ export function tintVec4(hex: string): [number, number, number, number] {
   const c = (i: number) => parseInt(v.slice(i, i + 2), 16) / 255;
   return [c(0), c(2), c(4), v.length === 8 ? c(6) : 1];
 }
+
+// How bright or dark the backdrop under any piece of liquid glass may read,
+// as the luma of a wide average of it. Over a white window the glass is
+// pulled down to `ceiling` so it still separates from what is behind it; over
+// a black one it is lifted to `floor`. In between the glass is untouched.
+// The lock screen and the greeter use Theme.glassAmbientCeiling / Floor in
+// config/shell/common/Theme.qml: keep those equal to these.
+export const GLASS_AMBIENT = {
+  ceiling: 0.78,
+  floor: 0.12,
+};
