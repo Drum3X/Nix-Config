@@ -907,7 +907,7 @@ function naturalRootRect(window: WaylandWindow): ManagedWindowRect {
 // ---- focus transition ----
 // Gaining or losing focus crossfades the frame (rim, shadow, title, traffic
 // lights) with the shell's ease-out curve instead of switching at once.
-const FOCUS_ANIMATION_MS = 700;
+const FOCUS_ANIMATION_MS = 1000;
 // Progress of the running focus change: 1 when it starts, 0 once settled, so a
 // window that never animated (or survived a hot reload) shows its state as is.
 const FOCUS_CHANGE = animationVariable("focus-change");
@@ -917,7 +917,6 @@ const FOCUS_CHANGE = animationVariable("focus-change");
 // window whose store never sees the fade. Everything is looked up by id
 // against the first (composition / event) object instead.
 const primaryWindows = new Map<string, WaylandWindow>();
-const focusAmounts = new Map<string, ReadonlySignal<number>>();
 
 function primaryWindow(window: WaylandWindow): WaylandWindow {
   return primaryWindows.get(window.id) ?? window;
@@ -925,26 +924,20 @@ function primaryWindow(window: WaylandWindow): WaylandWindow {
 
 /** Called from the composition and the focus events with the real object. */
 function registerWindow(window: WaylandWindow): void {
-  if (primaryWindows.get(window.id) !== window) {
-    primaryWindows.set(window.id, window);
-    focusAmounts.delete(window.id);
-  }
+  primaryWindows.set(window.id, window);
 }
 
 function forgetWindow(window: WaylandWindow): void {
   primaryWindows.delete(window.id);
-  focusAmounts.delete(window.id);
 }
 
+// A new signal for every caller: the compositor only tracks a shared one in the
+// first place that reads it, and the others (the title bar buttons) stop
+// redrawing.
 function focusAmount(window: WaylandWindow): ReadonlySignal<number> {
-  let amount = focusAmounts.get(window.id);
-  if (!amount) {
-    const primary = primaryWindow(window);
-    const change = primary.animation.variable(FOCUS_CHANGE);
-    amount = computed(() => (primary.isFocused() ? 1 - change() : change()));
-    focusAmounts.set(window.id, amount);
-  }
-  return amount;
+  const primary = primaryWindow(window);
+  const change = primary.animation.variable(FOCUS_CHANGE);
+  return computed(() => (primary.isFocused() ? 1 - change() : change()));
 }
 
 const lastFocusState = new WeakMap<WaylandWindow, boolean>();
