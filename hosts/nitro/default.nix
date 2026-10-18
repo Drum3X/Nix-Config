@@ -12,7 +12,7 @@
       enable = true;
       # Point ~/.config/shojiwm and the shell at the checkout in flakePath so the
       # design can be iterated on with hot reload, without a rebuild per change.
-      liveConfig = false;
+      liveConfig = true;
     };
 
     hardware.nvidia = {

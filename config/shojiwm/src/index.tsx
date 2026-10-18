@@ -416,9 +416,11 @@ COMPOSITOR.process.once("session-target", {
 });
 
 // The shell: bar, dock, launcher, notifications, OSD, lock screen, wallpaper.
+// Restarted whenever it exits: a rebuild stops it so it comes back on the new
+// config (modules/home/desktop/shell.nix).
 COMPOSITOR.process.service("shell", {
   command: [SHELL],
-  restart: "on-failure",
+  restart: "on-exit",
 });
 
 // cliphist clipboard history watchers. Text and image need separate watchers;

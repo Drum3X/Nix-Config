@@ -44,6 +44,12 @@ in {
         if [ -x "$init" ]; then
           run env XDG_CONFIG_HOME=${lib.escapeShellArg config.xdg.configHome} "$init" >/dev/null
         fi
+
+        # Apply the new config to a running session instead of needing a logout.
+        export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+        if [ -x /run/current-system/sw/bin/shoji_wm ]; then
+          run timeout 5 /run/current-system/sw/bin/shoji_wm --reload >/dev/null 2>&1 || true
+        fi
       '');
   };
 }
