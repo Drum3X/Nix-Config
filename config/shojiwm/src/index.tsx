@@ -48,8 +48,6 @@ import {
   WINDOW_STATE_WORKSPACE_VISIBLE,
   WINDOW_STATE_WORKSPACE_OFFSET_Y,
   WINDOW_STATE_WORKSPACE_OPACITY,
-  WINDOW_STATE_WORKSPACE_FADING,
-  WORKSPACE_FADE,
 } from "./window-manager";
 import { ISLAND_GLASS } from "./effect/island-glass";
 import { createFlip3D } from "./flip-3d";
@@ -894,14 +892,9 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   // opacity squared) while the glass behind it lingers (the square root): half
   // way through, the window is mostly liquid glass. ManagedWindow carries the
   // glass opacity; the content box makes up the difference.
-  // The live value while a switch is fading the window (window-manager.ts
-  // drives it frame by frame); the settled state otherwise.
-  const fading = window.state[WINDOW_STATE_WORKSPACE_FADING];
-  const fadeValue = window.animation.signal(WORKSPACE_FADE);
-  const fadeOpacity = computed(() => (fading() ? fadeValue() : workspaceOpacity()));
-  const glassOpacity = computed(() => Math.sqrt(Math.max(0, fadeOpacity())));
+  const glassOpacity = computed(() => Math.sqrt(Math.max(0, workspaceOpacity())));
   const contentOpacity = computed(() => {
-    const o = Math.max(0, fadeOpacity());
+    const o = Math.max(0, workspaceOpacity());
     const g = Math.sqrt(o);
     return g > 0.0001 ? (o * o) / g : 0;
   });
@@ -988,33 +981,6 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     alpha: "preserve",
   });
 
-  // While a workspace switch fades the window, the glass behind it is made
-  // clearly visible: frosted, with a stronger lens and rim, and a slight lift.
-  // Read once per change (true at the start of a fade, false at its end), so
-  // the composition is rebuilt twice per switch, not every frame.
-  const transitioning = fading;
-  const transitionShader = compileEffect({
-    input: backdropSource(),
-    capturePadding: 48,
-    invalidate: { kind: "on-source-damage-box", damagePadding: 16 },
-    pipeline: [
-      dualKawaseBlur({ radius: 4, passes: 3 }),
-      shaderStage(loadShader("./src/effect/liquid-glass.frag"), {
-        uniforms: {
-          glass_radius_px: -1.0,
-          distortion_depth: 0.18,
-          distortion_strength: 0.06,
-          chromatic_shift_px: 2.5,
-          glass_tint: 1.06,
-          highlight_strength: 0.9,
-          highlight_width_px: 2.5,
-        },
-      }),
-    ],
-    alpha: "preserve",
-  });
-  const windowGlass = transitioning() ? transitionShader : backgroundShader;
-
   const titleOnlyShader = compileEffect({
     input: backdropSource(),
     capturePadding: 24,
@@ -1087,7 +1053,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
     innerComponents = blurSuspended ? (
       <Box direction="column">{content}</Box>
     ) : (
-      <ShaderEffect shader={windowGlass} direction="column">
+      <ShaderEffect shader={backgroundShader} direction="column">
         {content}
       </ShaderEffect>
     );
@@ -1155,7 +1121,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
           ) : (
             // Client-decorated windows get the glass too: it shows where the
             // client is translucent and while a workspace switch fades it.
-            <ShaderEffect shader={windowGlass} direction="column">
+            <ShaderEffect shader={backgroundShader} direction="column">
               <Box direction="column" style={{ opacity: contentOpacity }}>
                 <ClientWindow />
               </Box>
