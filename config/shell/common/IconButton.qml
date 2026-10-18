@@ -7,7 +7,9 @@ Item {
     property string icon: ""
     property real iconSize: 18
     property bool active: false
-    property color color: active ? Theme.accent : Theme.text
+    // Theme.cc on the Control Center's always-dark glass.
+    property QtObject colors: Theme.palette
+    property color color: active ? colors.accent : colors.text
     readonly property bool hovered: mouse.containsMouse
 
     signal clicked()
@@ -19,7 +21,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: Math.min(width, height) / 2
-        color: mouse.pressed ? Theme.pressed : root.hovered ? Theme.hover : Theme.clear
+        color: mouse.pressed ? root.colors.pressed : root.hovered ? root.colors.hover : Theme.clear
         Behavior on color { ColorAnimation { duration: Theme.fast } }
     }
 

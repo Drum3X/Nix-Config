@@ -705,7 +705,10 @@ COMPOSITOR.effect.layer = (layer) => {
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    return { behind: islandGlassAt(themeDark(), glassFade(namespace)()) };
+    // The Control Center is on dark glass in both appearances, as on macOS
+    // (Theme.cc in the shell).
+    const dark = namespace === "hyalo-control" || themeDark();
+    return { behind: islandGlassAt(dark, glassFade(namespace)()) };
   }
   // The wallpaper, and anything else that wants no glass at all.
   if (namespace === "no_blur") {

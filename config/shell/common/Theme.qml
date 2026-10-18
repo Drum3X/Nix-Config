@@ -11,6 +11,34 @@ Singleton {
 
     readonly property bool dark: ThemeState.dark
 
+    // The colours that change with the appearance, as one object per
+    // appearance. `palette` follows it; `cc` is always the dark one: the
+    // Control Center sits on dark glass in both appearances, as on macOS.
+    readonly property QtObject darkPalette: QtObject {
+        readonly property color text: "#f3f2fa"
+        readonly property color textDim: "#b4b6c8"
+        readonly property color textFaint: "#80839a"
+        readonly property color accent: "#0a84ff"
+        readonly property color danger: "#ff8f9c"
+        readonly property color hover: Qt.rgba(1, 1, 1, 0.10)
+        readonly property color pressed: Qt.rgba(1, 1, 1, 0.16)
+        readonly property color buttonOff: Qt.rgba(1, 1, 1, 0.14)
+        readonly property color sliderTrack: Qt.rgba(1, 1, 1, 0.12)
+    }
+    readonly property QtObject lightPalette: QtObject {
+        readonly property color text: "#262838"
+        readonly property color textDim: "#5d6075"
+        readonly property color textFaint: "#8a8ca0"
+        readonly property color accent: "#007aff"
+        readonly property color danger: "#e0465c"
+        readonly property color hover: Qt.rgba(1, 1, 1, 0.26)
+        readonly property color pressed: Qt.rgba(1, 1, 1, 0.38)
+        readonly property color buttonOff: Qt.rgba(1, 1, 1, 0.42)
+        readonly property color sliderTrack: Qt.rgba(1, 1, 1, 0.34)
+    }
+    readonly property QtObject palette: dark ? darkPalette : lightPalette
+    readonly property QtObject cc: darkPalette
+
     // ----- glass ----------------------------------------------------------
     // Silhouette fill of every compositor-glass surface. Its alpha must stay
     // equal to ISLAND_GLASS_OPTIONS.surfaceOpacity (0.20) in
@@ -28,11 +56,11 @@ Singleton {
     readonly property color lineFaint: dark ? Qt.rgba(1, 1, 1, 0.22) : Qt.rgba(0.15, 0.16, 0.22, 0.18)
     // macOS Control Center platters and controls, on the dimmed glass.
     readonly property color module: dark ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(1, 1, 1, 0.24)
-    readonly property color buttonOff: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.42)
-    readonly property color sliderTrack: dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(1, 1, 1, 0.34)
+    readonly property color buttonOff: palette.buttonOff
+    readonly property color sliderTrack: palette.sliderTrack
     // Hover / pressed / selected washes inside glass.
-    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.26)
-    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.38)
+    readonly property color hover: palette.hover
+    readonly property color pressed: palette.pressed
     readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.32)
     // "No wash": white at zero alpha. Fading a wash from "transparent"
     // (black at zero alpha) passes through grey and flashes dark first.
@@ -50,15 +78,15 @@ Singleton {
     readonly property color frostTint: dark ? glassTintDark : glassTintLight
 
     // ----- text -------------------------------------------------------------
-    readonly property color text: dark ? "#f3f2fa" : "#262838"
-    readonly property color textDim: dark ? "#b4b6c8" : "#5d6075"
-    readonly property color textFaint: dark ? "#80839a" : "#8a8ca0"
+    readonly property color text: palette.text
+    readonly property color textDim: palette.textDim
+    readonly property color textFaint: palette.textFaint
     // Text straight on the wallpaper (lock clock, greeter).
     readonly property color onWallpaper: "#ffffff"
 
-    readonly property color accent: dark ? "#0a84ff" : "#007aff"
+    readonly property color accent: palette.accent
     readonly property color accentText: "#ffffff"
-    readonly property color danger: dark ? "#ff8f9c" : "#e0465c"
+    readonly property color danger: palette.danger
     readonly property color success: dark ? "#8fe3b0" : "#2fa56a"
 
     // ----- type -------------------------------------------------------------

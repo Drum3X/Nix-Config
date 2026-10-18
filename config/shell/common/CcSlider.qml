@@ -26,7 +26,7 @@ Item {
             x: 18
             y: 13
             text: root.title
-            color: Theme.text
+            color: Theme.cc.text
             font.family: Theme.font
             font.weight: Font.DemiBold
             font.pixelSize: Theme.textMd
@@ -40,6 +40,7 @@ Item {
             name: root.iconLow
             size: 15
             filled: true
+            color: Theme.cc.text
         }
 
         Rectangle {
@@ -52,14 +53,14 @@ Item {
             // Thickens a little under the pointer and while dragged.
             height: drag.containsMouse || drag.pressed ? 10 : 8
             radius: height / 2
-            color: Theme.sliderTrack
+            color: Theme.cc.sliderTrack
             Behavior on height { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
 
             Rectangle {
                 height: parent.height
                 width: Math.max(parent.height, parent.width * root.clamped)
                 radius: height / 2
-                color: Theme.text
+                color: Theme.cc.text
                 Behavior on width {
                     enabled: !drag.pressed
                     NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
@@ -76,6 +77,7 @@ Item {
             name: root.iconHigh
             size: 19
             filled: true
+            color: Theme.cc.text
         }
     }
 

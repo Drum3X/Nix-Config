@@ -213,7 +213,7 @@ Scope {
                                 height: 26
                                 verticalAlignment: Text.AlignVCenter
                                 text: "Wi-Fi"
-                                color: Theme.text
+                                color: Theme.cc.text
                                 font.family: Theme.font
                                 font.weight: Font.DemiBold
                                 font.pixelSize: Theme.textMd
@@ -231,7 +231,7 @@ Scope {
                                     Rectangle {
                                         anchors.fill: parent
                                         radius: 17
-                                        color: netMouse.pressed ? Theme.pressed : netMouse.containsMouse ? Theme.hover : Theme.clear
+                                        color: netMouse.pressed ? Theme.cc.pressed : netMouse.containsMouse ? Theme.cc.hover : Theme.clear
                                         Behavior on color { ColorAnimation { duration: Theme.fast } }
                                     }
 
@@ -242,7 +242,7 @@ Scope {
                                         width: 24
                                         height: 24
                                         radius: 12
-                                        color: netRow.modelData.connected ? "#ffffff" : Theme.buttonOff
+                                        color: netRow.modelData.connected ? "#ffffff" : Theme.cc.buttonOff
 
                                         Icon {
                                             anchors.centerIn: parent
@@ -250,7 +250,7 @@ Scope {
                                                 : netRow.modelData.signalStrength > 0.33 ? "wifi_2_bar" : "wifi_1_bar"
                                             size: 14
                                             filled: true
-                                            color: netRow.modelData.connected ? Theme.accent : Theme.text
+                                            color: netRow.modelData.connected ? Theme.cc.accent : Theme.cc.text
                                         }
                                     }
 
@@ -263,7 +263,7 @@ Scope {
                                         text: netRow.modelData.name
                                             + (netRow.modelData.stateChanging ? "  ·  Connecting…" : "")
                                         elide: Text.ElideRight
-                                        color: Theme.text
+                                        color: Theme.cc.text
                                         font.family: Theme.font
                                         font.pixelSize: Theme.textSm
                                     }
@@ -276,7 +276,7 @@ Scope {
                                         visible: netRow.modelData.security !== WifiSecurityType.Open
                                         name: "lock"
                                         size: 14
-                                        color: Theme.textDim
+                                        color: Theme.cc.textDim
                                     }
 
                                     MouseArea {
@@ -304,7 +304,7 @@ Scope {
                                         anchors.margins: 6
                                         height: 32
                                         radius: 16
-                                        color: Theme.sliderTrack
+                                        color: Theme.cc.sliderTrack
 
                                         TextInput {
                                             id: psk
@@ -313,7 +313,7 @@ Scope {
                                             anchors.rightMargin: 12
                                             verticalAlignment: TextInput.AlignVCenter
                                             echoMode: TextInput.Password
-                                            color: Theme.text
+                                            color: Theme.cc.text
                                             font.family: Theme.font
                                             font.pixelSize: Theme.textSm
                                             onVisibleChanged: if (visible) { text = ""; forceActiveFocus(); }
@@ -327,7 +327,7 @@ Scope {
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 visible: psk.text.length === 0
                                                 text: "Password"
-                                                color: Theme.textFaint
+                                                color: Theme.cc.textFaint
                                                 font: psk.font
                                             }
                                         }
@@ -360,7 +360,7 @@ Scope {
                                     x: 8
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "Bluetooth"
-                                    color: Theme.text
+                                    color: Theme.cc.text
                                     font.family: Theme.font
                                     font.weight: Font.DemiBold
                                     font.pixelSize: Theme.textMd
@@ -371,7 +371,7 @@ Scope {
                                     anchors.verticalCenter: parent.verticalCenter
                                     visible: window.adapter ? window.adapter.discovering : false
                                     text: "Searching…"
-                                    color: Theme.textDim
+                                    color: Theme.cc.textDim
                                     font.family: Theme.font
                                     font.pixelSize: Theme.textXs
                                 }
@@ -383,7 +383,7 @@ Scope {
                                 visible: window.btDevices.length === 0
                                 verticalAlignment: Text.AlignVCenter
                                 text: "No devices"
-                                color: Theme.textDim
+                                color: Theme.cc.textDim
                                 font.family: Theme.font
                                 font.pixelSize: Theme.textSm
                             }
@@ -402,7 +402,7 @@ Scope {
                                     Rectangle {
                                         anchors.fill: parent
                                         radius: 17
-                                        color: devMouse.pressed ? Theme.pressed : devMouse.containsMouse ? Theme.hover : Theme.clear
+                                        color: devMouse.pressed ? Theme.cc.pressed : devMouse.containsMouse ? Theme.cc.hover : Theme.clear
                                         Behavior on color { ColorAnimation { duration: Theme.fast } }
                                     }
 
@@ -413,7 +413,7 @@ Scope {
                                         width: 24
                                         height: 24
                                         radius: 12
-                                        color: devRow.modelData.connected ? "#ffffff" : Theme.buttonOff
+                                        color: devRow.modelData.connected ? "#ffffff" : Theme.cc.buttonOff
 
                                         Icon {
                                             anchors.centerIn: parent
@@ -424,7 +424,7 @@ Scope {
                                                 : "bluetooth"
                                             size: 14
                                             filled: true
-                                            color: devRow.modelData.connected ? Theme.accent : Theme.text
+                                            color: devRow.modelData.connected ? Theme.cc.accent : Theme.cc.text
                                         }
                                     }
 
@@ -436,7 +436,7 @@ Scope {
                                         y: 9
                                         text: devRow.modelData.name
                                         elide: Text.ElideRight
-                                        color: Theme.text
+                                        color: Theme.cc.text
                                         font.family: Theme.font
                                         font.pixelSize: Theme.textSm
                                     }
@@ -451,7 +451,7 @@ Scope {
                                                 ? Math.round(devRow.modelData.battery * 100) + "%"
                                             : devRow.modelData.connected ? "Connected"
                                             : devRow.modelData.paired ? "" : "Pair"
-                                        color: devRow.modelData.paired || devRow.busy ? Theme.textDim : Theme.accent
+                                        color: devRow.modelData.paired || devRow.busy ? Theme.cc.textDim : Theme.cc.accent
                                         font.family: Theme.font
                                         font.pixelSize: Theme.textXs
                                     }
@@ -523,7 +523,7 @@ Scope {
                             x: 6
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Notifications"
-                            color: Theme.text
+                            color: Theme.cc.text
                             font.family: Theme.font
                             font.weight: Font.DemiBold
                             font.pixelSize: Theme.textSm
@@ -536,14 +536,14 @@ Scope {
                             width: clearText.implicitWidth + 16
                             height: 22
                             radius: height / 2
-                            color: clearMouse.pressed ? Theme.pressed : clearMouse.containsMouse ? Theme.hover : Theme.clear
+                            color: clearMouse.pressed ? Theme.cc.pressed : clearMouse.containsMouse ? Theme.cc.hover : Theme.clear
                             Behavior on color { ColorAnimation { duration: Theme.fast } }
 
                             Text {
                                 id: clearText
                                 anchors.centerIn: parent
                                 text: "Clear"
-                                color: Theme.accent
+                                color: Theme.cc.accent
                                 font.family: Theme.font
                                 font.pixelSize: Theme.textSm
                             }
@@ -573,6 +573,7 @@ Scope {
                                 id: notification
                                 anchors.fill: parent
                                 notification: card.modelData
+                                colors: Theme.cc
                             }
                         }
                     }
@@ -595,7 +596,7 @@ Scope {
             width: 52
             height: 52
             radius: 10
-            color: Theme.buttonOff
+            color: Theme.cc.buttonOff
 
             Image {
                 anchors.fill: parent
@@ -609,7 +610,7 @@ Scope {
                 visible: Media.art.length === 0
                 name: "music_note"
                 size: 22
-                color: Theme.textDim
+                color: Theme.cc.textDim
             }
         }
 
@@ -623,7 +624,7 @@ Scope {
                 width: parent.width
                 text: Media.active ? Media.title : "Not Playing"
                 elide: Text.ElideRight
-                color: Theme.text
+                color: Theme.cc.text
                 font.family: Theme.font
                 font.weight: Font.DemiBold
                 font.pixelSize: Theme.textMd
@@ -633,7 +634,7 @@ Scope {
                 visible: text.length > 0
                 text: Media.active ? Media.artist : ""
                 elide: Text.ElideRight
-                color: Theme.textDim
+                color: Theme.cc.textDim
                 font.family: Theme.font
                 font.pixelSize: Theme.textSm
             }
@@ -647,15 +648,16 @@ Scope {
             enabled: Media.active
             opacity: Media.active ? 1 : 0.4
 
-            IconButton { icon: "fast_rewind"; iconSize: 24; active: true; color: Theme.text; onClicked: Media.previous() }
+            IconButton { icon: "fast_rewind"; iconSize: 24; active: true; colors: Theme.cc; color: Theme.cc.text; onClicked: Media.previous() }
             IconButton {
                 icon: Media.playing ? "pause" : "play_arrow"
                 iconSize: 28
                 active: true
-                color: Theme.text
+                colors: Theme.cc
+                color: Theme.cc.text
                 onClicked: Media.toggle()
             }
-            IconButton { icon: "fast_forward"; iconSize: 24; active: true; color: Theme.text; onClicked: Media.next() }
+            IconButton { icon: "fast_forward"; iconSize: 24; active: true; colors: Theme.cc; color: Theme.cc.text; onClicked: Media.next() }
         }
     }
 

@@ -29,7 +29,7 @@ Item {
         Rectangle {
             anchors.fill: parent
             radius: height / 2
-            color: pillMouse.pressed ? Theme.pressed : pillMouse.containsMouse ? Theme.hover : Theme.clear
+            color: pillMouse.pressed ? Theme.cc.pressed : pillMouse.containsMouse ? Theme.cc.hover : Theme.clear
             Behavior on color { ColorAnimation { duration: Theme.fast } }
         }
 
@@ -42,7 +42,7 @@ Item {
             radius: width / 2
             color: root.checked
                 ? (buttonMouse.pressed ? Theme.whitePressed : buttonMouse.containsMouse ? Theme.whiteHover : "#ffffff")
-                : Qt.rgba(1, 1, 1, Theme.buttonOff.a + (buttonMouse.pressed ? 0.16 : buttonMouse.containsMouse ? 0.08 : 0))
+                : Qt.rgba(1, 1, 1, Theme.cc.buttonOff.a + (buttonMouse.pressed ? 0.16 : buttonMouse.containsMouse ? 0.08 : 0))
             scale: buttonMouse.pressed ? 0.94 : 1
             Behavior on color { ColorAnimation { duration: Theme.fast } }
             Behavior on scale { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
@@ -52,7 +52,7 @@ Item {
                 name: root.icon
                 size: 27
                 filled: true
-                color: root.checked ? Theme.accent : Theme.text
+                color: root.checked ? Theme.cc.accent : Theme.cc.text
             }
         }
 
@@ -67,7 +67,7 @@ Item {
                 width: parent.width
                 text: root.label
                 elide: Text.ElideRight
-                color: Theme.text
+                color: Theme.cc.text
                 font.family: Theme.font
                 font.weight: Font.DemiBold
                 font.pixelSize: Theme.textMd
@@ -77,7 +77,7 @@ Item {
                 visible: text.length > 0
                 text: root.detail
                 elide: Text.ElideRight
-                color: Theme.textDim
+                color: Theme.cc.textDim
                 font.family: Theme.font
                 font.pixelSize: Theme.textSm
             }

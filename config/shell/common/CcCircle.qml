@@ -12,7 +12,7 @@ Item {
     property bool alert: false
     property bool interactive: true
     property real reveal: 1
-    property color iconColor: root.alert ? "#ffffff" : root.checked ? Theme.accent : Theme.text
+    property color iconColor: root.alert ? "#ffffff" : root.checked ? Theme.cc.accent : Theme.cc.text
 
     signal clicked()
 
@@ -29,9 +29,9 @@ Item {
         Rectangle {
             anchors.fill: parent
             radius: width / 2
-            color: root.alert ? Qt.lighter(Theme.danger, mouse.containsMouse ? 1.08 : 1)
+            color: root.alert ? Qt.lighter(Theme.cc.danger, mouse.containsMouse ? 1.08 : 1)
                 : root.checked ? (mouse.pressed ? Theme.whitePressed : mouse.containsMouse ? Theme.whiteHover : "#ffffff")
-                : mouse.pressed ? Theme.pressed : mouse.containsMouse ? Theme.hover : Theme.clear
+                : mouse.pressed ? Theme.cc.pressed : mouse.containsMouse ? Theme.cc.hover : Theme.clear
             Behavior on color { ColorAnimation { duration: Theme.fast } }
         }
 
@@ -50,7 +50,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: root.label.length > 0
                 text: root.label
-                color: Theme.text
+                color: Theme.cc.text
                 font.family: Theme.font
                 font.weight: Font.DemiBold
                 font.pixelSize: Theme.textXs

@@ -10,6 +10,8 @@ Item {
 
     required property var notification
     property color background: "transparent"
+    // Theme.cc on the Control Center's always-dark glass.
+    property QtObject colors: Theme.palette
     readonly property bool hovered: mouse.containsMouse || close.hovered
 
     signal dismissed()
@@ -61,7 +63,7 @@ Item {
             text: root.notification.appName
             visible: text.length > 0
             elide: Text.ElideRight
-            color: Theme.textFaint
+            color: root.colors.textFaint
             font.family: Theme.font
             font.pixelSize: Theme.textXs
         }
@@ -70,7 +72,7 @@ Item {
             width: parent.width
             text: root.notification.summary
             elide: Text.ElideRight
-            color: Theme.text
+            color: root.colors.text
             font.family: Theme.font
             font.weight: Font.DemiBold
             font.pixelSize: Theme.textMd
@@ -84,7 +86,7 @@ Item {
             maximumLineCount: 3
             elide: Text.ElideRight
             textFormat: Text.PlainText
-            color: Theme.textDim
+            color: root.colors.textDim
             font.family: Theme.font
             font.pixelSize: Theme.textSm
         }
@@ -103,13 +105,13 @@ Item {
                     width: actionLabel.implicitWidth + 20
                     height: 26
                     radius: 13
-                    color: actionMouse.containsMouse ? Theme.pressed : Theme.hover
+                    color: actionMouse.containsMouse ? root.colors.pressed : root.colors.hover
 
                     Text {
                         id: actionLabel
                         anchors.centerIn: parent
                         text: modelData.text
-                        color: Theme.text
+                        color: root.colors.text
                         font.family: Theme.font
                         font.weight: Font.Medium
                         font.pixelSize: Theme.textSm
@@ -148,7 +150,8 @@ Item {
         height: 24
         icon: "close"
         iconSize: 16
-        color: Theme.textDim
+        colors: root.colors
+        color: root.colors.textDim
         onClicked: {
             root.notification.dismiss();
             root.dismissed();
