@@ -87,6 +87,9 @@ Singleton {
     readonly property int dockGap: 6          // dock above the bottom edge
 
     readonly property int panelRadius: 22
+    // Control Center grid: one round control, and the space between controls.
+    readonly property int ccUnit: 64
+    readonly property int ccGap: 12
     readonly property int tileRadius: 14
 
     // ----- motion -----------------------------------------------------------

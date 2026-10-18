@@ -1,0 +1,65 @@
+import QtQuick
+
+// A round macOS Control Center control, its own piece of glass. On, it fills
+// white with the icon in the accent colour; off, it is only glass. `label`
+// adds a short text under the icon (the battery); `alert` turns it red.
+Item {
+    id: root
+
+    property string icon: ""
+    property string label: ""
+    property bool checked: false
+    property bool alert: false
+    property bool interactive: true
+    property color iconColor: root.alert ? "#ffffff" : root.checked ? Theme.accent : Theme.text
+
+    signal clicked()
+
+    implicitWidth: Theme.ccUnit
+    implicitHeight: Theme.ccUnit
+
+    GlassPanel {
+        anchors.fill: parent
+        radius: width / 2
+        scale: mouse.pressed ? 0.94 : 1
+        Behavior on scale { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
+
+        Rectangle {
+            anchors.fill: parent
+            radius: width / 2
+            color: root.alert ? Theme.danger : root.checked ? "#ffffff" : mouse.containsMouse ? Theme.hover : "transparent"
+            Behavior on color { ColorAnimation { duration: Theme.normal } }
+        }
+
+        Column {
+            anchors.centerIn: parent
+            spacing: -2
+
+            Icon {
+                anchors.horizontalCenter: parent.horizontalCenter
+                name: root.icon
+                size: root.label.length > 0 ? 22 : 26
+                filled: true
+                color: root.iconColor
+            }
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: root.label.length > 0
+                text: root.label
+                color: Theme.text
+                font.family: Theme.font
+                font.weight: Font.DemiBold
+                font.pixelSize: Theme.textXs
+            }
+        }
+    }
+
+    MouseArea {
+        id: mouse
+        anchors.fill: parent
+        enabled: root.interactive
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
+    }
+}

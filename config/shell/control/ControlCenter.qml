@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Networking
@@ -10,9 +9,11 @@ import qs.common
 import qs.lock
 import qs.services
 
-// The control center, laid out like macOS: a connectivity module (Wi-Fi,
-// Bluetooth, Appearance) beside Focus and Energy tiles, then Display and
-// Sound sliders, Now Playing, battery and power, and the notifications.
+// The control center, laid out like macOS Tahoe: no panel, every control is
+// its own piece of glass on a grid of round cells (Theme.ccUnit). Wi-Fi and
+// Focus are capsules, Now Playing a square; Bluetooth, Appearance, Energy and
+// the battery are circles; then the Display and Sound sliders, the session
+// actions and the notifications.
 Scope {
     id: root
 
@@ -32,11 +33,11 @@ Scope {
 
         anchors.top: true
         anchors.right: true
-        margins.top: Theme.barExclusive - 2
+        margins.top: Theme.barExclusive
         margins.right: Theme.edge
-        implicitWidth: 340
+        implicitWidth: window.span(4)
         implicitHeight: Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
-                                 content.implicitHeight + 24)
+                                 content.implicitHeight)
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -45,6 +46,11 @@ Scope {
         WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
         mask: Region { item: panel }
+
+        // Width of `cells` grid cells and the gaps between them.
+        function span(cells: int): real {
+            return Theme.ccUnit * cells + Theme.ccGap * (cells - 1);
+        }
 
         property bool wifiExpanded: false
         property var pskNetwork: null
@@ -78,10 +84,9 @@ Scope {
             PowerProfiles.profile = profiles[next].profile;
         }
 
-        GlassPanel {
+        Item {
             id: panel
             anchors.fill: parent
-            radius: 26
             focus: true
 
             opacity: root.open ? 1 : 0
@@ -94,111 +99,106 @@ Scope {
 
             Flickable {
                 anchors.fill: parent
-                anchors.margins: 12
                 contentHeight: content.implicitHeight
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
 
-                ColumnLayout {
+                Column {
                     id: content
                     width: parent.width
-                    spacing: 10
+                    spacing: Theme.ccGap
 
-                    // ----- connectivity + Focus / Energy --------------------------
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 10
+                    // ----- Wi-Fi, Bluetooth, Appearance | Now Playing ------------
+                    Row {
+                        spacing: Theme.ccGap
 
-                        CcModule {
-                            Layout.fillWidth: true
-                            Layout.preferredWidth: 1
-                            Layout.alignment: Qt.AlignTop
+                        Column {
+                            spacing: Theme.ccGap
 
-                            Column {
-                                width: parent.width
-                                spacing: 12
-
-                                CircleToggle {
-                                    width: parent.width
-                                    icon: Net.wired ? "lan" : Net.wifiEnabled ? "wifi" : "wifi_off"
-                                    label: "Wi-Fi"
-                                    detail: Net.wired ? "Ethernet" : !Net.wifiEnabled ? "Off" : (Net.name || "Not Connected")
-                                    checked: Net.wifiEnabled
-                                    expandable: true
-                                    onToggled: Net.setWifi(!Net.wifiEnabled)
-                                    onDetailsRequested: {
-                                        window.wifiExpanded = !window.wifiExpanded;
-                                        Net.scan(window.wifiExpanded);
-                                    }
+                            CcPill {
+                                icon: Net.wired ? "lan" : Net.wifiEnabled ? "wifi" : "wifi_off"
+                                label: "Wi-Fi"
+                                detail: Net.wired ? "Ethernet" : !Net.wifiEnabled ? "Off" : (Net.name || "Not Connected")
+                                checked: Net.wifiEnabled
+                                expandable: true
+                                onToggled: Net.setWifi(!Net.wifiEnabled)
+                                onDetailsRequested: {
+                                    window.wifiExpanded = !window.wifiExpanded;
+                                    Net.scan(window.wifiExpanded);
                                 }
+                            }
 
-                                CircleToggle {
-                                    width: parent.width
+                            Row {
+                                spacing: Theme.ccGap
+
+                                CcCircle {
                                     icon: "bluetooth"
-                                    label: "Bluetooth"
-                                    detail: !window.adapter ? "Unavailable" : !window.adapter.enabled ? "Off"
-                                        : window.btConnected.length > 0 ? window.btConnected.map((d) => d.name).join(", ") : "On"
                                     checked: window.adapter ? window.adapter.enabled : false
-                                    onToggled: if (window.adapter) window.adapter.enabled = !window.adapter.enabled
+                                    interactive: !!window.adapter
+                                    onClicked: window.adapter.enabled = !window.adapter.enabled
                                 }
 
-                                CircleToggle {
-                                    width: parent.width
+                                CcCircle {
                                     icon: "contrast"
-                                    label: "Appearance"
-                                    detail: Theme.dark ? "Dark" : "Light"
                                     checked: Theme.dark
-                                    onToggled: ThemeState.toggle()
+                                    onClicked: ThemeState.toggle()
                                 }
                             }
                         }
 
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            Layout.preferredWidth: 1
-                            Layout.fillHeight: true
-                            spacing: 10
+                        NowPlaying {}
+                    }
 
-                            CcModule {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
+                    // ----- Focus | Energy, battery -------------------------------
+                    Row {
+                        spacing: Theme.ccGap
 
-                                CircleToggle {
-                                    width: parent.width
-                                    icon: "do_not_disturb_on"
-                                    label: "Focus"
-                                    detail: Notifs.doNotDisturb ? "Do Not Disturb" : "Off"
-                                    checked: Notifs.doNotDisturb
-                                    onToggled: Notifs.doNotDisturb = !Notifs.doNotDisturb
-                                }
-                            }
+                        CcPill {
+                            icon: "dark_mode"
+                            label: "Focus"
+                            detail: Notifs.doNotDisturb ? "Do Not Disturb" : ""
+                            checked: Notifs.doNotDisturb
+                            onToggled: Notifs.doNotDisturb = !Notifs.doNotDisturb
+                        }
 
-                            CcModule {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
+                        CcCircle {
+                            icon: window.profiles[window.profileIndex].icon
+                            checked: PowerProfiles.profile !== PowerProfile.Balanced
+                            onClicked: window.nextProfile()
+                        }
 
-                                CircleToggle {
-                                    width: parent.width
-                                    icon: window.profiles[window.profileIndex].icon
-                                    label: "Energy Mode"
-                                    detail: window.profiles[window.profileIndex].label
-                                    checked: PowerProfiles.profile !== PowerProfile.Balanced
-                                    onToggled: window.nextProfile()
-                                }
-                            }
+                        CcCircle {
+                            interactive: false
+                            icon: !window.hasBattery ? "power"
+                                : window.battery.state === UPowerDeviceState.Charging ? "battery_charging_full" : "battery_full"
+                            label: window.hasBattery ? Math.round(window.battery.percentage * 100) + "%" : "AC"
                         }
                     }
 
-                    // ----- Wi-Fi networks ------------------------------------------
-                    CcModule {
-                        Layout.fillWidth: true
+                    // ----- Wi-Fi networks ----------------------------------------
+                    GlassPanel {
+                        width: parent.width
+                        height: networks.implicitHeight + 16
+                        radius: 26
                         visible: window.wifiExpanded && Net.wifiEnabled
-                        title: "Wi-Fi"
-                        padding: 8
 
                         Column {
-                            width: parent.width
+                            id: networks
+                            x: 8
+                            y: 8
+                            width: parent.width - 16
                             spacing: 2
+
+                            Text {
+                                x: 8
+                                height: 26
+                                verticalAlignment: Text.AlignVCenter
+                                text: "Wi-Fi"
+                                color: Theme.text
+                                font.family: Theme.font
+                                font.weight: Font.DemiBold
+                                font.pixelSize: Theme.textMd
+                            }
 
                             Repeater {
                                 model: Net.networks.slice(0, 8)
@@ -211,7 +211,7 @@ Scope {
 
                                     Rectangle {
                                         anchors.fill: parent
-                                        radius: 10
+                                        radius: 17
                                         color: netMouse.containsMouse ? Theme.hover : "transparent"
                                     }
 
@@ -222,7 +222,7 @@ Scope {
                                         width: 24
                                         height: 24
                                         radius: 12
-                                        color: netRow.modelData.connected ? Theme.accent : Theme.buttonOff
+                                        color: netRow.modelData.connected ? "#ffffff" : Theme.buttonOff
 
                                         Icon {
                                             anchors.centerIn: parent
@@ -230,7 +230,7 @@ Scope {
                                                 : netRow.modelData.signalStrength > 0.33 ? "wifi_2_bar" : "wifi_1_bar"
                                             size: 14
                                             filled: true
-                                            color: netRow.modelData.connected ? "#ffffff" : Theme.text
+                                            color: netRow.modelData.connected ? Theme.accent : Theme.text
                                         }
                                     }
 
@@ -251,7 +251,7 @@ Scope {
                                     Icon {
                                         id: lock
                                         anchors.right: parent.right
-                                        anchors.rightMargin: 8
+                                        anchors.rightMargin: 10
                                         y: 9
                                         visible: netRow.modelData.security !== WifiSecurityType.Open
                                         name: "lock"
@@ -283,14 +283,14 @@ Scope {
                                         anchors.bottom: parent.bottom
                                         anchors.margins: 6
                                         height: 32
-                                        radius: 10
+                                        radius: 16
                                         color: Theme.sliderTrack
 
                                         TextInput {
                                             id: psk
                                             anchors.fill: parent
-                                            anchors.leftMargin: 10
-                                            anchors.rightMargin: 10
+                                            anchors.leftMargin: 12
+                                            anchors.rightMargin: 12
                                             verticalAlignment: TextInput.AlignVCenter
                                             echoMode: TextInput.Password
                                             color: Theme.text
@@ -317,161 +317,45 @@ Scope {
                         }
                     }
 
-                    // ----- Display / Sound ---------------------------------------------
-                    CcModule {
-                        Layout.fillWidth: true
+                    // ----- Display / Sound ---------------------------------------
+                    CcSlider {
+                        width: parent.width
                         visible: Brightness.available
                         title: "Display"
-
-                        GlassSlider {
-                            width: parent.width
-                            icon: "light_mode"
-                            value: Brightness.value
-                            onMoved: (value) => Brightness.setValue(value)
-                        }
+                        iconLow: "brightness_low"
+                        iconHigh: "brightness_high"
+                        value: Brightness.value
+                        onMoved: (value) => Brightness.setValue(value)
                     }
 
-                    CcModule {
-                        Layout.fillWidth: true
+                    CcSlider {
+                        width: parent.width
                         title: "Sound"
-
-                        GlassSlider {
-                            width: parent.width
-                            icon: Audio.muted ? "volume_off" : "volume_up"
-                            value: Audio.muted ? 0 : Audio.volume
-                            onMoved: (value) => Audio.setVolume(value)
-                        }
+                        iconLow: Audio.muted ? "volume_off" : "volume_mute"
+                        iconHigh: "volume_up"
+                        value: Audio.muted ? 0 : Audio.volume
+                        onMoved: (value) => Audio.setVolume(value)
                     }
 
-                    // ----- Now Playing ------------------------------------------------
-                    CcModule {
-                        Layout.fillWidth: true
-                        visible: Media.active
+                    // ----- session -----------------------------------------------
+                    Row {
+                        spacing: Theme.ccGap
 
-                        Item {
-                            width: parent.width
-                            height: 48
-
-                            ClippingRectangle {
-                                id: art
-                                width: 48
-                                height: 48
-                                radius: 10
-                                color: Theme.buttonOff
-
-                                Image {
-                                    anchors.fill: parent
-                                    source: Media.art
-                                    fillMode: Image.PreserveAspectCrop
-                                    asynchronous: true
-                                    visible: status === Image.Ready
-                                }
-                                Icon {
-                                    anchors.centerIn: parent
-                                    visible: Media.art.length === 0
-                                    name: "music_note"
-                                    size: 22
-                                    color: Theme.textDim
-                                }
-                            }
-
-                            Column {
-                                anchors.left: art.right
-                                anchors.leftMargin: 10
-                                anchors.right: controls.left
-                                anchors.rightMargin: 6
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 1
-
-                                Text {
-                                    width: parent.width
-                                    text: Media.title
-                                    elide: Text.ElideRight
-                                    color: Theme.text
-                                    font.family: Theme.font
-                                    font.weight: Font.DemiBold
-                                    font.pixelSize: Theme.textSm
-                                }
-                                Text {
-                                    width: parent.width
-                                    text: Media.artist
-                                    elide: Text.ElideRight
-                                    color: Theme.textDim
-                                    font.family: Theme.font
-                                    font.pixelSize: Theme.textXs
-                                }
-                            }
-
-                            Row {
-                                id: controls
-                                anchors.right: parent.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                IconButton { icon: "fast_rewind"; onClicked: Media.previous() }
-                                IconButton {
-                                    icon: Media.playing ? "pause" : "play_arrow"
-                                    iconSize: 24
-                                    onClicked: Media.toggle()
-                                }
-                                IconButton { icon: "fast_forward"; onClicked: Media.next() }
-                            }
-                        }
+                        PowerCircle { icon: "lock"; confirm: false; onRun: Lock.lock() }
+                        PowerCircle { icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
+                        PowerCircle { icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
+                        PowerCircle { icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
                     }
 
-                    // ----- battery and power ------------------------------------------
-                    CcModule {
-                        Layout.fillWidth: true
-                        padding: 8
-
-                        Item {
-                            width: parent.width
-                            height: 30
-
-                            Row {
-                                anchors.left: parent.left
-                                anchors.leftMargin: 4
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 6
-                                visible: window.hasBattery
-
-                                Icon {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    name: window.hasBattery && window.battery.state === UPowerDeviceState.Charging
-                                        ? "battery_charging_full" : "battery_full"
-                                    size: 18
-                                    filled: true
-                                }
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: window.hasBattery ? Math.round(window.battery.percentage * 100) + "%" : ""
-                                    color: Theme.text
-                                    font.family: Theme.font
-                                    font.weight: Font.Medium
-                                    font.pixelSize: Theme.textSm
-                                }
-                            }
-
-                            Row {
-                                anchors.right: parent.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 6
-
-                                PowerButton { icon: "lock"; confirm: false; onRun: Lock.lock() }
-                                PowerButton { icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
-                                PowerButton { icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
-                                PowerButton { icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
-                            }
-                        }
-                    }
-
-                    // ----- notifications ----------------------------------------------
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.leftMargin: 4
-                        Layout.rightMargin: 4
+                    // ----- notifications -----------------------------------------
+                    Item {
+                        width: parent.width
+                        height: 22
                         visible: Notifs.count > 0
 
                         Text {
-                            Layout.fillWidth: true
+                            x: 6
+                            anchors.verticalCenter: parent.verticalCenter
                             text: "Notifications"
                             color: Theme.text
                             font.family: Theme.font
@@ -480,6 +364,9 @@ Scope {
                         }
 
                         Text {
+                            anchors.right: parent.right
+                            anchors.rightMargin: 6
+                            anchors.verticalCenter: parent.verticalCenter
                             text: "Clear"
                             color: Theme.accent
                             font.family: Theme.font
@@ -497,11 +384,18 @@ Scope {
                     Repeater {
                         model: Notifs.list.slice().reverse().slice(0, 6)
 
-                        delegate: NotificationCard {
+                        delegate: GlassPanel {
+                            id: card
                             required property var modelData
-                            Layout.fillWidth: true
-                            notification: modelData
-                            background: Theme.module
+                            width: content.width
+                            height: notification.implicitHeight
+                            radius: Theme.panelRadius
+
+                            NotificationCard {
+                                id: notification
+                                anchors.fill: parent
+                                notification: card.modelData
+                            }
                         }
                     }
                 }
@@ -509,44 +403,99 @@ Scope {
         }
     }
 
-    // A round power action; all but lock ask for a second click within three seconds.
-    component PowerButton: Item {
+    // Now Playing: a square of glass two cells wide, with the cover, the
+    // track and the transport controls; "Not Playing" without a player.
+    component NowPlaying: GlassPanel {
+        width: Theme.ccUnit * 2 + Theme.ccGap
+        height: Theme.ccUnit * 2 + Theme.ccGap
+        radius: 28
+
+        ClippingRectangle {
+            id: art
+            x: 14
+            y: 14
+            width: 44
+            height: 44
+            radius: 10
+            color: Theme.buttonOff
+
+            Image {
+                anchors.fill: parent
+                source: Media.art
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+                visible: status === Image.Ready
+            }
+            Icon {
+                anchors.centerIn: parent
+                visible: Media.art.length === 0
+                name: "music_note"
+                size: 22
+                color: Theme.textDim
+            }
+        }
+
+        Column {
+            x: 14
+            anchors.top: art.bottom
+            anchors.topMargin: 8
+            width: parent.width - 28
+
+            Text {
+                width: parent.width
+                text: Media.active ? Media.title : "Not Playing"
+                elide: Text.ElideRight
+                color: Theme.text
+                font.family: Theme.font
+                font.weight: Font.DemiBold
+                font.pixelSize: Theme.textMd
+            }
+            Text {
+                width: parent.width
+                visible: text.length > 0
+                text: Media.active ? Media.artist : ""
+                elide: Text.ElideRight
+                color: Theme.textDim
+                font.family: Theme.font
+                font.pixelSize: Theme.textSm
+            }
+        }
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 8
+            spacing: 2
+            enabled: Media.active
+            opacity: Media.active ? 1 : 0.4
+
+            IconButton { icon: "fast_rewind"; iconSize: 24; active: true; color: Theme.text; onClicked: Media.previous() }
+            IconButton {
+                icon: Media.playing ? "pause" : "play_arrow"
+                iconSize: 28
+                active: true
+                color: Theme.text
+                onClicked: Media.toggle()
+            }
+            IconButton { icon: "fast_forward"; iconSize: 24; active: true; color: Theme.text; onClicked: Media.next() }
+        }
+    }
+
+    // A session action; all but lock ask for a second click within three seconds.
+    component PowerCircle: CcCircle {
         id: button
-        property string icon: ""
         property bool confirm: true
         property bool armed: false
         signal run()
 
-        width: 30
-        height: 30
-
-        Rectangle {
-            anchors.fill: parent
-            radius: 15
-            color: button.armed ? Theme.danger : mouse.containsMouse ? Theme.pressed : Theme.buttonOff
-            Behavior on color { ColorAnimation { duration: Theme.fast } }
-        }
-
-        Icon {
-            anchors.centerIn: parent
-            name: button.icon
-            size: 16
-            color: button.armed ? "#ffffff" : Theme.text
-        }
-
-        MouseArea {
-            id: mouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: {
-                if (!button.confirm || button.armed) {
-                    button.armed = false;
-                    button.run();
-                } else {
-                    button.armed = true;
-                    disarm.restart();
-                }
+        alert: armed
+        onClicked: {
+            if (!button.confirm || button.armed) {
+                button.armed = false;
+                button.run();
+            } else {
+                button.armed = true;
+                disarm.restart();
             }
         }
 
