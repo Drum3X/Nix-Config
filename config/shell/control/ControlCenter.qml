@@ -212,7 +212,8 @@ Scope {
                                     Rectangle {
                                         anchors.fill: parent
                                         radius: 17
-                                        color: netMouse.containsMouse ? Theme.hover : "transparent"
+                                        color: netMouse.pressed ? Theme.pressed : netMouse.containsMouse ? Theme.hover : Theme.clear
+                                        Behavior on color { ColorAnimation { duration: Theme.fast } }
                                     }
 
                                     Rectangle {
@@ -363,18 +364,29 @@ Scope {
                             font.pixelSize: Theme.textSm
                         }
 
-                        Text {
+                        // "Clear", on a small capsule that shows under the pointer.
+                        Rectangle {
                             anchors.right: parent.right
-                            anchors.rightMargin: 6
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "Clear"
-                            color: Theme.accent
-                            font.family: Theme.font
-                            font.pixelSize: Theme.textSm
+                            width: clearText.implicitWidth + 16
+                            height: 22
+                            radius: height / 2
+                            color: clearMouse.pressed ? Theme.pressed : clearMouse.containsMouse ? Theme.hover : Theme.clear
+                            Behavior on color { ColorAnimation { duration: Theme.fast } }
+
+                            Text {
+                                id: clearText
+                                anchors.centerIn: parent
+                                text: "Clear"
+                                color: Theme.accent
+                                font.family: Theme.font
+                                font.pixelSize: Theme.textSm
+                            }
 
                             MouseArea {
+                                id: clearMouse
                                 anchors.fill: parent
-                                anchors.margins: -6
+                                hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: Notifs.clearAll()
                             }

@@ -168,7 +168,7 @@ Scope {
                     Rectangle {
                         anchors.fill: parent
                         radius: 14
-                        color: row.isSelected ? Theme.selected : rowMouse.containsMouse ? Theme.hover : "transparent"
+                        color: row.isSelected ? Theme.selected : rowMouse.containsMouse ? Theme.hover : Theme.clear
                         Behavior on color { ColorAnimation { duration: Theme.fast } }
                     }
 

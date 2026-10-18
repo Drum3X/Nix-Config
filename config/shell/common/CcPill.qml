@@ -2,7 +2,8 @@ import QtQuick
 
 // A wide macOS Control Center control (Wi-Fi, Focus), its own capsule of
 // glass: a round button, white when on, then a title and a status line.
-// The button toggles; the text opens details when `expandable`.
+// The button toggles; the rest of the capsule opens details when
+// `expandable`, and otherwise toggles too.
 Item {
     id: root
 
@@ -22,10 +23,11 @@ Item {
         anchors.fill: parent
         radius: height / 2
 
+        // The capsule's own wash, for the text side.
         Rectangle {
             anchors.fill: parent
             radius: height / 2
-            color: textMouse.containsMouse && root.expandable ? Theme.hover : "transparent"
+            color: pillMouse.pressed ? Theme.pressed : pillMouse.containsMouse ? Theme.hover : Theme.clear
             Behavior on color { ColorAnimation { duration: Theme.fast } }
         }
 
@@ -36,10 +38,12 @@ Item {
             width: parent.height - 16
             height: width
             radius: width / 2
-            color: root.checked ? "#ffffff" : Theme.buttonOff
-            scale: buttonMouse.pressed ? 0.92 : 1
-            Behavior on color { ColorAnimation { duration: Theme.normal } }
-            Behavior on scale { NumberAnimation { duration: Theme.fast } }
+            color: root.checked
+                ? (buttonMouse.pressed ? Theme.whitePressed : buttonMouse.containsMouse ? Theme.whiteHover : "#ffffff")
+                : Qt.rgba(1, 1, 1, Theme.buttonOff.a + (buttonMouse.pressed ? 0.16 : buttonMouse.containsMouse ? 0.08 : 0))
+            scale: buttonMouse.pressed ? 0.94 : 1
+            Behavior on color { ColorAnimation { duration: Theme.fast } }
+            Behavior on scale { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
 
             Icon {
                 anchors.centerIn: parent
@@ -48,17 +52,9 @@ Item {
                 filled: true
                 color: root.checked ? Theme.accent : Theme.text
             }
-
-            MouseArea {
-                id: buttonMouse
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.toggled()
-            }
         }
 
         Column {
-            id: texts
             anchors.left: button.right
             anchors.leftMargin: 10
             anchors.right: parent.right
@@ -86,15 +82,20 @@ Item {
         }
 
         MouseArea {
-            id: textMouse
-            anchors.left: button.right
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            enabled: root.expandable
+            id: pillMouse
+            anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: root.detailsRequested()
+            onClicked: root.expandable ? root.detailsRequested() : root.toggled()
+        }
+
+        // Above the capsule's area, so the button gets its own hover.
+        MouseArea {
+            id: buttonMouse
+            anchors.fill: button
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.toggled()
         }
     }
 }

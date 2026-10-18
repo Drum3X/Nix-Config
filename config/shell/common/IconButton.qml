@@ -19,7 +19,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: Math.min(width, height) / 2
-        color: mouse.pressed ? Theme.pressed : root.hovered ? Theme.hover : "transparent"
+        color: mouse.pressed ? Theme.pressed : root.hovered ? Theme.hover : Theme.clear
         Behavior on color { ColorAnimation { duration: Theme.fast } }
     }
 

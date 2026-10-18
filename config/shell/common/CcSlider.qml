@@ -47,9 +47,11 @@ Item {
             anchors.right: high.left
             anchors.rightMargin: 6
             y: parent.height - 24 - height / 2
-            height: 8
+            // Thickens a little under the pointer and while dragged.
+            height: drag.containsMouse || drag.pressed ? 10 : 8
             radius: height / 2
             color: Theme.sliderTrack
+            Behavior on height { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
 
             Rectangle {
                 height: parent.height
@@ -79,6 +81,7 @@ Item {
     MouseArea {
         id: drag
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         function update(x: real): void {
             const from = track.x;

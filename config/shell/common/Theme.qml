@@ -34,6 +34,12 @@ Singleton {
     readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.26)
     readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.38)
     readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.32)
+    // "No wash": white at zero alpha. Fading a wash from "transparent"
+    // (black at zero alpha) passes through grey and flashes dark first.
+    readonly property color clear: Qt.rgba(1, 1, 1, 0)
+    // A white control (switched on) under the pointer and pressed.
+    readonly property color whiteHover: "#ececf1"
+    readonly property color whitePressed: "#dcdce3"
 
     // The tint over every piece of liquid glass. The compositor tints its own
     // glass (and the window title bars) from GLASS_TINT in

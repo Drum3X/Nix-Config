@@ -27,8 +27,10 @@ Item {
         Rectangle {
             anchors.fill: parent
             radius: width / 2
-            color: root.alert ? Theme.danger : root.checked ? "#ffffff" : mouse.containsMouse ? Theme.hover : "transparent"
-            Behavior on color { ColorAnimation { duration: Theme.normal } }
+            color: root.alert ? Qt.lighter(Theme.danger, mouse.containsMouse ? 1.08 : 1)
+                : root.checked ? (mouse.pressed ? Theme.whitePressed : mouse.containsMouse ? Theme.whiteHover : "#ffffff")
+                : mouse.pressed ? Theme.pressed : mouse.containsMouse ? Theme.hover : Theme.clear
+            Behavior on color { ColorAnimation { duration: Theme.fast } }
         }
 
         Column {
