@@ -116,10 +116,16 @@ vec4 shader_main(EffectContext effect) {
     float bevel = min(max(bevel_width_px, 1.0), lensWidth);
     float innerBand = exp(-pow((distance - bevel * 0.5) / (bevel * 0.45), 2.0)) * coherence;
     color *= 1.0 - clamp(bevel_shadow, 0.0, 0.6) * innerBand * (0.5 + 0.5 * max(-light, 0.0));
-    // Screen, not add: brightens dark glass the most and never clips to a
-    // flat white line over bright content.
-    color = 1.0 - (1.0 - color) * (1.0 - shine * vec3(0.94, 0.97, 1.0));
     color = mix(color, glass_tint.rgb, glass_tint.a);
+    // Screen, not add: brightens dark glass the most and never clips to a
+    // flat white line over bright content. Laid over the tint, so the rim
+    // still lights up when dark glass sits on a white window (the Control
+    // Center in the light appearance); scaled by what the tint lets through,
+    // so over a dark backdrop it is as bright as when it was under the tint.
+    // Over lighter glass a screen shows less, so it is strengthened there.
+    float glassLuma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+    float rimLight = clamp(shine * (1.0 - glass_tint.a) * (1.0 + 2.0 * glassLuma), 0.0, 1.0);
+    color = 1.0 - (1.0 - color) * (1.0 - rimLight * vec3(0.94, 0.97, 1.0));
 
     if (debug_view > 2.5) color = vec3(0.5 + bend * 0.5, 0.5);
     else if (debug_view > 1.5) color = vec3(clamp(distance / rimWidth, 0.0, 1.0));

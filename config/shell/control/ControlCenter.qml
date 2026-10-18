@@ -513,6 +513,8 @@ Scope {
                     }
 
                     // ----- notifications -----------------------------------------
+                    // Off the glass, on whatever is behind: the appearance's own
+                    // colours (Theme), not the glass's (Theme.cc).
                     Item {
                         width: parent.width
                         height: 22
@@ -523,7 +525,7 @@ Scope {
                             x: 6
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Notifications"
-                            color: Theme.cc.text
+                            color: Theme.text
                             font.family: Theme.font
                             font.weight: Font.DemiBold
                             font.pixelSize: Theme.textSm
@@ -536,14 +538,14 @@ Scope {
                             width: clearText.implicitWidth + 16
                             height: 22
                             radius: height / 2
-                            color: clearMouse.pressed ? Theme.cc.pressed : clearMouse.containsMouse ? Theme.cc.hover : Theme.clear
+                            color: clearMouse.pressed ? Theme.pressed : clearMouse.containsMouse ? Theme.hover : Theme.clear
                             Behavior on color { ColorAnimation { duration: Theme.fast } }
 
                             Text {
                                 id: clearText
                                 anchors.centerIn: parent
                                 text: "Clear"
-                                color: Theme.cc.accent
+                                color: Theme.accent
                                 font.family: Theme.font
                                 font.pixelSize: Theme.textSm
                             }
