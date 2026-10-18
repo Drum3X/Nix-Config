@@ -945,10 +945,12 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
         ? [{ y: 12, blur: 36, spread: -4, color: themeDark() ? "#00000090" : "#3a3f6a40" }]
         : [{ y: 4, blur: 18, spread: -4, color: themeDark() ? "#00000060" : "#3a3f6a26" }],
   );
+  // A light tint over the frame glass, as on macOS: enough that the title
+  // stays readable over a dark window behind (VS Code) or a light one.
   const titlebarBackground = computed(() =>
     themeDark()
-      ? window.isFocused() ? "#0000000f" : "#00000008"
-      : window.isFocused() ? "#ffffff0f" : "#ffffff08",
+      ? window.isFocused() ? "#1c1c1eb3" : "#2a2a2e99"
+      : window.isFocused() ? "#f6f6f8b3" : "#ececf099",
   );
   const titleColor = computed(() =>
     themeDark()
@@ -1059,6 +1061,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
           paddingLeft: GLASS_FRAME_PX,
           paddingRight: GLASS_FRAME_PX,
           paddingBottom: GLASS_FRAME_PX,
+          background: titlebarBackground,
         }}
       >
         <Box style={{ borderRadius: CLIENT_RADIUS_PX, overflow: "hidden" }}>
