@@ -15,7 +15,10 @@ Singleton {
         : Brightness.value < 0.34 ? "brightness_5"
         : Brightness.value < 0.67 ? "brightness_6" : "brightness_7"
 
+    // Not while the control center is open: its sliders already show the value.
     function show(which: string): void {
+        if (Ui.controlScreen !== "")
+            return;
         root.kind = which;
         root.shown = true;
         hide.restart();
@@ -45,5 +48,10 @@ Singleton {
     Connections {
         target: Brightness
         function onChanged(): void { root.show("brightness"); }
+    }
+
+    Connections {
+        target: Ui
+        function onControlScreenChanged(): void { if (Ui.controlScreen !== "") root.shown = false; }
     }
 }

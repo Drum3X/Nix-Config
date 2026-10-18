@@ -1,8 +1,8 @@
 import QtQuick
 
 // A macOS Control Center slider module, its own piece of glass: a title, then
-// a thin track with a white fill between a small and a large icon. `value` is
-// 0..1; `moved` reports drags and wheel turns over the whole module.
+// a thin track, filled in the icons' colour, between a small and a large icon.
+// `value` is 0..1; `moved` reports drags and wheel turns over the whole module.
 Item {
     id: root
 
@@ -57,8 +57,7 @@ Item {
                 height: parent.height
                 width: Math.max(parent.height, parent.width * root.clamped)
                 radius: height / 2
-                color: "#ffffff"
-                opacity: Theme.dark ? 0.92 : 1
+                color: Theme.text
                 Behavior on width {
                     enabled: !drag.pressed
                     NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
