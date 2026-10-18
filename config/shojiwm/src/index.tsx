@@ -81,8 +81,8 @@ COMPOSITOR.window.decoration.configure((_window, context) => {
 COMPOSITOR.rendering.framePacing = "throughput";
 
 /**
- * Windows 7 style: the glass frame goes all the way round the client, not
- * just across the title bar. Kept thin. `naturalRootRect` and the window
+ * Windows 7 style: on server-decorated windows the glass frame goes all the
+ * way round the client, not just across the title bar. Kept thin. `naturalRootRect` and the window
  * compositions must agree on it. Declared before the window manager, which
  * calls naturalRootRect.
  */
@@ -874,15 +874,22 @@ function usesClientDecoration(decoration: WindowDecorationState): boolean {
 // border for client-decorated windows must drop WINDOW_BORDER_PX here too.
 function naturalRootRect(window: WaylandWindow): ManagedWindowRect {
   const client = window.position;
-  const csd = usesClientDecoration(window.decoration.peek());
-  // Above the client: the title bar (server decorations) or a strip of glass
-  // frame (client decorations); on the other three sides, the glass frame.
-  const top = csd ? GLASS_FRAME_PX : TITLEBAR_HEIGHT;
+  // Client-decorated windows (VS Code, GTK apps) draw their own top edge and
+  // get only the border; server-decorated ones get the title bar and the glass
+  // frame down the sides and along the bottom.
+  if (usesClientDecoration(window.decoration.peek())) {
+    return {
+      x: client.x - WINDOW_BORDER_PX,
+      y: client.y - WINDOW_BORDER_PX,
+      width: client.width + WINDOW_BORDER_PX * 2,
+      height: client.height + WINDOW_BORDER_PX * 2,
+    };
+  }
   return {
     x: client.x - WINDOW_BORDER_PX - GLASS_FRAME_PX,
-    y: client.y - top - WINDOW_BORDER_PX,
+    y: client.y - TITLEBAR_HEIGHT - WINDOW_BORDER_PX,
     width: client.width + (WINDOW_BORDER_PX + GLASS_FRAME_PX) * 2,
-    height: client.height + top + GLASS_FRAME_PX + WINDOW_BORDER_PX * 2,
+    height: client.height + TITLEBAR_HEIGHT + GLASS_FRAME_PX + WINDOW_BORDER_PX * 2,
   };
 }
 
@@ -1125,20 +1132,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
             },
           }}
         >
-          {blurSuspended ? (
-            <Box style={{ padding: GLASS_FRAME_PX }}>
-              <Box style={{ borderRadius: CLIENT_RADIUS_PX, overflow: "hidden" }}>
-                <ClientWindow />
-              </Box>
-            </Box>
-          ) : (
-            // The same thin glass frame round client-decorated windows.
-            <ShaderEffect shader={backgroundShader} style={{ padding: GLASS_FRAME_PX }}>
-              <Box style={{ borderRadius: CLIENT_RADIUS_PX, overflow: "hidden" }}>
-                <ClientWindow />
-              </Box>
-            </ShaderEffect>
-          )}
+          <ClientWindow />
         </WindowBorder>
       </ManagedWindow>
     );
