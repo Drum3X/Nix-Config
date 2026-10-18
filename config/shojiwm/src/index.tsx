@@ -888,16 +888,6 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   const workspaceVisible = window.state[WINDOW_STATE_WORKSPACE_VISIBLE];
   const workspaceOffsetY = window.state[WINDOW_STATE_WORKSPACE_OFFSET_Y];
   const workspaceOpacity = window.state[WINDOW_STATE_WORKSPACE_OPACITY];
-  // Workspace switches fade a window out and in. The content goes first (its
-  // opacity squared) while the glass behind it lingers (the square root): half
-  // way through, the window is mostly liquid glass. ManagedWindow carries the
-  // glass opacity; the content box makes up the difference.
-  const glassOpacity = computed(() => Math.sqrt(Math.max(0, workspaceOpacity())));
-  const contentOpacity = computed(() => {
-    const o = Math.max(0, workspaceOpacity());
-    const g = Math.sqrt(o);
-    return g > 0.0001 ? (o * o) / g : 0;
-  });
   const tileDragging = window.state[WINDOW_STATE_TILE_DRAGGING];
   const managedRect = computed(() => {
     const rect = window.state[WINDOW_STATE_RECT]();
@@ -1042,19 +1032,17 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   // Every server-decorated window is framed in the glass (it shows through
   // the title bar, and behind translucent clients such as the terminal).
   {
-    const content = (
-      <Box direction="column" style={{ opacity: contentOpacity }}>
-        <Box direction="row" style={titlebarStyle}>
-          {titlebarContent}
-        </Box>
-        <ClientWindow />
-      </Box>
-    );
+    const terminalContent = [
+      <Box direction="row" style={titlebarStyle}>
+        {titlebarContent}
+      </Box>,
+      <ClientWindow />,
+    ];
     innerComponents = blurSuspended ? (
-      <Box direction="column">{content}</Box>
+      <Box direction="column">{terminalContent}</Box>
     ) : (
       <ShaderEffect shader={backgroundShader} direction="column">
-        {content}
+        {terminalContent}
       </ShaderEffect>
     );
   }
@@ -1093,7 +1081,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
         rect={managedRect}
         zIndex={zIndex}
         visibleOutputs={window.state[WINDOW_STATE_VISIBLE_OUTPUTS]}
-        opacity={glassOpacity}
+        opacity={workspaceOpacity}
         forceRectSize={forceRectSize}
         tiled={tiled}
         idle={inactive}
@@ -1116,17 +1104,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
             },
           }}
         >
-          {blurSuspended ? (
-            <ClientWindow />
-          ) : (
-            // Client-decorated windows get the glass too: it shows where the
-            // client is translucent and while a workspace switch fades it.
-            <ShaderEffect shader={backgroundShader} direction="column">
-              <Box direction="column" style={{ opacity: contentOpacity }}>
-                <ClientWindow />
-              </Box>
-            </ShaderEffect>
-          )}
+          <ClientWindow />
         </WindowBorder>
       </ManagedWindow>
     );
@@ -1138,7 +1116,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
       rect={managedRect}
       zIndex={zIndex}
       visibleOutputs={window.state[WINDOW_STATE_VISIBLE_OUTPUTS]}
-      opacity={glassOpacity}
+      opacity={workspaceOpacity}
       forceRectSize={forceRectSize}
       tiled={tiled}
       idle={inactive}
