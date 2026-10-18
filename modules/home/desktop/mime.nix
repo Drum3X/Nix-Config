@@ -1,5 +1,5 @@
 {...}: let
-  browser = "chromium-browser.desktop";
+  browser = "vivaldi-stable.desktop";
   files = "org.gnome.Nautilus.desktop";
 in {
   xdg = {
@@ -24,7 +24,7 @@ in {
   };
 
   home.sessionVariables = {
-    BROWSER = "chromium";
+    BROWSER = "vivaldi";
     TERMINAL = "ghostty";
     FILE_MANAGER = "nautilus";
   };

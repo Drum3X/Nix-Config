@@ -90,7 +90,7 @@ HYALO_GREETER_DEMO=1 hyalo-greeter
 | Tuş | İş |
 | --- | --- |
 | Super+Return, Super+T | Ghostty |
-| Super+Q | Chromium |
+| Super+Q | Vivaldi |
 | Super+E | Nautilus |
 | Super, Super+A, Super+Space | Launcher |
 | Super+V | Pano geçmişi |

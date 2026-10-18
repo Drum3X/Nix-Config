@@ -15,8 +15,7 @@
   # Pinned apps in the dock, by desktop entry id.
   hyalo.dock.pinned = [
     "org.gnome.Nautilus"
-    "chromium-browser"
-    "zen-beta"
+    "vivaldi-stable"
     "com.mitchellh.ghostty"
     "code"
     "com.obsproject.Studio"

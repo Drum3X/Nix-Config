@@ -1,18 +1,8 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   home.packages = [
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.beta
+    (pkgs.vivaldi.override {
+      # Wayland-native, with the system's native-messaging hosts (password managers etc.).
+      commandLineArgs = "--ozone-platform-hint=auto";
+    })
   ];
-
-  programs.chromium = {
-    enable = true;
-    package = pkgs.ungoogled-chromium;
-    commandLineArgs = [
-      "--ozone-platform-hint=auto"
-      "--enable-features=TouchpadOverscrollHistoryNavigation"
-    ];
-  };
 }

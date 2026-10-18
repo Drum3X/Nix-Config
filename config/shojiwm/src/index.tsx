@@ -355,7 +355,7 @@ COMPOSITOR.onDisable(() => {
 // ---------------------------------------------------------------------------
 const SHELL = "hyalo-shell";
 const TERMINAL = "ghostty";
-const BROWSER = "chromium";
+const BROWSER = "vivaldi";
 const FILES = "nautilus";
 
 const spawn = (command: string | string[]) => () => {
@@ -718,7 +718,7 @@ COMPOSITOR.effect.popup = (popup) => {
 const isChromiumFamily = (appId: string): boolean => {
   const id = appId.toLowerCase();
   return (
-    id.includes("chrome") || id.includes("chromium") || id.includes("electron")
+    id.includes("chrome") || id.includes("chromium") || id.includes("vivaldi") || id.includes("electron")
   );
 };
 
