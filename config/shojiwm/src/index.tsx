@@ -950,7 +950,7 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   // same when unfocused: a thinner tint turned muddy grey over dark windows.
   const titlebarBackground = computed(() =>
     themeDark()
-      ? "#1c1c1e80"
+      ? "#08080acc"
       : "#f6f6f880",
   );
   const titleColor = computed(() =>
