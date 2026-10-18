@@ -15,6 +15,8 @@ Item {
         anchors.fill: parent
         radius: 18
         color: Theme.module
+        border.width: 1
+        border.color: Theme.lineFaint
     }
 
     Text {

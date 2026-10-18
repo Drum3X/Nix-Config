@@ -66,8 +66,6 @@ void main() {
     float rimBand = 1.0 - smoothstep(0.0, 1.6, -d);
     float facing = 0.55 + 0.45 * dot(n, normalize(vec2(-0.5, -1.0)));
     color += rimColor.rgb * rimBand * facing;
-    // A soft inner glow along the edge.
-    color += vec3(0.06) * edge * edge;
 
     fragColor = vec4(clamp(color, 0.0, 1.0), 1.0) * coverage * qt_Opacity;
 }

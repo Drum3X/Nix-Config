@@ -54,7 +54,9 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             height: 6
             radius: 3
-            color: Theme.hover
+            color: "transparent"
+            border.width: 1
+            border.color: Theme.line
 
             Rectangle {
                 width: track.width * Math.max(0, Math.min(1, Osd.value))

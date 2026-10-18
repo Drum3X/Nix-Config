@@ -22,14 +22,17 @@ Singleton {
     readonly property color glassTint: Qt.rgba(0.5, 0.5, 0.5, glassAlpha)
     // Kept for popups drawn outside compositor glass (dock labels).
     readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.45)
-    // Control center modules and hover washes: a faint material, as on macOS.
-    readonly property color module: dark ? Qt.rgba(1, 1, 1, 0.07) : Qt.rgba(1, 1, 1, 0.16)
-    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.22)
-    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.32)
-    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.28)
-    // An off circle button (Wi-Fi, Bluetooth... when off).
-    readonly property color buttonOff: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.08)
-    readonly property color sliderTrack: dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08)
+    // Nothing inside the glass is filled: modules, off buttons and slider
+    // tracks are drawn as hairlines, so the glass itself carries no colour.
+    readonly property color line: dark ? Qt.rgba(1, 1, 1, 0.42) : Qt.rgba(0.15, 0.16, 0.22, 0.38)
+    readonly property color lineFaint: dark ? Qt.rgba(1, 1, 1, 0.22) : Qt.rgba(0.15, 0.16, 0.22, 0.18)
+    readonly property color module: "transparent"
+    readonly property color buttonOff: "transparent"
+    readonly property color sliderTrack: "transparent"
+    // Hover / pressed / selected: the faintest wash, only while interacting.
+    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.06) : Qt.rgba(1, 1, 1, 0.14)
+    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(1, 1, 1, 0.24)
+    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.20)
 
     // QML-side glass (lock screen, greeter): just a whisper of tint.
     readonly property color frostTint: dark ? Qt.rgba(0, 0, 0, 0.06) : Qt.rgba(1, 1, 1, 0.06)

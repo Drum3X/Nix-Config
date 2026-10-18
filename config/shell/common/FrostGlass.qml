@@ -3,7 +3,7 @@ import QtQuick
 // Glass drawn by the shell itself, for surfaces the compositor does not
 // treat as glass: the lock screen (a session-lock surface, not a layer) and
 // the greeter (running under cage). It refracts `backdrop`, a full-screen
-// texture of the blurred wallpaper the surface already owns, through a
+// texture of the (sharp) wallpaper the surface already owns, through a
 // rounded rectangle: the rim bends the picture inward like the edge of a lens.
 Item {
     id: root
@@ -13,8 +13,8 @@ Item {
     property real radius: Theme.panelRadius
     property color tint: Theme.frostTint
     property color rimColor: Theme.glassRim
-    property real refraction: 18     // px the rim pulls the picture inward
-    property real rimWidth: 22       // px over which it does
+    property real refraction: 40     // px the rim pulls the picture inward
+    property real rimWidth: 60       // px over which it does
     default property alias content: inner.data
 
     // Where this item sits on the backdrop, kept current every frame while it

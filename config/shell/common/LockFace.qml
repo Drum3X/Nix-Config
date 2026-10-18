@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Effects
+
 
 // The face shared by the lock screen and the greeter.
 //
@@ -71,35 +71,13 @@ Item {
         anchors.fill: parent
         userWallpaper: root.userWallpaper
     }
-
-    // Shown as the card comes up.
-    MultiEffect {
-        anchors.fill: parent
-        source: wall
-        autoPaddingEnabled: false
-        blurEnabled: true
-        blurMax: 48
-        blur: 0.7
-        brightness: Theme.dark ? -0.12 : -0.04
-        opacity: root.reveal
-        visible: opacity > 0
-    }
-
-    // What the glass refracts: the wallpaper, fully blurred, never shown itself.
-    MultiEffect {
-        id: frosted
-        anchors.fill: parent
-        source: wall
-        autoPaddingEnabled: false
-        blurEnabled: true
-        blurMax: 64
-        blur: 1.0
-    }
+    // What the glass refracts: the wallpaper itself, sharp. Like the
+    // compositor glass, it only bends the picture; it neither blurs nor tints.
     ShaderEffectSource {
         id: backdrop
         anchors.fill: parent
-        sourceItem: frosted
-        hideSource: true
+        sourceItem: wall
+        live: true
         visible: false
     }
 

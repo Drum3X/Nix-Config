@@ -8,7 +8,7 @@ import {
 export const ISLAND_GLASS_OPTIONS = {
   // Match Theme.glassAlpha in hyalo-shell; required to retain its edge AA.
   // Kept low so the silhouette adds no visible white/black tint: the glass
-  // shows only the refracted, lightly blurred backdrop, as on macOS.
+  // shows only the refracted backdrop.
   surfaceOpacity: 0.04,
   rimWidth: 80,
   refraction: 80,
@@ -16,9 +16,11 @@ export const ISLAND_GLASS_OPTIONS = {
   highlight: 0.6,
   // Width of the rim light along the edge.
   highlightWidth: 2,
-  blurRadius: 3,
-  blurPasses: 2,
-  blurMix: 1,
+  blurRadius: 2,
+  blurPasses: 1,
+  // 0: refract the sharp backdrop, no frosting at all (as in shoji-bar-3's look
+  // without its tint).
+  blurMix: 0,
   normalSmoothing: 3,
   edgeSoftness: 2,
   bevelWidth: 10,

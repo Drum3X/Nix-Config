@@ -285,6 +285,8 @@ Scope {
                                         height: 32
                                         radius: 10
                                         color: Theme.sliderTrack
+                                        border.width: 1
+                                        border.color: Theme.line
 
                                         TextInput {
                                             id: psk
@@ -358,6 +360,8 @@ Scope {
                                 height: 48
                                 radius: 10
                                 color: Theme.buttonOff
+                                border.width: 1
+                                border.color: Theme.line
 
                                 Image {
                                     anchors.fill: parent
