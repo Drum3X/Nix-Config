@@ -13,6 +13,9 @@ uniform float blur_mix;
 uniform float edge_softness_px;
 uniform float bevel_width_px;
 uniform float bevel_shadow;
+// Hyalo: GLASS_TINT (glass-tint.ts), straight alpha, laid over the glass the
+// way the window title bars lay theirs.
+uniform vec4 glass_tint;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -113,6 +116,7 @@ vec4 shader_main(EffectContext effect) {
     // Screen, not add: brightens dark glass the most and never clips to a
     // flat white line over bright content.
     color = 1.0 - (1.0 - color) * (1.0 - shine * vec3(0.94, 0.97, 1.0));
+    color = mix(color, glass_tint.rgb, glass_tint.a);
 
     if (debug_view > 2.5) color = vec3(0.5 + bend * 0.5, 0.5);
     else if (debug_view > 1.5) color = vec3(clamp(distance / rimWidth, 0.0, 1.0));

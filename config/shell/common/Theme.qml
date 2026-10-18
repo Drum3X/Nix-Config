@@ -35,8 +35,13 @@ Singleton {
     readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.38)
     readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.32)
 
-    // QML-side glass (lock screen, greeter): the same tint.
-    readonly property color frostTint: glassTint
+    // The tint over every piece of liquid glass. The compositor tints its own
+    // glass (and the window title bars) from GLASS_TINT in
+    // config/shojiwm/src/glass-tint.ts; keep these two equal to it. Used here
+    // by the glass the shell draws itself: the lock screen and the greeter.
+    readonly property color glassTintDark: "#cc08080a"    // #08080acc
+    readonly property color glassTintLight: "#80f6f6f8"   // #f6f6f880
+    readonly property color frostTint: dark ? glassTintDark : glassTintLight
 
     // ----- text -------------------------------------------------------------
     readonly property color text: dark ? "#f3f2fa" : "#262838"

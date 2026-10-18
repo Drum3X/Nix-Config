@@ -53,7 +53,8 @@ import {
   WINDOW_STATE_WORKSPACE_OFFSET_Y,
   WINDOW_STATE_WORKSPACE_OPACITY,
 } from "./window-manager";
-import { ISLAND_GLASS } from "./effect/island-glass";
+import { ISLAND_GLASS_DARK, ISLAND_GLASS_LIGHT } from "./effect/island-glass";
+import { GLASS_TINT } from "./glass-tint";
 import { createFlip3D } from "./flip-3d";
 import { createWindowGrid } from "./window-grid";
 import { installDragAndDrop } from "./drag-and-drop";
@@ -681,7 +682,7 @@ COMPOSITOR.effect.layer = (layer) => {
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    return { behind: ISLAND_GLASS };
+    return { behind: themeDark() ? ISLAND_GLASS_DARK : ISLAND_GLASS_LIGHT };
   }
   // The wallpaper, and anything else that wants no glass at all.
   if (namespace === "no_blur") {
@@ -1063,13 +1064,11 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
       : mixColor("#3a3f6a26", "#3a3f6a40", t);
     return [{ y: 4 + 8 * t, blur: 18 + 18 * t, spread: -4, color }];
   });
-  // A light tint over the frame glass, as on macOS: enough that the title
-  // stays readable over a dark window behind (VS Code) or a light one. The
-  // same when unfocused: a thinner tint turned muddy grey over dark windows.
+  // The tint over the frame glass, as on macOS: enough that the title stays
+  // readable over a dark window behind (VS Code) or a light one. The same on
+  // every piece of glass (glass-tint.ts), and when unfocused.
   const titlebarBackground = computed(() =>
-    themeDark()
-      ? "#08080acc"
-      : "#f6f6f880",
+    themeDark() ? GLASS_TINT.dark : GLASS_TINT.light,
   );
   const titleColor = computed(() =>
     themeDark()
