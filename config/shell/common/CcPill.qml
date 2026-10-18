@@ -63,7 +63,7 @@ Item {
             anchors.rightMargin: 14
             anchors.verticalCenter: parent.verticalCenter
 
-            Text {
+            CcText {
                 width: parent.width
                 text: root.label
                 elide: Text.ElideRight
@@ -72,12 +72,12 @@ Item {
                 font.weight: Font.DemiBold
                 font.pixelSize: Theme.textMd
             }
-            Text {
+            CcText {
                 width: parent.width
                 visible: text.length > 0
                 text: root.detail
                 elide: Text.ElideRight
-                color: Theme.cc.textDim
+                color: Theme.cc.text
                 font.family: Theme.font
                 font.pixelSize: Theme.textSm
             }

@@ -208,7 +208,7 @@ Scope {
                             width: parent.width - 16
                             spacing: 2
 
-                            Text {
+                            CcText {
                                 x: 8
                                 height: 26
                                 verticalAlignment: Text.AlignVCenter
@@ -254,7 +254,7 @@ Scope {
                                         }
                                     }
 
-                                    Text {
+                                    CcText {
                                         anchors.left: netIcon.right
                                         anchors.leftMargin: 10
                                         anchors.right: lock.left
@@ -323,7 +323,7 @@ Scope {
                                             }
                                             Keys.onEscapePressed: window.pskNetwork = null
 
-                                            Text {
+                                            CcText {
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 visible: psk.text.length === 0
                                                 text: "Password"
@@ -356,7 +356,7 @@ Scope {
                                 width: parent.width
                                 height: 26
 
-                                Text {
+                                CcText {
                                     x: 8
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "Bluetooth"
@@ -365,7 +365,7 @@ Scope {
                                     font.weight: Font.DemiBold
                                     font.pixelSize: Theme.textMd
                                 }
-                                Text {
+                                CcText {
                                     anchors.right: parent.right
                                     anchors.rightMargin: 8
                                     anchors.verticalCenter: parent.verticalCenter
@@ -377,7 +377,7 @@ Scope {
                                 }
                             }
 
-                            Text {
+                            CcText {
                                 x: 8
                                 height: 30
                                 visible: window.btDevices.length === 0
@@ -428,7 +428,7 @@ Scope {
                                         }
                                     }
 
-                                    Text {
+                                    CcText {
                                         anchors.left: devIcon.right
                                         anchors.leftMargin: 10
                                         anchors.right: devState.left
@@ -441,7 +441,7 @@ Scope {
                                         font.pixelSize: Theme.textSm
                                     }
 
-                                    Text {
+                                    CcText {
                                         id: devState
                                         anchors.right: parent.right
                                         anchors.rightMargin: 10
@@ -622,7 +622,7 @@ Scope {
             anchors.topMargin: 10
             width: parent.width - 32
 
-            Text {
+            CcText {
                 width: parent.width
                 text: Media.active ? Media.title : "Not Playing"
                 elide: Text.ElideRight
@@ -631,7 +631,7 @@ Scope {
                 font.weight: Font.DemiBold
                 font.pixelSize: Theme.textMd
             }
-            Text {
+            CcText {
                 width: parent.width
                 visible: text.length > 0
                 text: Media.active ? Media.artist : ""

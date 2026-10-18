@@ -58,7 +58,8 @@ Item {
         y: 12
         spacing: 3
 
-        Text {
+        CcText {
+            shadow: root.colors === Theme.cc && !Theme.dark
             width: parent.width
             text: root.notification.appName
             visible: text.length > 0
@@ -68,7 +69,8 @@ Item {
             font.pixelSize: Theme.textXs
         }
 
-        Text {
+        CcText {
+            shadow: root.colors === Theme.cc && !Theme.dark
             width: parent.width
             text: root.notification.summary
             elide: Text.ElideRight
@@ -78,7 +80,8 @@ Item {
             font.pixelSize: Theme.textMd
         }
 
-        Text {
+        CcText {
+            shadow: root.colors === Theme.cc && !Theme.dark
             width: parent.width
             visible: text.length > 0
             text: root.notification.body
@@ -107,7 +110,8 @@ Item {
                     radius: 13
                     color: actionMouse.containsMouse ? root.colors.pressed : root.colors.hover
 
-                    Text {
+                    CcText {
+                        shadow: root.colors === Theme.cc && !Theme.dark
                         id: actionLabel
                         anchors.centerIn: parent
                         text: modelData.text

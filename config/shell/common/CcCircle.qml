@@ -46,7 +46,7 @@ Item {
                 filled: true
                 color: root.iconColor
             }
-            Text {
+            CcText {
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: root.label.length > 0
                 text: root.label

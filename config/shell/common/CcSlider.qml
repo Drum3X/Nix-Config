@@ -22,7 +22,7 @@ Item {
         reveal: root.reveal
         radius: 30
 
-        Text {
+        CcText {
             x: 18
             y: 13
             text: root.title
