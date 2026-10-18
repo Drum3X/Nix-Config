@@ -11,21 +11,37 @@ import qs.services
 // workspaces; on the right the status icons, the Control Center button and
 // the date and time.
 //
-// Under the pointer, and while it is open, an item sits in a capsule of
-// liquid glass that slides from item to item. Two surfaces with the same
-// geometry, as the dock: the capsule is compositor glass ("hyalo-bar-hover"),
-// the bar itself a clear layer ("no_blur") above it, so its text and icons
-// never count as part of the glass silhouette.
+// Its items are black over a light wallpaper and white over a dark one
+// (WallpaperTone), whatever the appearance. A clicked item sits for a moment
+// in a capsule of liquid glass, and as long as the panel it opened stays
+// open: dark glass under black items, light glass under white ones. Two
+// surfaces with the same geometry, as the dock: the capsule is compositor
+// glass ("hyalo-bar-capsule-<screen>"), the bar itself a clear layer
+// ("no_blur") above it, so its text and icons never count as part of the
+// glass silhouette.
 Scope {
     id: root
 
     required property var modelData
 
-    // The item the capsule is on: the one under the pointer, else an open one.
+    readonly property bool blackItems: WallpaperTone.blackItems(modelData.name)
+    readonly property color itemColor: blackItems ? "#1d1d1f" : "#ffffff"
+
+    readonly property string capsuleNamespace: "hyalo-bar-capsule-" + modelData.name
+
+    // The item the capsule is on: one just clicked, else the one that opened
+    // a panel that is still open on this screen.
     readonly property Item litItem: {
-        const items = [...leftRow.children, ...rightRow.children];
-        return items.find((item) => item.visible && item.hovered)
-            ?? items.find((item) => item.visible && item.active)
+        const items = [...leftRow.children, ...rightRow.children].filter((item) => item.visible);
+        const opener = (panel) => {
+            const candidates = items.filter((item) => item.panel === panel);
+            const last = candidates.reduce((best, item) => !best || item.clickedAt > best.clickedAt ? item : best, null);
+            // Opened from the keyboard: the panel's own button.
+            return last && last.clickedAt > 0 ? last : candidates.find((item) => item.primary) ?? last;
+        };
+        return items.find((item) => item.flashing)
+            ?? (Ui.controlScreen === modelData.name ? opener("control") : null)
+            ?? (Ui.launcherScreen === modelData.name ? opener("launcher") : null)
             ?? null;
     }
     // Where the capsule last was, so it fades out in place.
@@ -35,7 +51,17 @@ Scope {
     PanelMotion {
         id: motion
         open: root.litItem !== null
-        namespace: "hyalo-bar-hover"
+        namespace: root.capsuleNamespace
+    }
+
+    function sendTint(): void {
+        Compositor.send("glass.tint", { namespace: root.capsuleNamespace, dark: root.blackItems });
+    }
+    onBlackItemsChanged: sendTint()
+    Component.onCompleted: sendTint()
+    Connections {
+        target: Compositor
+        function onReconnected(): void { root.sendTint(); }
     }
 
     // ----- the glass capsule ----------------------------------------------------
@@ -50,7 +76,7 @@ Scope {
         color: "transparent"
 
         WlrLayershell.layer: WlrLayer.Top
-        WlrLayershell.namespace: "hyalo-bar-hover"
+        WlrLayershell.namespace: root.capsuleNamespace
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
         // ShojiWM applies the glass only inside the input region; the bar
@@ -130,6 +156,8 @@ Scope {
             spacing: 2
 
             BarItem {
+                panel: "launcher"
+                primary: true
                 onClicked: Ui.toggleLauncher(bar.screen.name, "apps")
 
                 Icon {
@@ -137,6 +165,7 @@ Scope {
                     name: "blur_on"
                     size: 19
                     filled: true
+                    color: root.itemColor
                 }
             }
 
@@ -144,7 +173,7 @@ Scope {
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: bar.appName
-                    color: Theme.text
+                    color: root.itemColor
                     font.family: Theme.font
                     font.weight: Font.Bold
                     font.pixelSize: Theme.textBar
@@ -168,9 +197,9 @@ Scope {
                             width: 7
                             height: 7
                             radius: 3.5
-                            color: modelData.active ? Theme.text : "transparent"
+                            color: modelData.active ? root.itemColor : "transparent"
                             border.width: 1.2
-                            border.color: Theme.text
+                            border.color: root.itemColor
                             opacity: modelData.active ? 0.85 : 0.5
 
                             MouseArea {
@@ -197,7 +226,7 @@ Scope {
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: Compositor.layoutShort
-                    color: Theme.text
+                    color: root.itemColor
                     font.family: Theme.font
                     font.weight: Font.DemiBold
                     font.pixelSize: Theme.textSm
@@ -207,6 +236,7 @@ Scope {
             // Battery, drawn like the macOS one: an outline filled to the charge.
             BarItem {
                 visible: bar.hasBattery
+                panel: "control"
                 onClicked: Ui.toggleControl(bar.screen.name)
 
                 Item {
@@ -222,7 +252,7 @@ Scope {
                         radius: 3.5
                         color: "transparent"
                         border.width: 1
-                        border.color: Theme.text
+                        border.color: root.itemColor
                         opacity: 0.55
                     }
                     Rectangle {
@@ -232,7 +262,7 @@ Scope {
                         width: Math.max(2, 20 * bar.level)
                         radius: 2
                         color: bar.level < 0.15 && !bar.charging ? Theme.danger
-                             : bar.battery.state === UPowerDeviceState.Charging ? "#34c759" : Theme.text
+                             : bar.battery.state === UPowerDeviceState.Charging ? "#34c759" : root.itemColor
                     }
                     Rectangle {
                         anchors.left: batteryOutline.right
@@ -241,37 +271,41 @@ Scope {
                         width: 1.5
                         height: 4
                         radius: 1
-                        color: Theme.text
+                        color: root.itemColor
                         opacity: 0.55
                     }
                 }
             }
 
             BarItem {
+                panel: "control"
                 onClicked: Ui.toggleControl(bar.screen.name)
-                Icon { anchors.verticalCenter: parent.verticalCenter; name: Net.icon; size: 17; filled: true }
+                Icon { anchors.verticalCenter: parent.verticalCenter; name: Net.icon; size: 17; filled: true; color: root.itemColor }
             }
 
             BarItem {
+                panel: "control"
                 onClicked: Ui.toggleControl(bar.screen.name)
                 onWheel: (up) => Audio.setVolume(Audio.volume + (up ? 0.05 : -0.05))
-                Icon { anchors.verticalCenter: parent.verticalCenter; name: Audio.icon; size: 18; filled: true }
+                Icon { anchors.verticalCenter: parent.verticalCenter; name: Audio.icon; size: 18; filled: true; color: root.itemColor }
             }
 
             // Control Center: the two-switches glyph.
             BarItem {
-                active: Ui.controlScreen === bar.screen.name
+                panel: "control"
+                primary: true
                 onClicked: Ui.toggleControl(bar.screen.name)
-                Icon { anchors.verticalCenter: parent.verticalCenter; name: "toggle_on"; size: 19; filled: true }
+                Icon { anchors.verticalCenter: parent.verticalCenter; name: "toggle_on"; size: 19; filled: true; color: root.itemColor }
             }
 
             BarItem {
+                panel: "control"
                 onClicked: Ui.toggleControl(bar.screen.name)
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: Qt.locale("en_US").toString(clock.date, "ddd MMM d  HH:mm")
-                    color: Theme.text
+                    color: root.itemColor
                     font.family: Theme.font
                     font.weight: Font.Medium
                     font.pixelSize: Theme.textBar
@@ -281,14 +315,21 @@ Scope {
         }
     }
 
-    // One menu bar item: its content. The glass capsule under the pointer and
-    // while open is drawn by the Scope, on the surface below the bar.
+    // One menu bar item: its content. The glass capsule is drawn by the Scope,
+    // on the surface below the bar.
     component BarItem: Item {
         id: item
         default property alias content: holder.data
-        property bool active: false
-        readonly property bool hovered: mouse.containsMouse
+        // The panel a click opens ("control", "launcher"), if any: the capsule
+        // stays on the item while it is open. `primary`: the panel's own
+        // button, which takes the capsule when it is opened from the keyboard.
+        property string panel: ""
+        property bool primary: false
+        // When it was last clicked, to tell which item opened the panel.
+        property real clickedAt: 0
         readonly property bool pressed: mouse.pressed
+        // Pressed, and a moment after, so a quick click still shows the capsule.
+        readonly property bool flashing: mouse.pressed || flash.running
         signal clicked()
         signal wheel(bool up)
 
@@ -303,11 +344,19 @@ Scope {
             height: parent.height
         }
 
+        Timer {
+            id: flash
+            interval: 260
+        }
+
         MouseArea {
             id: mouse
             anchors.fill: parent
-            hoverEnabled: true
-            onClicked: item.clicked()
+            onReleased: flash.restart()
+            onClicked: {
+                item.clickedAt = Date.now();
+                item.clicked();
+            }
             onWheel: (event) => item.wheel(event.angleDelta.y > 0)
         }
     }

@@ -48,7 +48,57 @@ ShellRoot {
             mask: Region {}
 
             Wallpaper {
+                id: wall
                 anchors.fill: parent
+            }
+
+            // How light the wallpaper is under the menu bar (WallpaperTone):
+            // the strip of the picture shown there, shrunk and averaged.
+            // Painted but never seen.
+            Canvas {
+                id: tone
+                width: 32
+                height: 2
+                opacity: 0
+
+                readonly property string picture: wall.status === Image.Ready ? wall.source.toString() : ""
+                function measure(): void {
+                    if (picture === "")
+                        return;
+                    // Already loaded (a reload, the same wallpaper): no
+                    // imageLoaded comes, so paint straight away.
+                    if (isImageLoaded(picture))
+                        requestPaint();
+                    else
+                        loadImage(picture);
+                }
+                onPictureChanged: measure()
+                Component.onCompleted: measure()
+                onImageLoaded: requestPaint()
+
+                Connections {
+                    target: wall
+                    function onWidthChanged(): void { tone.requestPaint(); }
+                    function onHeightChanged(): void { tone.requestPaint(); }
+                }
+
+                onPaint: {
+                    if (picture === "" || !isImageLoaded(picture) || wall.width <= 0)
+                        return;
+                    // The part of the picture PreserveAspectCrop shows, and the
+                    // bar's strip at the top of it.
+                    const scale = Math.max(wall.width / wall.implicitWidth, wall.height / wall.implicitHeight);
+                    const sx = (wall.implicitWidth - wall.width / scale) / 2;
+                    const sy = (wall.implicitHeight - wall.height / scale) / 2;
+                    const ctx = getContext("2d");
+                    ctx.clearRect(0, 0, width, height);
+                    ctx.drawImage(picture, sx, sy, wall.width / scale, Theme.barHeight / scale, 0, 0, width, height);
+                    const data = ctx.getImageData(0, 0, width, height).data;
+                    let sum = 0;
+                    for (let i = 0; i < data.length; i += 4)
+                        sum += 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+                    WallpaperTone.setBarLuma(modelData.name, sum / (data.length / 4) / 255);
+                }
             }
         }
     }

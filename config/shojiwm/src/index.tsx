@@ -409,6 +409,26 @@ WORKSPACE_IPC.handle("glass.fade", (params) => {
     glassFadeEntry(namespace)[1](value);
 });
 
+// A hyalo-* surface whose glass tint follows what is drawn on it rather than
+// the appearance: the menu bar's capsule is dark glass under black items and
+// light glass under white ones (WallpaperTone in the shell). The shell sends
+//   glass.tint  { namespace, dark }
+// when that changes, and again after every reconnect.
+const glassTints = new Map<string, ReturnType<typeof signal<boolean | null>>>();
+function glassTintEntry(namespace: string) {
+  let entry = glassTints.get(namespace);
+  if (!entry) {
+    entry = signal<boolean | null>(null);
+    glassTints.set(namespace, entry);
+  }
+  return entry;
+}
+WORKSPACE_IPC.handle("glass.tint", (params) => {
+  const { namespace, dark } = (params ?? {}) as { namespace?: string; dark?: boolean };
+  if (typeof namespace === "string" && typeof dark === "boolean")
+    glassTintEntry(namespace)[1](dark);
+});
+
 // The active keyboard layout, for the bar's layout indicator.
 //   keyboard.get     -> { index, name }   (request/response)
 //   keyboard.layout  -> { index, name }   (broadcast)
@@ -707,9 +727,12 @@ COMPOSITOR.effect.layer = (layer) => {
   if (namespace?.startsWith("hyalo-")) {
     // The Control Center is on dark glass in both appearances, as on macOS
     // (Theme.cc in the shell), a lighter one in the light appearance.
-    const tint = namespace === "hyalo-control"
-      ? (themeDark() ? "dark" : "controlLight")
-      : (themeDark() ? "dark" : "light");
+    const ownTint = glassTintEntry(namespace)[0]();
+    const tint = ownTint !== null
+      ? (ownTint ? "dark" : "light")
+      : namespace === "hyalo-control"
+        ? (themeDark() ? "dark" : "controlLight")
+        : (themeDark() ? "dark" : "light");
     return { behind: islandGlassAt(tint, glassFade(namespace)()) };
   }
   // The wallpaper, and anything else that wants no glass at all.
