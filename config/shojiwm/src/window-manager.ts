@@ -5476,7 +5476,8 @@ export class Workspace {
     viewportRect: ManagedWindowRect,
   ): number {
     if (window.state[WINDOW_STATE_MAXIMIZED]()) {
-      return read(this.maximizedRootRect(window).width);
+      // As wide as maximizedTileRect.
+      return read(viewportRect.width);
     }
 
     const width =
@@ -5492,16 +5493,19 @@ export class Workspace {
     );
   }
 
+  // Hyalo: a maximized tile fills the tile viewport (TILE_MARGIN from the
+  // edges), not the floating maximized rect (MAXIMIZED_WINDOW_PADDING), so it
+  // is as tall as the tiles beside it.
   private maximizedTileRect(
-    window: WaylandWindow,
+    _window: WaylandWindow,
     x: number,
   ): ManagedWindowRect {
-    const maximizedRect = this.maximizedRootRect(window);
+    const viewportRect = this.tileViewportRect();
     return {
       x,
-      y: read(maximizedRect.y),
-      width: read(maximizedRect.width),
-      height: read(maximizedRect.height),
+      y: read(viewportRect.y),
+      width: read(viewportRect.width),
+      height: read(viewportRect.height),
     };
   }
 
