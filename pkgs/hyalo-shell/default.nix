@@ -17,7 +17,7 @@
   # the checkout, so its shaders are compiled there.
   build-shaders = writeShellScriptBin "hyalo-shell-build-shaders" ''
     set -eu
-    dir="''${1:-$HOME/nix-config/config/shell}/shaders"
+    dir="''${1:-$HOME/Config/config/shell}/shaders"
     for frag in "$dir"/*.frag; do
       ${qsb} --qt6 -o "$frag.qsb" "$frag"
     done

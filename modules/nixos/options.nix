@@ -15,7 +15,7 @@ in {
 
     flakePath = mkOption {
       type = types.str;
-      default = "/home/${config.hyalo.user}/nix-config";
+      default = "/home/${config.hyalo.user}/Config";
       description = "Where this repository is checked out on the machine.";
     };
 

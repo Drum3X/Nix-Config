@@ -70,7 +70,9 @@ ShellRoot {
         }
 
         function onReadyToLaunch(): void {
-            Greetd.launch(["sh", "-c", "exec " + root.session]);
+            // Run it directly: the greeter user's PATH (greetd's unit) has no `sh`, which
+            // made the session exit the moment it was opened.
+            Greetd.launch([root.session]);
         }
 
         function onLaunched(): void {

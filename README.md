@@ -64,8 +64,8 @@ zaman alır.
 Açılıştan sonra repo'yu kalıcı yerine taşı (`hyalo.flakePath`):
 
 ```bash
-git clone https://github.com/drum3x/nix-config ~/nix-config
-sudo nixos-rebuild switch --flake ~/nix-config#nitro
+git clone https://github.com/drum3x/nix-config ~/Config
+sudo nixos-rebuild switch --flake ~/Config#nitro
 ```
 
 ## Tasarım üzerinde çalışmak (canlı mod)
@@ -73,11 +73,11 @@ sudo nixos-rebuild switch --flake ~/nix-config#nitro
 `hosts/nitro/default.nix` içinde `hyalo.desktop.liveConfig = true;` yap ve bir
 kez `nixos-rebuild switch` çalıştır. Bundan sonra:
 
-- `~/.config/shojiwm` doğrudan `~/nix-config/config/shojiwm` dizinini gösterir.
+- `~/.config/shojiwm` doğrudan `~/Config/config/shojiwm` dizinini gösterir.
   Değişiklik yapıp **Super+Shift+R** ile compositor'ı yeniden yükle.
-- `~/.config/quickshell/hyalo` doğrudan `~/nix-config/config/shell` dizinini
+- `~/.config/quickshell/hyalo` doğrudan `~/Config/config/shell` dizinini
   gösterir. Quickshell dosya değişince kendini yeniden yükler. Shader
-  değiştirdiysen önce `hyalo-shell-build-shaders ~/nix-config/config/shell` çalıştır.
+  değiştirdiysen önce `hyalo-shell-build-shaders ~/Config/config/shell` çalıştır.
 
 Greeter'ı ayrı bir pencerede denemek için (şifre kontrolü yapmaz):
 

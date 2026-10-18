@@ -6,7 +6,7 @@
 
   hyalo = {
     user = "drum3x";
-    flakePath = "/home/drum3x/nix-config";
+    flakePath = "/home/drum3x/Config";
 
     desktop = {
       enable = true;
