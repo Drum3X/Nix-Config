@@ -170,12 +170,14 @@ const levels = (tint: string) =>
   Array.from({ length: GLASS_FADE_STEPS + 1 }, (_, i) => islandGlass(tintVec4(tint), i / GLASS_FADE_STEPS));
 const LIGHT_LEVELS = levels(GLASS_TINT.light);
 const DARK_LEVELS = levels(GLASS_TINT.dark);
+const CONTROL_LIGHT_LEVELS = levels(GLASS_TINT.controlLight);
+const LEVELS = { light: LIGHT_LEVELS, dark: DARK_LEVELS, controlLight: CONTROL_LIGHT_LEVELS };
 
 export const ISLAND_GLASS_LIGHT = LIGHT_LEVELS[GLASS_FADE_STEPS];
 export const ISLAND_GLASS_DARK = DARK_LEVELS[GLASS_FADE_STEPS];
 
-/** The glass at `fade` (0..1), rounded to the nearest step. */
-export function islandGlassAt(dark: boolean, fade: number) {
+/** The glass with GLASS_TINT[tint] at `fade` (0..1), rounded to the nearest step. */
+export function islandGlassAt(tint: keyof typeof GLASS_TINT, fade: number) {
   const step = Math.round(Math.max(0, Math.min(1, fade)) * GLASS_FADE_STEPS);
-  return (dark ? DARK_LEVELS : LIGHT_LEVELS)[step];
+  return LEVELS[tint][step];
 }

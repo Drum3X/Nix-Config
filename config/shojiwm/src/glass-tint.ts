@@ -6,6 +6,9 @@
 export const GLASS_TINT = {
   dark: "#08080a59",
   light: "#f6f6f880",
+  // The Control Center in the light appearance: the dark glass it always has
+  // (Theme.cc), lighter over the light windows and wallpaper there.
+  controlLight: "#08080a40",
 };
 
 /** `#rrggbbaa` as a straight-alpha vec4 for shaders. */

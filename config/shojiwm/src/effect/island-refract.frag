@@ -124,7 +124,7 @@ vec4 shader_main(EffectContext effect) {
     // so over a dark backdrop it is as bright as when it was under the tint.
     // Over lighter glass a screen shows less, so it is strengthened there.
     float glassLuma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-    float rimLight = clamp(shine * (1.0 - glass_tint.a) * (1.0 + 2.0 * glassLuma), 0.0, 1.0);
+    float rimLight = clamp(shine * (1.0 - glass_tint.a) * (1.0 + 3.5 * glassLuma), 0.0, 1.0);
     color = 1.0 - (1.0 - color) * (1.0 - rimLight * vec3(0.94, 0.97, 1.0));
 
     if (debug_view > 2.5) color = vec3(0.5 + bend * 0.5, 0.5);
