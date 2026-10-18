@@ -1,4 +1,5 @@
 //@ pragma Env QSG_RENDER_LOOP=threaded
+//@ pragma Env QSG_DISTANCEFIELD_ANTIALIASING=gray
 
 // hyalo-shell: the desktop shell of Hyalo, on ShojiWM.
 //
