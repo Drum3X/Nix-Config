@@ -19,6 +19,9 @@ uniform vec4 glass_tint;
 // 0..1: how much of the glass shows. The shell fades a panel in and out with
 // it (glass.fade), since fading the surface itself would lose the silhouette.
 uniform float glass_fade;
+// 1 on the light glass: the rim catches the light as a dark line rather
+// than a bright one; 0 on dark glass.
+uniform float rim_dark;
 
 // Circular lens profile from Aghajari's Liquid Glass article:
 // https://www.aghajari.com/publications/liquid-glass/
@@ -125,7 +128,10 @@ vec4 shader_main(EffectContext effect) {
     // Over lighter glass a screen shows less, so it is strengthened there.
     float glassLuma = dot(color, vec3(0.2126, 0.7152, 0.0722));
     float rimLight = clamp(shine * (1.0 - glass_tint.a) * (1.0 + 2.0 * glassLuma), 0.0, 1.0);
-    color = 1.0 - (1.0 - color) * (1.0 - rimLight * vec3(0.94, 0.97, 1.0));
+    if (rim_dark > 0.5)
+        color *= 1.0 - shine * 0.55;
+    else
+        color = 1.0 - (1.0 - color) * (1.0 - rimLight * vec3(0.94, 0.97, 1.0));
 
     if (debug_view > 2.5) color = vec3(0.5 + bend * 0.5, 0.5);
     else if (debug_view > 1.5) color = vec3(clamp(distance / rimWidth, 0.0, 1.0));
