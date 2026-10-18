@@ -632,7 +632,8 @@ const BACKGROUND_BLUR = compileEffect({
   capturePadding: 24,
   invalidate: { kind: "on-source-damage-box", damagePadding: 8 },
   alpha: "preserve",
-  pipeline: [dualKawaseBlur({ radius: 4, passes: 2 }), backdropFade()],
+  // Hyalo: the same blur as the window frames and the bar (radius 2, one pass).
+  pipeline: [dualKawaseBlur({ radius: 2, passes: 1 }), backdropFade()],
 });
 COMPOSITOR.effect.background_effect = computed(() =>
   WINDOW_SWITCHER.blurSuspended() ? null : BACKGROUND_BLUR,
