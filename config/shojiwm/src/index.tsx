@@ -10,6 +10,8 @@ import {
   WindowBorder,
   backdropSource,
   compileEffect,
+  compileWindowEffect,
+  windowSource,
   compileLayerEffect,
   dualKawaseBlur,
   type SSDStyle,
@@ -908,9 +910,16 @@ const FOCUS_ANIMATION_MS = 700;
 // window that never animated (or survived a hot reload) shows its state as is.
 const FOCUS_CHANGE = animationVariable("focus-change");
 
+const focusAmounts = new WeakMap<WaylandWindow, ReadonlySignal<number>>();
+
 function focusAmount(window: WaylandWindow): ReadonlySignal<number> {
-  const change = window.animation.variable(FOCUS_CHANGE);
-  return computed(() => (window.isFocused() ? 1 - change() : change()));
+  let amount = focusAmounts.get(window);
+  if (!amount) {
+    const change = window.animation.variable(FOCUS_CHANGE);
+    amount = computed(() => (window.isFocused() ? 1 - change() : change()));
+    focusAmounts.set(window, amount);
+  }
+  return amount;
 }
 
 const lastFocusState = new WeakMap<WaylandWindow, boolean>();
@@ -953,6 +962,41 @@ function focusMix(window: WaylandWindow, from: string, to: string): ReadonlySign
   const focus = focusAmount(window);
   return computed(() => mixColor(from, to, focus()));
 }
+
+// Unfocused windows sit a little dimmer and brighten with the focus fade:
+// a black veil in front of the client (effect/window-dim.frag). Taken off
+// entirely once a window is focused or fullscreen, so a focused game keeps
+// direct scanout.
+const UNFOCUSED_DIM_DARK = 0.18;
+const UNFOCUSED_DIM_LIGHT = 0.08;
+const windowDimEffects = new WeakMap<WaylandWindow, ReturnType<typeof compileWindowEffect>>();
+
+function windowDimEffect(window: WaylandWindow) {
+  let effect = windowDimEffects.get(window);
+  if (!effect) {
+    const focus = focusAmount(window);
+    effect = compileWindowEffect({
+      input: windowSource(),
+      alpha: "preserve",
+      pipeline: [
+        shaderStage(loadShader("./src/effect/window-dim.frag"), {
+          uniforms: {
+            dim: computed(
+              () => (1 - focus()) * (themeDark() ? UNFOCUSED_DIM_DARK : UNFOCUSED_DIM_LIGHT),
+            ),
+          },
+        }),
+      ],
+    });
+    windowDimEffects.set(window, effect);
+  }
+  return effect;
+}
+
+COMPOSITOR.effect.window = (window) =>
+  focusAmount(window)() >= 1 || window.state[WINDOW_STATE_FULLSCREEN]()
+    ? null
+    : { inFront: windowDimEffect(window) };
 
 const TITLEBAR_BUTTON_SIZE = 13;
 const TITLEBAR_PADDING_X = 12;
