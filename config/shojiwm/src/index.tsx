@@ -779,12 +779,14 @@ COMPOSITOR.event.onStartClose((window) => {
 });
 
 COMPOSITOR.event.onClose((window) => {
+  forgetWindow(window);
   HYBRID_WINDOW_MANAGER.onClose(window);
   scheduleWorkspaceBroadcast();
 });
 
 COMPOSITOR.event.onFocus((window, focused) => {
   HYBRID_WINDOW_MANAGER.onFocus(window, focused);
+  registerWindow(window);
   startFocusAnimation(window, focused);
   if (focused) {
     HYBRID_WINDOW_MANAGER.recordFocus(window.id);
@@ -910,14 +912,37 @@ const FOCUS_ANIMATION_MS = 700;
 // window that never animated (or survived a hot reload) shows its state as is.
 const FOCUS_CHANGE = animationVariable("focus-change");
 
-const focusAmounts = new WeakMap<WaylandWindow, ReadonlySignal<number>>();
+// The window objects of the composition and the focus events share one
+// animation store; the effect factory below is handed another copy of the
+// window whose store never sees the fade. Everything is looked up by id
+// against the first (composition / event) object instead.
+const primaryWindows = new Map<string, WaylandWindow>();
+const focusAmounts = new Map<string, ReadonlySignal<number>>();
+
+function primaryWindow(window: WaylandWindow): WaylandWindow {
+  return primaryWindows.get(window.id) ?? window;
+}
+
+/** Called from the composition and the focus events with the real object. */
+function registerWindow(window: WaylandWindow): void {
+  if (primaryWindows.get(window.id) !== window) {
+    primaryWindows.set(window.id, window);
+    focusAmounts.delete(window.id);
+  }
+}
+
+function forgetWindow(window: WaylandWindow): void {
+  primaryWindows.delete(window.id);
+  focusAmounts.delete(window.id);
+}
 
 function focusAmount(window: WaylandWindow): ReadonlySignal<number> {
-  let amount = focusAmounts.get(window);
+  let amount = focusAmounts.get(window.id);
   if (!amount) {
-    const change = window.animation.variable(FOCUS_CHANGE);
-    amount = computed(() => (window.isFocused() ? 1 - change() : change()));
-    focusAmounts.set(window, amount);
+    const primary = primaryWindow(window);
+    const change = primary.animation.variable(FOCUS_CHANGE);
+    amount = computed(() => (primary.isFocused() ? 1 - change() : change()));
+    focusAmounts.set(window.id, amount);
   }
   return amount;
 }
@@ -964,37 +989,30 @@ function focusMix(window: WaylandWindow, from: string, to: string): ReadonlySign
 }
 
 // Unfocused windows sit a little dimmer and brighten with the focus fade:
-// a black veil in front of the client (effect/window-dim.frag). Taken off
-// entirely once a window is focused or fullscreen, so a focused game keeps
-// direct scanout.
+// a black veil in front of the client (effect/window-dim.frag), at 0 on the
+// focused window. It stays attached (switching it on and off as focus moves
+// did not take), except on fullscreen windows, which keep direct scanout.
 const UNFOCUSED_DIM_DARK = 0.18;
 const UNFOCUSED_DIM_LIGHT = 0.08;
-const windowDimEffects = new WeakMap<WaylandWindow, ReturnType<typeof compileWindowEffect>>();
+const WINDOW_DIM_SHADER = loadShader("./src/effect/window-dim.frag");
 
+// A fresh effect with a plain number each time: the compositor does not
+// follow a signal uniform on a window effect. The factory itself reads the
+// focus inputs, so it re-runs on every frame of the fade.
 function windowDimEffect(window: WaylandWindow) {
-  let effect = windowDimEffects.get(window);
-  if (!effect) {
-    const focus = focusAmount(window);
-    effect = compileWindowEffect({
-      input: windowSource(),
-      alpha: "preserve",
-      pipeline: [
-        shaderStage(loadShader("./src/effect/window-dim.frag"), {
-          uniforms: {
-            dim: computed(
-              () => (1 - focus()) * (themeDark() ? UNFOCUSED_DIM_DARK : UNFOCUSED_DIM_LIGHT),
-            ),
-          },
-        }),
-      ],
-    });
-    windowDimEffects.set(window, effect);
-  }
-  return effect;
+  const primary = primaryWindow(window);
+  const change = primary.animation.variable(FOCUS_CHANGE)();
+  const focus = primary.isFocused() ? 1 - change : change;
+  const dim = (1 - focus) * (themeDark() ? UNFOCUSED_DIM_DARK : UNFOCUSED_DIM_LIGHT);
+  return compileWindowEffect({
+    input: windowSource(),
+    alpha: "preserve",
+    pipeline: [shaderStage(WINDOW_DIM_SHADER, { uniforms: { dim } })],
+  });
 }
 
 COMPOSITOR.effect.window = (window) =>
-  focusAmount(window)() >= 1 || window.state[WINDOW_STATE_FULLSCREEN]()
+  window.state[WINDOW_STATE_FULLSCREEN]()
     ? null
     : { inFront: windowDimEffect(window) };
 
@@ -1003,6 +1021,7 @@ const TITLEBAR_PADDING_X = 12;
 const TITLEBAR_GAP = 8;
 
 COMPOSITOR.window.composition = (window: WaylandWindow) => {
+  registerWindow(window);
   const useClientDecoration = usesClientDecoration(window.decoration());
   const workspaceVisible = window.state[WINDOW_STATE_WORKSPACE_VISIBLE];
   const workspaceOffsetY = window.state[WINDOW_STATE_WORKSPACE_OFFSET_Y];
