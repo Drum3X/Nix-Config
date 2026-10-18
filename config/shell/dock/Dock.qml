@@ -56,11 +56,23 @@ Scope {
 
     TextMetrics {
         id: labelMetrics
-        text: root.labelText
+        text: root.shownText
         font.family: Theme.font
         font.weight: Font.Medium
         font.pixelSize: Theme.textSm
     }
+
+    // What the label shows. Held while it fades out, so it leaves with the
+    // name it had.
+    property string shownText: ""
+    property real shownX: 0
+    Binding on shownText { when: root.labelShown; value: root.labelText; restoreMode: Binding.RestoreNone }
+    Binding on shownX { when: root.labelShown; value: root.labelX; restoreMode: Binding.RestoreNone }
+
+    // 0 hidden, 1 shown: the label fades in and rises a few px into place.
+    readonly property real labelRise: 4
+    property real labelReveal: labelShown ? 1 : 0
+    Behavior on labelReveal { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
 
     function slotWidth(entry): real {
         return entry.divider ? 13 : base;
@@ -298,13 +310,13 @@ Scope {
     PanelWindow {
         id: labelWindow
         screen: root.modelData
-        visible: root.labelShown
+        visible: root.labelReveal > 0
 
         anchors.bottom: true
         anchors.left: true
         anchors.right: true
-        margins.bottom: root.labelBottom
-        implicitHeight: root.labelHeight
+        margins.bottom: root.labelBottom - root.labelRise
+        implicitHeight: root.labelHeight + root.labelRise
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -316,14 +328,22 @@ Scope {
 
         GlassPanel {
             id: labelGlass
-            x: root.labelX
+            x: root.shownX
+            y: (1 - root.labelReveal) * root.labelRise
+            // The compositor reads the glass from this alpha, so the glass fades too.
+            opacity: root.labelReveal
+            // Moving to another icon while shown: slide over to it.
+            Behavior on x {
+                enabled: root.labelReveal === 1
+                NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
+            }
             width: root.labelWidth
             height: root.labelHeight
             radius: root.labelHeight / 2
 
             Text {
                 anchors.centerIn: parent
-                text: root.labelText
+                text: root.shownText
                 color: Theme.text
                 font.family: Theme.font
                 font.weight: Font.Medium
