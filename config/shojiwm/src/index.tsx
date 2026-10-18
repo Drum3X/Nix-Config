@@ -87,6 +87,8 @@ COMPOSITOR.rendering.framePacing = "throughput";
  * calls naturalRootRect.
  */
 const GLASS_FRAME_PX = 4;
+/** The client inside the glass frame is rounded too. */
+const CLIENT_RADIUS_PX = 8;
 
 const HYBRID_WINDOW_MANAGER = new HybridWindowManager(naturalRootRect);
 
@@ -1052,7 +1054,9 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
           paddingBottom: GLASS_FRAME_PX,
         }}
       >
-        <ClientWindow />
+        <Box style={{ borderRadius: CLIENT_RADIUS_PX, overflow: "hidden" }}>
+          <ClientWindow />
+        </Box>
       </Box>,
     ];
     innerComponents = blurSuspended ? (
@@ -1123,12 +1127,16 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
         >
           {blurSuspended ? (
             <Box style={{ padding: GLASS_FRAME_PX }}>
-              <ClientWindow />
+              <Box style={{ borderRadius: CLIENT_RADIUS_PX, overflow: "hidden" }}>
+                <ClientWindow />
+              </Box>
             </Box>
           ) : (
             // The same thin glass frame round client-decorated windows.
             <ShaderEffect shader={backgroundShader} style={{ padding: GLASS_FRAME_PX }}>
-              <ClientWindow />
+              <Box style={{ borderRadius: CLIENT_RADIUS_PX, overflow: "hidden" }}>
+                <ClientWindow />
+              </Box>
             </ShaderEffect>
           )}
         </WindowBorder>
