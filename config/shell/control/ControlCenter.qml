@@ -52,23 +52,37 @@ Scope {
             return Theme.ccUnit * cells + Theme.ccGap * (cells - 1);
         }
 
-        property bool wifiExpanded: false
+        // The list open under the toggles: "", "wifi" or "bluetooth".
+        property string expanded: ""
         property var pskNetwork: null
 
         Connections {
             target: root
             function onOpenChanged(): void {
-                window.wifiExpanded = false;
-                window.pskNetwork = null;
-                Net.scan(false);
+                window.expand("");
             }
         }
 
         readonly property var battery: UPower.displayDevice
         readonly property bool hasBattery: !!(battery && battery.isPresent && battery.isLaptopBattery)
         readonly property var adapter: Bluetooth.defaultAdapter
+        readonly property bool btEnabled: adapter ? adapter.enabled : false
         readonly property var btConnected: Bluetooth.devices
             ? Bluetooth.devices.values.filter((d) => d.connected) : []
+        // Paired devices first, then the ones found by scanning, unnamed ones left out.
+        readonly property var btDevices: Bluetooth.devices
+            ? Bluetooth.devices.values.filter((d) => d.paired || d.name.length > 0)
+                .sort((a, b) => (b.connected - a.connected) || (b.paired - a.paired) || a.name.localeCompare(b.name))
+            : []
+
+        // Opens one list (or none), scanning for what it shows while it is open.
+        function expand(which: string): void {
+            expanded = which;
+            pskNetwork = null;
+            Net.scan(which === "wifi");
+            if (adapter && adapter.enabled)
+                adapter.discovering = which === "bluetooth";
+        }
 
         readonly property var profiles: [
             { profile: PowerProfile.PowerSaver, icon: "eco", label: "Low Power" },
@@ -122,43 +136,39 @@ Scope {
                                 checked: Net.wifiEnabled
                                 expandable: true
                                 onToggled: Net.setWifi(!Net.wifiEnabled)
-                                onDetailsRequested: {
-                                    window.wifiExpanded = !window.wifiExpanded;
-                                    Net.scan(window.wifiExpanded);
-                                }
+                                onDetailsRequested: window.expand(window.expanded === "wifi" ? "" : "wifi")
                             }
 
-                            Row {
-                                spacing: Theme.ccGap
-
-                                CcCircle {
-                                    icon: "bluetooth"
-                                    checked: window.adapter ? window.adapter.enabled : false
-                                    interactive: !!window.adapter
-                                    onClicked: window.adapter.enabled = !window.adapter.enabled
-                                }
-
-                                CcCircle {
-                                    icon: "contrast"
-                                    checked: Theme.dark
-                                    onClicked: ThemeState.toggle()
-                                }
+                            CcPill {
+                                icon: window.btConnected.length > 0 ? "bluetooth_connected"
+                                    : window.btEnabled ? "bluetooth" : "bluetooth_disabled"
+                                label: "Bluetooth"
+                                detail: !window.adapter ? "Unavailable" : !window.btEnabled ? "Off"
+                                    : window.btConnected.length > 0 ? window.btConnected.map((d) => d.name).join(", ") : "On"
+                                checked: window.btEnabled
+                                expandable: !!window.adapter
+                                onToggled: if (window.adapter) window.adapter.enabled = !window.adapter.enabled
+                                onDetailsRequested: window.expand(window.expanded === "bluetooth" ? "" : "bluetooth")
                             }
                         }
 
                         NowPlaying {}
                     }
 
-                    // ----- Focus | Energy, battery -------------------------------
+                    // ----- Focus, Appearance, Energy, battery --------------------
                     Row {
                         spacing: Theme.ccGap
 
-                        CcPill {
+                        CcCircle {
                             icon: "dark_mode"
-                            label: "Focus"
-                            detail: Notifs.doNotDisturb ? "Do Not Disturb" : ""
                             checked: Notifs.doNotDisturb
-                            onToggled: Notifs.doNotDisturb = !Notifs.doNotDisturb
+                            onClicked: Notifs.doNotDisturb = !Notifs.doNotDisturb
+                        }
+
+                        CcCircle {
+                            icon: "contrast"
+                            checked: Theme.dark
+                            onClicked: ThemeState.toggle()
                         }
 
                         CcCircle {
@@ -180,7 +190,7 @@ Scope {
                         width: parent.width
                         height: networks.implicitHeight + 16
                         radius: 30
-                        visible: window.wifiExpanded && Net.wifiEnabled
+                        visible: window.expanded === "wifi" && Net.wifiEnabled
 
                         Column {
                             id: networks
@@ -310,6 +320,148 @@ Scope {
                                                 text: "Password"
                                                 color: Theme.textFaint
                                                 font: psk.font
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // ----- Bluetooth devices -------------------------------------
+                    GlassPanel {
+                        width: parent.width
+                        height: devices.implicitHeight + 16
+                        radius: 30
+                        visible: window.expanded === "bluetooth" && window.btEnabled
+
+                        Column {
+                            id: devices
+                            x: 8
+                            y: 8
+                            width: parent.width - 16
+                            spacing: 2
+
+                            Item {
+                                width: parent.width
+                                height: 26
+
+                                Text {
+                                    x: 8
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "Bluetooth"
+                                    color: Theme.text
+                                    font.family: Theme.font
+                                    font.weight: Font.DemiBold
+                                    font.pixelSize: Theme.textMd
+                                }
+                                Text {
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 8
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    visible: window.adapter ? window.adapter.discovering : false
+                                    text: "Searching…"
+                                    color: Theme.textDim
+                                    font.family: Theme.font
+                                    font.pixelSize: Theme.textXs
+                                }
+                            }
+
+                            Text {
+                                x: 8
+                                height: 30
+                                visible: window.btDevices.length === 0
+                                verticalAlignment: Text.AlignVCenter
+                                text: "No devices"
+                                color: Theme.textDim
+                                font.family: Theme.font
+                                font.pixelSize: Theme.textSm
+                            }
+
+                            Repeater {
+                                model: window.btDevices.slice(0, 8)
+
+                                delegate: Item {
+                                    id: devRow
+                                    required property var modelData
+                                    readonly property bool busy: modelData.state === BluetoothDeviceState.Connecting
+                                        || modelData.state === BluetoothDeviceState.Disconnecting || modelData.pairing
+                                    width: parent.width
+                                    height: 34
+
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        radius: 17
+                                        color: devMouse.pressed ? Theme.pressed : devMouse.containsMouse ? Theme.hover : Theme.clear
+                                        Behavior on color { ColorAnimation { duration: Theme.fast } }
+                                    }
+
+                                    Rectangle {
+                                        id: devIcon
+                                        x: 6
+                                        y: 5
+                                        width: 24
+                                        height: 24
+                                        radius: 12
+                                        color: devRow.modelData.connected ? "#ffffff" : Theme.buttonOff
+
+                                        Icon {
+                                            anchors.centerIn: parent
+                                            name: (devRow.modelData.icon || "").indexOf("audio") >= 0 ? "headphones"
+                                                : (devRow.modelData.icon || "").indexOf("input-mouse") >= 0 ? "mouse"
+                                                : (devRow.modelData.icon || "").indexOf("input-keyboard") >= 0 ? "keyboard"
+                                                : (devRow.modelData.icon || "").indexOf("phone") >= 0 ? "smartphone"
+                                                : "bluetooth"
+                                            size: 14
+                                            filled: true
+                                            color: devRow.modelData.connected ? Theme.accent : Theme.text
+                                        }
+                                    }
+
+                                    Text {
+                                        anchors.left: devIcon.right
+                                        anchors.leftMargin: 10
+                                        anchors.right: devState.left
+                                        anchors.rightMargin: 6
+                                        y: 9
+                                        text: devRow.modelData.name
+                                        elide: Text.ElideRight
+                                        color: Theme.text
+                                        font.family: Theme.font
+                                        font.pixelSize: Theme.textSm
+                                    }
+
+                                    Text {
+                                        id: devState
+                                        anchors.right: parent.right
+                                        anchors.rightMargin: 10
+                                        y: 10
+                                        text: devRow.busy ? "…"
+                                            : devRow.modelData.connected && devRow.modelData.batteryAvailable
+                                                ? Math.round(devRow.modelData.battery * 100) + "%"
+                                            : devRow.modelData.connected ? "Connected"
+                                            : devRow.modelData.paired ? "" : "Pair"
+                                        color: devRow.modelData.paired || devRow.busy ? Theme.textDim : Theme.accent
+                                        font.family: Theme.font
+                                        font.pixelSize: Theme.textXs
+                                    }
+
+                                    MouseArea {
+                                        id: devMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            const device = devRow.modelData;
+                                            if (devRow.busy)
+                                                return;
+                                            if (device.connected) {
+                                                device.disconnect();
+                                            } else if (device.paired) {
+                                                device.connect();
+                                            } else {
+                                                device.trusted = true;
+                                                device.pair();
                                             }
                                         }
                                     }
