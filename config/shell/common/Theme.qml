@@ -16,20 +16,23 @@ Singleton {
     // equal to ISLAND_GLASS_OPTIONS.surfaceOpacity (0.20) in
     // config/shojiwm/src/effect/island-glass.ts: ShojiWM divides by it to
     // recover the antialiased edge.
-    readonly property real glassAlpha: 0.20
-    readonly property color glassTint: dark ? Qt.rgba(0.07, 0.08, 0.13, glassAlpha)
-                                            : Qt.rgba(1, 1, 1, glassAlpha)
-    // Drawn inside the silhouette: a hairline rim and a soft top sheen.
-    readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.70)
-    readonly property color glassSheen: dark ? Qt.rgba(1, 1, 1, 0.05) : Qt.rgba(1, 1, 1, 0.22)
-    // Hover / pressed / selected wash on items inside glass.
-    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.38)
-    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.55)
-    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.50)
+    // Neutral and nearly invisible: like macOS, the glass is clear and only
+    // bends and lightly blurs what is behind it; it adds no white or black.
+    readonly property real glassAlpha: 0.04
+    readonly property color glassTint: Qt.rgba(0.5, 0.5, 0.5, glassAlpha)
+    // Kept for popups drawn outside compositor glass (dock labels).
+    readonly property color glassRim: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.45)
+    // Control center modules and hover washes: a faint material, as on macOS.
+    readonly property color module: dark ? Qt.rgba(1, 1, 1, 0.07) : Qt.rgba(1, 1, 1, 0.16)
+    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(1, 1, 1, 0.22)
+    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(1, 1, 1, 0.32)
+    readonly property color selected: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(1, 1, 1, 0.28)
+    // An off circle button (Wi-Fi, Bluetooth... when off).
+    readonly property color buttonOff: dark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.08)
+    readonly property color sliderTrack: dark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08)
 
-    // QML-side glass (lock screen, greeter): drawn by the shell itself over
-    // the wallpaper it owns, so it can be more opaque.
-    readonly property color frostTint: dark ? Qt.rgba(0.08, 0.09, 0.15, 0.34) : Qt.rgba(1, 1, 1, 0.30)
+    // QML-side glass (lock screen, greeter): just a whisper of tint.
+    readonly property color frostTint: dark ? Qt.rgba(0, 0, 0, 0.06) : Qt.rgba(1, 1, 1, 0.06)
 
     // ----- text -------------------------------------------------------------
     readonly property color text: dark ? "#f3f2fa" : "#262838"
@@ -38,7 +41,7 @@ Singleton {
     // Text straight on the wallpaper (lock clock, greeter).
     readonly property color onWallpaper: "#ffffff"
 
-    readonly property color accent: dark ? "#a9b8ff" : "#5b6cf0"
+    readonly property color accent: dark ? "#0a84ff" : "#007aff"
     readonly property color accentText: "#ffffff"
     readonly property color danger: dark ? "#ff8f9c" : "#e0465c"
     readonly property color success: dark ? "#8fe3b0" : "#2fa56a"

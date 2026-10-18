@@ -6,16 +6,18 @@ import {
 // All distances are framebuffer pixels. This pipeline knows only the alpha
 // silhouette: no shape count, positions, or corner radii come from QuickShell.
 export const ISLAND_GLASS_OPTIONS = {
-  // Match LiquidIslandQS LiquidGroup.tint.a; required to retain its edge AA.
-  surfaceOpacity: 0.20,
+  // Match Theme.glassAlpha in hyalo-shell; required to retain its edge AA.
+  // Kept low so the silhouette adds no visible white/black tint: the glass
+  // shows only the refracted, lightly blurred backdrop, as on macOS.
+  surfaceOpacity: 0.04,
   rimWidth: 80,
   refraction: 80,
   chromaticShift: 1.90,
   highlight: 0.6,
   // Width of the rim light along the edge.
   highlightWidth: 2,
-  blurRadius: 2,
-  blurPasses: 1,
+  blurRadius: 3,
+  blurPasses: 2,
   blurMix: 1,
   normalSmoothing: 3,
   edgeSoftness: 2,

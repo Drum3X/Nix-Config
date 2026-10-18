@@ -1,7 +1,8 @@
 import QtQuick
 
-// A thick rounded slider with its icon inside the track, as on the
-// control center. `value` is 0..1; `moved` reports drags and wheel turns.
+// A macOS Control Center slider: a capsule track with a white fill that ends
+// in a round knob, and the icon inside the track on the left. `value` is
+// 0..1; `moved` reports drags and wheel turns.
 Item {
     id: root
 
@@ -9,35 +10,50 @@ Item {
     property string icon: ""
     signal moved(real value)
 
-    implicitHeight: 40
+    implicitHeight: 28
+
+    readonly property real clamped: Math.max(0, Math.min(1, value))
 
     Rectangle {
         id: track
         anchors.fill: parent
         radius: height / 2
-        color: Theme.hover
-        clip: true
+        color: Theme.sliderTrack
+    }
 
+    Rectangle {
+        id: fill
+        height: track.height
+        width: Math.max(track.height, track.height + (track.width - track.height) * root.clamped)
+        radius: height / 2
+        color: "#ffffff"
+        opacity: Theme.dark ? 0.92 : 1
+        Behavior on width {
+            enabled: !drag.pressed
+            NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
+        }
+
+        // The knob, at the end of the fill.
         Rectangle {
-            width: Math.max(track.height, track.width * Math.max(0, Math.min(1, root.value)))
-            height: parent.height
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            width: track.height
+            height: track.height
             radius: height / 2
-            color: Theme.dark ? Qt.rgba(1, 1, 1, 0.82) : Qt.rgba(1, 1, 1, 0.95)
-            Behavior on width {
-                enabled: !drag.pressed
-                NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic }
-            }
+            color: "#ffffff"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.10)
         }
     }
 
     Icon {
         anchors.left: parent.left
-        anchors.leftMargin: 12
+        anchors.leftMargin: 7
         anchors.verticalCenter: parent.verticalCenter
         name: root.icon
-        size: 19
+        size: 15
         filled: true
-        color: Theme.dark && root.value > 0.08 ? "#262838" : Theme.text
+        color: "#5d6075"
     }
 
     MouseArea {
@@ -45,7 +61,8 @@ Item {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         function update(x: real): void {
-            root.moved(Math.max(0, Math.min(1, x / width)));
+            const span = width - track.height;
+            root.moved(Math.max(0, Math.min(1, (x - track.height / 2) / Math.max(1, span))));
         }
         onPressed: (event) => update(event.x)
         onPositionChanged: (event) => { if (pressed) update(event.x); }

@@ -23,7 +23,8 @@ PanelWindow {
     WlrLayershell.namespace: "hyalo-osd"
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-    mask: Region {}
+    // The glass is applied only inside the input region.
+    mask: Region { item: pill }
 
     GlassPanel {
         id: pill

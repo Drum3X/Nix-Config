@@ -10,8 +10,9 @@ import qs.common
 import qs.lock
 import qs.services
 
-// The control center, under the right end of the bar: quick toggles, Wi-Fi
-// networks, sliders, the playing media, notifications and the power buttons.
+// The control center, laid out like macOS: a connectivity module (Wi-Fi,
+// Bluetooth, Appearance) beside Focus and Energy tiles, then Display and
+// Sound sliders, Now Playing, battery and power, and the notifications.
 Scope {
     id: root
 
@@ -33,9 +34,9 @@ Scope {
         anchors.right: true
         margins.top: Theme.barExclusive - 2
         margins.right: Theme.edge
-        implicitWidth: 380
+        implicitWidth: 340
         implicitHeight: Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
-                                 content.implicitHeight + 28)
+                                 content.implicitHeight + 24)
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -57,21 +58,43 @@ Scope {
             }
         }
 
+        readonly property var battery: UPower.displayDevice
+        readonly property bool hasBattery: battery && battery.isPresent && battery.isLaptopBattery
+        readonly property var adapter: Bluetooth.defaultAdapter
+        readonly property var btConnected: Bluetooth.devices
+            ? Bluetooth.devices.values.filter((d) => d.connected) : []
+
+        readonly property var profiles: [
+            { profile: PowerProfile.PowerSaver, icon: "eco", label: "Low Power" },
+            { profile: PowerProfile.Balanced, icon: "balance", label: "Automatic" },
+            { profile: PowerProfile.Performance, icon: "bolt", label: "High Power" }
+        ]
+        readonly property int profileIndex: Math.max(0, profiles.findIndex((p) => p.profile === PowerProfiles.profile))
+
+        function nextProfile(): void {
+            let next = (profileIndex + 1) % profiles.length;
+            if (profiles[next].profile === PowerProfile.Performance && !PowerProfiles.hasPerformanceProfile)
+                next = (next + 1) % profiles.length;
+            PowerProfiles.profile = profiles[next].profile;
+        }
+
         GlassPanel {
             id: panel
             anchors.fill: parent
-            radius: Theme.panelRadius
+            radius: 26
             focus: true
 
             opacity: root.open ? 1 : 0
-            transform: Translate { y: root.open ? 0 : -10 }
+            scale: root.open ? 1 : 0.97
+            transformOrigin: Item.TopRight
             Behavior on opacity { NumberAnimation { duration: Theme.normal; easing.type: Easing.OutCubic } }
+            Behavior on scale { NumberAnimation { duration: Theme.normal; easing.type: Easing.OutCubic } }
 
             Keys.onEscapePressed: Ui.controlScreen = ""
 
             Flickable {
                 anchors.fill: parent
-                anchors.margins: 14
+                anchors.margins: 12
                 contentHeight: content.implicitHeight
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
@@ -79,368 +102,372 @@ Scope {
                 ColumnLayout {
                     id: content
                     width: parent.width
-                    spacing: 12
+                    spacing: 10
 
-                    // ----- header: date and power -----------------------------
+                    // ----- connectivity + Focus / Energy --------------------------
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 4
+                        spacing: 10
 
-                        SystemClock {
-                            id: clock
-                            precision: SystemClock.Minutes
-                        }
-
-                        Column {
+                        CcModule {
                             Layout.fillWidth: true
-                            Text {
-                                text: Qt.formatTime(clock.date, "HH:mm")
-                                color: Theme.text
-                                font.family: Theme.font
-                                font.weight: Font.Light
-                                font.pixelSize: 26
-                            }
-                            Text {
-                                text: Qt.locale("en_US").toString(clock.date, "dddd, MMMM d")
-                                color: Theme.textDim
-                                font.family: Theme.font
-                                font.pixelSize: Theme.textSm
+                            Layout.preferredWidth: 1
+                            Layout.alignment: Qt.AlignTop
+
+                            Column {
+                                width: parent.width
+                                spacing: 12
+
+                                CircleToggle {
+                                    width: parent.width
+                                    icon: Net.wired ? "lan" : Net.wifiEnabled ? "wifi" : "wifi_off"
+                                    label: "Wi-Fi"
+                                    detail: Net.wired ? "Ethernet" : !Net.wifiEnabled ? "Off" : (Net.name || "Not Connected")
+                                    checked: Net.wifiEnabled
+                                    expandable: true
+                                    onToggled: Net.setWifi(!Net.wifiEnabled)
+                                    onDetailsRequested: {
+                                        window.wifiExpanded = !window.wifiExpanded;
+                                        Net.scan(window.wifiExpanded);
+                                    }
+                                }
+
+                                CircleToggle {
+                                    width: parent.width
+                                    icon: "bluetooth"
+                                    label: "Bluetooth"
+                                    detail: !window.adapter ? "Unavailable" : !window.adapter.enabled ? "Off"
+                                        : window.btConnected.length > 0 ? window.btConnected.map((d) => d.name).join(", ") : "On"
+                                    checked: window.adapter ? window.adapter.enabled : false
+                                    onToggled: if (window.adapter) window.adapter.enabled = !window.adapter.enabled
+                                }
+
+                                CircleToggle {
+                                    width: parent.width
+                                    icon: "contrast"
+                                    label: "Appearance"
+                                    detail: Theme.dark ? "Dark" : "Light"
+                                    checked: Theme.dark
+                                    onToggled: ThemeState.toggle()
+                                }
                             }
                         }
 
-                        IconButton {
-                            icon: "lock"
-                            onClicked: Lock.lock()
-                        }
-                        PowerButton {
-                            icon: "logout"
-                            command: ["shoji_wm", "--quit"]
-                        }
-                        PowerButton {
-                            icon: "restart_alt"
-                            command: ["systemctl", "reboot"]
-                        }
-                        PowerButton {
-                            icon: "power_settings_new"
-                            command: ["systemctl", "poweroff"]
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: 1
+                            Layout.fillHeight: true
+                            spacing: 10
+
+                            CcModule {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+
+                                CircleToggle {
+                                    width: parent.width
+                                    icon: "do_not_disturb_on"
+                                    label: "Focus"
+                                    detail: Notifs.doNotDisturb ? "Do Not Disturb" : "Off"
+                                    checked: Notifs.doNotDisturb
+                                    onToggled: Notifs.doNotDisturb = !Notifs.doNotDisturb
+                                }
+                            }
+
+                            CcModule {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+
+                                CircleToggle {
+                                    width: parent.width
+                                    icon: window.profiles[window.profileIndex].icon
+                                    label: "Energy Mode"
+                                    detail: window.profiles[window.profileIndex].label
+                                    checked: PowerProfiles.profile !== PowerProfile.Balanced
+                                    onToggled: window.nextProfile()
+                                }
+                            }
                         }
                     }
 
-                    // ----- toggles --------------------------------------------
-                    GridLayout {
-                        Layout.fillWidth: true
-                        columns: 2
-                        rowSpacing: 8
-                        columnSpacing: 8
-
-                        QuickToggle {
-                            Layout.fillWidth: true
-                            icon: Net.icon
-                            label: "Wi-Fi"
-                            detail: Net.wired ? "Ethernet" : !Net.wifiEnabled ? "Off" : (Net.name || "Not connected")
-                            checked: Net.wifiEnabled
-                            expandable: true
-                            expanded: window.wifiExpanded
-                            onToggled: Net.setWifi(!Net.wifiEnabled)
-                            onExpandRequested: {
-                                window.wifiExpanded = !window.wifiExpanded;
-                                Net.scan(window.wifiExpanded);
-                            }
-                        }
-
-                        QuickToggle {
-                            readonly property var adapter: Bluetooth.defaultAdapter
-                            readonly property var connected: Bluetooth.devices
-                                ? Bluetooth.devices.values.filter((d) => d.connected) : []
-                            Layout.fillWidth: true
-                            icon: adapter && adapter.enabled ? "bluetooth" : "bluetooth_disabled"
-                            label: "Bluetooth"
-                            detail: !adapter ? "Unavailable" : !adapter.enabled ? "Off"
-                                : connected.length > 0 ? connected.map((d) => d.name).join(", ") : "On"
-                            checked: adapter ? adapter.enabled : false
-                            onToggled: if (adapter) adapter.enabled = !adapter.enabled
-                        }
-
-                        QuickToggle {
-                            Layout.fillWidth: true
-                            icon: Theme.dark ? "dark_mode" : "light_mode"
-                            label: "Dark mode"
-                            detail: "Follows the sun"
-                            checked: Theme.dark
-                            onToggled: ThemeState.toggle()
-                        }
-
-                        QuickToggle {
-                            Layout.fillWidth: true
-                            icon: Notifs.doNotDisturb ? "notifications_off" : "notifications"
-                            label: "Do not disturb"
-                            detail: Notifs.doNotDisturb ? "On" : "Off"
-                            checked: Notifs.doNotDisturb
-                            onToggled: Notifs.doNotDisturb = !Notifs.doNotDisturb
-                        }
-                    }
-
-                    // ----- Wi-Fi networks --------------------------------------
-                    Column {
+                    // ----- Wi-Fi networks ------------------------------------------
+                    CcModule {
                         Layout.fillWidth: true
                         visible: window.wifiExpanded && Net.wifiEnabled
-                        spacing: 2
+                        title: "Wi-Fi"
+                        padding: 8
 
-                        Repeater {
-                            model: Net.networks.slice(0, 8)
-
-                            delegate: Item {
-                                id: netRow
-                                required property var modelData
-                                width: parent.width
-                                height: window.pskNetwork === modelData ? 84 : 40
-
-                                Rectangle {
-                                    anchors.fill: parent
-                                    radius: 12
-                                    color: netMouse.containsMouse ? Theme.hover : "transparent"
-                                }
-
-                                Icon {
-                                    id: netIcon
-                                    x: 10
-                                    y: 10
-                                    name: netRow.modelData.signalStrength > 0.66 ? "wifi"
-                                        : netRow.modelData.signalStrength > 0.33 ? "wifi_2_bar" : "wifi_1_bar"
-                                    size: 18
-                                    filled: netRow.modelData.connected
-                                    color: netRow.modelData.connected ? Theme.accent : Theme.text
-                                }
-
-                                Text {
-                                    anchors.left: netIcon.right
-                                    anchors.leftMargin: 10
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: 12
-                                    y: 11
-                                    text: netRow.modelData.name
-                                        + (netRow.modelData.connected ? "  ·  Connected"
-                                           : netRow.modelData.stateChanging ? "  ·  Connecting…" : "")
-                                    elide: Text.ElideRight
-                                    color: Theme.text
-                                    font.family: Theme.font
-                                    font.pixelSize: Theme.textMd
-                                }
-
-                                MouseArea {
-                                    id: netMouse
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: {
-                                        const network = netRow.modelData;
-                                        if (network.connected)
-                                            network.disconnect();
-                                        else if (network.known || network.security === WifiSecurityType.Open)
-                                            network.connect();
-                                        else
-                                            window.pskNetwork = network;
-                                    }
-                                }
-
-                                // Password for a network that is not known yet.
-                                Rectangle {
-                                    visible: window.pskNetwork === netRow.modelData
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-                                    anchors.bottom: parent.bottom
-                                    anchors.margins: 6
-                                    height: 36
-                                    radius: 12
-                                    color: Theme.hover
-
-                                    TextInput {
-                                        id: psk
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 12
-                                        anchors.rightMargin: 12
-                                        verticalAlignment: TextInput.AlignVCenter
-                                        echoMode: TextInput.Password
-                                        color: Theme.text
-                                        font.family: Theme.font
-                                        font.pixelSize: Theme.textMd
-                                        onVisibleChanged: if (visible) { text = ""; forceActiveFocus(); }
-                                        onAccepted: {
-                                            netRow.modelData.connectWithPsk(text);
-                                            window.pskNetwork = null;
-                                        }
-                                        Keys.onEscapePressed: window.pskNetwork = null
-
-                                        Text {
-                                            anchors.verticalCenter: parent.verticalCenter
-                                            visible: psk.text.length === 0
-                                            text: "Password"
-                                            color: Theme.textFaint
-                                            font: psk.font
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // ----- power profile -------------------------------------------
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 36
-                        radius: 18
-                        color: Theme.hover
-
-                        Row {
-                            anchors.fill: parent
-                            anchors.margins: 3
+                        Column {
+                            width: parent.width
+                            spacing: 2
 
                             Repeater {
-                                model: [
-                                    { profile: PowerProfile.PowerSaver, icon: "eco", label: "Saver" },
-                                    { profile: PowerProfile.Balanced, icon: "balance", label: "Balanced" },
-                                    { profile: PowerProfile.Performance, icon: "bolt", label: "Performance" }
-                                ]
+                                model: Net.networks.slice(0, 8)
 
                                 delegate: Item {
+                                    id: netRow
                                     required property var modelData
-                                    readonly property bool current: PowerProfiles.profile === modelData.profile
-                                    readonly property bool usable: modelData.profile !== PowerProfile.Performance
-                                        || PowerProfiles.hasPerformanceProfile
-                                    width: parent.width / 3
-                                    height: parent.height
-                                    opacity: usable ? 1 : 0.4
+                                    width: parent.width
+                                    height: window.pskNetwork === modelData ? 74 : 34
 
                                     Rectangle {
                                         anchors.fill: parent
-                                        radius: height / 2
-                                        color: parent.current ? Theme.selected : "transparent"
-                                        Behavior on color { ColorAnimation { duration: Theme.fast } }
+                                        radius: 10
+                                        color: netMouse.containsMouse ? Theme.hover : "transparent"
                                     }
 
-                                    Row {
-                                        anchors.centerIn: parent
-                                        spacing: 5
+                                    Rectangle {
+                                        id: netIcon
+                                        x: 6
+                                        y: 5
+                                        width: 24
+                                        height: 24
+                                        radius: 12
+                                        color: netRow.modelData.connected ? Theme.accent : Theme.buttonOff
+
                                         Icon {
-                                            name: modelData.icon
-                                            size: 16
-                                            filled: parent.parent.current
+                                            anchors.centerIn: parent
+                                            name: netRow.modelData.signalStrength > 0.66 ? "wifi"
+                                                : netRow.modelData.signalStrength > 0.33 ? "wifi_2_bar" : "wifi_1_bar"
+                                            size: 14
+                                            filled: true
+                                            color: netRow.modelData.connected ? "#ffffff" : Theme.text
                                         }
-                                        Text {
-                                            anchors.verticalCenter: parent.verticalCenter
-                                            text: modelData.label
-                                            color: Theme.text
-                                            font.family: Theme.font
-                                            font.weight: parent.parent.current ? Font.DemiBold : Font.Normal
-                                            font.pixelSize: Theme.textSm
-                                        }
+                                    }
+
+                                    Text {
+                                        anchors.left: netIcon.right
+                                        anchors.leftMargin: 10
+                                        anchors.right: lock.left
+                                        anchors.rightMargin: 6
+                                        y: 9
+                                        text: netRow.modelData.name
+                                            + (netRow.modelData.stateChanging ? "  ·  Connecting…" : "")
+                                        elide: Text.ElideRight
+                                        color: Theme.text
+                                        font.family: Theme.font
+                                        font.pixelSize: Theme.textSm
+                                    }
+
+                                    Icon {
+                                        id: lock
+                                        anchors.right: parent.right
+                                        anchors.rightMargin: 8
+                                        y: 9
+                                        visible: netRow.modelData.security !== WifiSecurityType.Open
+                                        name: "lock"
+                                        size: 14
+                                        color: Theme.textDim
                                     }
 
                                     MouseArea {
+                                        id: netMouse
                                         anchors.fill: parent
-                                        enabled: parent.usable
+                                        hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: PowerProfiles.profile = modelData.profile
+                                        onClicked: {
+                                            const network = netRow.modelData;
+                                            if (network.connected)
+                                                network.disconnect();
+                                            else if (network.known || network.security === WifiSecurityType.Open)
+                                                network.connect();
+                                            else
+                                                window.pskNetwork = network;
+                                        }
+                                    }
+
+                                    // Password for a network that is not known yet.
+                                    Rectangle {
+                                        visible: window.pskNetwork === netRow.modelData
+                                        anchors.left: parent.left
+                                        anchors.right: parent.right
+                                        anchors.bottom: parent.bottom
+                                        anchors.margins: 6
+                                        height: 32
+                                        radius: 10
+                                        color: Theme.sliderTrack
+
+                                        TextInput {
+                                            id: psk
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 10
+                                            anchors.rightMargin: 10
+                                            verticalAlignment: TextInput.AlignVCenter
+                                            echoMode: TextInput.Password
+                                            color: Theme.text
+                                            font.family: Theme.font
+                                            font.pixelSize: Theme.textSm
+                                            onVisibleChanged: if (visible) { text = ""; forceActiveFocus(); }
+                                            onAccepted: {
+                                                netRow.modelData.connectWithPsk(text);
+                                                window.pskNetwork = null;
+                                            }
+                                            Keys.onEscapePressed: window.pskNetwork = null
+
+                                            Text {
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                visible: psk.text.length === 0
+                                                text: "Password"
+                                                color: Theme.textFaint
+                                                font: psk.font
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
 
-                    // ----- sliders ---------------------------------------------------
-                    GlassSlider {
-                        Layout.fillWidth: true
-                        icon: Audio.icon
-                        value: Audio.muted ? 0 : Audio.volume
-                        onMoved: (value) => Audio.setVolume(value)
-                    }
-
-                    GlassSlider {
+                    // ----- Display / Sound ---------------------------------------------
+                    CcModule {
                         Layout.fillWidth: true
                         visible: Brightness.available
-                        icon: "brightness_6"
-                        value: Brightness.value
-                        onMoved: (value) => Brightness.setValue(value)
+                        title: "Display"
+
+                        GlassSlider {
+                            width: parent.width
+                            icon: "light_mode"
+                            value: Brightness.value
+                            onMoved: (value) => Brightness.setValue(value)
+                        }
                     }
 
-                    // ----- media -----------------------------------------------------
-                    Rectangle {
+                    CcModule {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 72
-                        visible: Media.active
-                        radius: Theme.tileRadius
-                        color: Theme.hover
+                        title: "Sound"
 
-                        ClippingRectangle {
-                            id: art
-                            x: 10
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 52
-                            height: 52
-                            radius: 10
-                            color: Theme.hover
-
-                            Image {
-                                anchors.fill: parent
-                                source: Media.art
-                                fillMode: Image.PreserveAspectCrop
-                                asynchronous: true
-                                visible: status === Image.Ready
-                            }
-                            Icon {
-                                anchors.centerIn: parent
-                                visible: Media.art.length === 0
-                                name: "music_note"
-                                size: 24
-                                color: Theme.textDim
-                            }
-                        }
-
-                        Column {
-                            anchors.left: art.right
-                            anchors.leftMargin: 12
-                            anchors.right: controls.left
-                            anchors.rightMargin: 8
-                            anchors.verticalCenter: parent.verticalCenter
-                            spacing: 2
-
-                            Text {
-                                width: parent.width
-                                text: Media.title
-                                elide: Text.ElideRight
-                                color: Theme.text
-                                font.family: Theme.font
-                                font.weight: Font.DemiBold
-                                font.pixelSize: Theme.textMd
-                            }
-                            Text {
-                                width: parent.width
-                                text: Media.artist
-                                elide: Text.ElideRight
-                                color: Theme.textDim
-                                font.family: Theme.font
-                                font.pixelSize: Theme.textSm
-                            }
-                        }
-
-                        Row {
-                            id: controls
-                            anchors.right: parent.right
-                            anchors.rightMargin: 8
-                            anchors.verticalCenter: parent.verticalCenter
-                            IconButton { icon: "skip_previous"; onClicked: Media.previous() }
-                            IconButton {
-                                icon: Media.playing ? "pause" : "play_arrow"
-                                iconSize: 22
-                                onClicked: Media.toggle()
-                            }
-                            IconButton { icon: "skip_next"; onClicked: Media.next() }
+                        GlassSlider {
+                            width: parent.width
+                            icon: Audio.muted ? "volume_off" : "volume_up"
+                            value: Audio.muted ? 0 : Audio.volume
+                            onMoved: (value) => Audio.setVolume(value)
                         }
                     }
 
-                    // ----- notifications ---------------------------------------------
+                    // ----- Now Playing ------------------------------------------------
+                    CcModule {
+                        Layout.fillWidth: true
+                        visible: Media.active
+
+                        Item {
+                            width: parent.width
+                            height: 48
+
+                            ClippingRectangle {
+                                id: art
+                                width: 48
+                                height: 48
+                                radius: 10
+                                color: Theme.buttonOff
+
+                                Image {
+                                    anchors.fill: parent
+                                    source: Media.art
+                                    fillMode: Image.PreserveAspectCrop
+                                    asynchronous: true
+                                    visible: status === Image.Ready
+                                }
+                                Icon {
+                                    anchors.centerIn: parent
+                                    visible: Media.art.length === 0
+                                    name: "music_note"
+                                    size: 22
+                                    color: Theme.textDim
+                                }
+                            }
+
+                            Column {
+                                anchors.left: art.right
+                                anchors.leftMargin: 10
+                                anchors.right: controls.left
+                                anchors.rightMargin: 6
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 1
+
+                                Text {
+                                    width: parent.width
+                                    text: Media.title
+                                    elide: Text.ElideRight
+                                    color: Theme.text
+                                    font.family: Theme.font
+                                    font.weight: Font.DemiBold
+                                    font.pixelSize: Theme.textSm
+                                }
+                                Text {
+                                    width: parent.width
+                                    text: Media.artist
+                                    elide: Text.ElideRight
+                                    color: Theme.textDim
+                                    font.family: Theme.font
+                                    font.pixelSize: Theme.textXs
+                                }
+                            }
+
+                            Row {
+                                id: controls
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                IconButton { icon: "fast_rewind"; onClicked: Media.previous() }
+                                IconButton {
+                                    icon: Media.playing ? "pause" : "play_arrow"
+                                    iconSize: 24
+                                    onClicked: Media.toggle()
+                                }
+                                IconButton { icon: "fast_forward"; onClicked: Media.next() }
+                            }
+                        }
+                    }
+
+                    // ----- battery and power ------------------------------------------
+                    CcModule {
+                        Layout.fillWidth: true
+                        padding: 8
+
+                        Item {
+                            width: parent.width
+                            height: 30
+
+                            Row {
+                                anchors.left: parent.left
+                                anchors.leftMargin: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 6
+                                visible: window.hasBattery
+
+                                Icon {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    name: window.hasBattery && window.battery.state === UPowerDeviceState.Charging
+                                        ? "battery_charging_full" : "battery_full"
+                                    size: 18
+                                    filled: true
+                                }
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: window.hasBattery ? Math.round(window.battery.percentage * 100) + "%" : ""
+                                    color: Theme.text
+                                    font.family: Theme.font
+                                    font.weight: Font.Medium
+                                    font.pixelSize: Theme.textSm
+                                }
+                            }
+
+                            Row {
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 6
+
+                                PowerButton { icon: "lock"; confirm: false; onRun: Lock.lock() }
+                                PowerButton { icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
+                                PowerButton { icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
+                                PowerButton { icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
+                            }
+                        }
+                    }
+
+                    // ----- notifications ----------------------------------------------
                     RowLayout {
                         Layout.fillWidth: true
+                        Layout.leftMargin: 4
+                        Layout.rightMargin: 4
                         visible: Notifs.count > 0
 
                         Text {
@@ -449,11 +476,11 @@ Scope {
                             color: Theme.text
                             font.family: Theme.font
                             font.weight: Font.DemiBold
-                            font.pixelSize: Theme.textMd
+                            font.pixelSize: Theme.textSm
                         }
 
                         Text {
-                            text: "Clear all"
+                            text: "Clear"
                             color: Theme.accent
                             font.family: Theme.font
                             font.pixelSize: Theme.textSm
@@ -474,40 +501,52 @@ Scope {
                             required property var modelData
                             Layout.fillWidth: true
                             notification: modelData
-                            background: Theme.hover
+                            background: Theme.module
                         }
-                    }
-
-                    Text {
-                        Layout.fillWidth: true
-                        Layout.topMargin: 4
-                        visible: Notifs.count === 0
-                        horizontalAlignment: Text.AlignHCenter
-                        text: "No notifications"
-                        color: Theme.textFaint
-                        font.family: Theme.font
-                        font.pixelSize: Theme.textSm
                     }
                 }
             }
         }
     }
 
-    // A power action that asks for a second click within three seconds.
-    component PowerButton: IconButton {
+    // A round power action; all but lock ask for a second click within three seconds.
+    component PowerButton: Item {
         id: button
-        required property var command
+        property string icon: ""
+        property bool confirm: true
         property bool armed: false
+        signal run()
 
-        active: armed
-        color: armed ? Theme.danger : Theme.text
-        onClicked: {
-            if (armed) {
-                Quickshell.execDetached(command);
-                armed = false;
-            } else {
-                armed = true;
-                disarm.restart();
+        width: 30
+        height: 30
+
+        Rectangle {
+            anchors.fill: parent
+            radius: 15
+            color: button.armed ? Theme.danger : mouse.containsMouse ? Theme.pressed : Theme.buttonOff
+            Behavior on color { ColorAnimation { duration: Theme.fast } }
+        }
+
+        Icon {
+            anchors.centerIn: parent
+            name: button.icon
+            size: 16
+            color: button.armed ? "#ffffff" : Theme.text
+        }
+
+        MouseArea {
+            id: mouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: {
+                if (!button.confirm || button.armed) {
+                    button.armed = false;
+                    button.run();
+                } else {
+                    button.armed = true;
+                    disarm.restart();
+                }
             }
         }
 
