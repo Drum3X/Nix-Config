@@ -26,12 +26,4 @@ Image {
     cache: true
     smooth: true
     mipmap: true
-
-    // Dusk over the pastel picture in the dark palette.
-    Rectangle {
-        anchors.fill: parent
-        color: "#0b0d1f"
-        opacity: Theme.dark ? 0.48 : 0
-        Behavior on opacity { NumberAnimation { duration: 900 } }
-    }
 }
