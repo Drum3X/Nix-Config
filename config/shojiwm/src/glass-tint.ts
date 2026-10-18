@@ -22,6 +22,6 @@ export function tintVec4(hex: string): [number, number, number, number] {
 // The lock screen and the greeter use Theme.glassAmbientCeiling / Floor in
 // config/shell/common/Theme.qml: keep those equal to these.
 export const GLASS_AMBIENT = {
-  ceiling: 0.78,
-  floor: 0.12,
+  ceiling: 0.86,
+  floor: 0.08,
 };
