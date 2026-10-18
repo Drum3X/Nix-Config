@@ -72,15 +72,15 @@ Item {
         userWallpaper: root.userWallpaper
     }
     // What the glass refracts: the wallpaper, frosted to the same level as
-    // the compositor glass (macOS "regular" material). Never shown itself.
+    // the compositor glass: light, details stay recognisable. Never shown.
     MultiEffect {
         id: frosted
         anchors.fill: parent
         source: wall
         autoPaddingEnabled: false
         blurEnabled: true
-        blurMax: 32
-        blur: 0.8
+        blurMax: 16
+        blur: 0.6
     }
     ShaderEffectSource {
         id: backdrop

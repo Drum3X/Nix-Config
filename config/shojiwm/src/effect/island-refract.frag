@@ -105,11 +105,12 @@ vec4 shader_main(EffectContext effect) {
     color = clamp(mix(vec3(luma), color, saturation), 0.0, 1.0);
     color *= shade;
 
-    // Light from the upper left catches the rim facing it, and, weaker, the
-    // opposite one where it leaves the glass; the sides facing away stay
-    // nearly dark.
+    // Light from the upper left catches the rim facing it most, the opposite
+    // one where it leaves the glass less, and the sides in between still
+    // show a fainter line.
     float light = dot(-inward, normalize(vec2(-0.45, -0.89)));
-    float glint = 0.12 + 0.88 * pow(max(light, 0.0), 1.5) + 0.5 * pow(max(-light, 0.0), 1.5);
+    // Apple's rim stays visible all the way round, so the base is not near zero.
+    float glint = 0.38 + 0.62 * pow(max(light, 0.0), 1.5) + 0.4 * pow(max(-light, 0.0), 1.5);
     // A soft band rather than a hairline: several pixels wide with no hard
     // inner edge, so it stays smooth on low-density screens. A broader sheen
     // follows the curvature of the lens.

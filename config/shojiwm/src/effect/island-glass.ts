@@ -15,22 +15,24 @@ export const ISLAND_GLASS_OPTIONS = {
   rimWidth: 22,
   refraction: 16,
   chromaticShift: 1.2,
-  // Thin specular rim, lit from the upper left.
-  highlight: 0.35,
-  highlightWidth: 1,
-  // The "regular" glass material: clearly frosted, but not milky.
-  blurRadius: 4,
-  blurPasses: 3,
+  // A bright, thin specular rim all around, strongest at the upper left.
+  highlight: 0.7,
+  highlightWidth: 1.5,
+  // Light frosting: details behind stay recognisable, as in Apple's examples
+  // (the clouds and the reflection behind its widgets and dock).
+  blurRadius: 2,
+  blurPasses: 2,
   blurMix: 1,
   // Vibrancy: what shows through the glass keeps (and slightly gains) its colour.
-  saturation: 1.2,
-  // Multiplies what shows through: below 1 the glass dims its backdrop, as
-  // the macOS dock does in the light appearance (no colour is added).
-  shade: 0.79,
+  saturation: 1.1,
+  // Multiplies what shows through: 1 leaves its brightness alone; Apple's clear
+  // glass lifts it only a touch.
+  shade: 1.03,
   normalSmoothing: 3,
   edgeSoftness: 2,
-  bevelWidth: 10,
-  bevelShadow: 0,
+  // A faint darker band just inside the rim gives the slab its thickness.
+  bevelWidth: 8,
+  bevelShadow: 0.12,
   // 0: glass, 1: mask, 2: distance, 3: surface gradient.
   debugView: 0,
 };
@@ -174,9 +176,8 @@ export function islandGlass(name: string, overrides: Partial<IslandGlassOptions>
   });
 }
 
-// Every hyalo-shell surface, light appearance. Measured against a macOS
-// screenshot: the glass dims its backdrop to about 0.8 and keeps its colour.
+// Every hyalo-shell surface, light appearance.
 export const ISLAND_GLASS = islandGlass("island");
 
-// The dark appearance dims further, as macOS does.
-export const ISLAND_GLASS_DARK = islandGlass("island-dark", { shade: 0.62 });
+// The dark appearance dims what is behind a little.
+export const ISLAND_GLASS_DARK = islandGlass("island-dark", { shade: 0.85 });
