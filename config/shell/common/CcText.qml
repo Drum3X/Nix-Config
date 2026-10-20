@@ -10,7 +10,9 @@ Text {
     color: Theme.cc.text
     font.family: Theme.font
 
-    layer.enabled: shadow
+    // Only once there is something to draw: a layer made while the text is
+    // empty (a time that comes later) stays empty.
+    layer.enabled: shadow && width > 0 && height > 0
     layer.effect: MultiEffect {
         shadowEnabled: true
         shadowColor: Qt.rgba(0, 0, 0, 0.45)
