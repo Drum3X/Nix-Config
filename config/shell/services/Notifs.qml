@@ -60,6 +60,16 @@ Singleton {
             actions[0].invoke();
     }
 
+    // Without the Notification Center open on a screen (Ui.clearNotifications
+    // reaches it when it is).
+    Connections {
+        target: Ui
+        function onClearNotifications(): void {
+            if (Ui.notificationsScreen === "")
+                root.clearAll();
+        }
+    }
+
     function clearAll(): void {
         const all = root.list.slice();
         for (let i = 0; i < all.length; i++)

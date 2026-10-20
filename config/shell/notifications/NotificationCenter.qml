@@ -26,17 +26,39 @@ Scope {
         id: window
         screen: root.modelData
 
-        // 1 in place, 0 beyond the right edge of the screen; as the banners
-        // (NotificationBanner), it overshoots a little on the way in.
+        // 1 in place, 0 beyond the right edge of the screen: the same slide as
+        // a banner's (NotificationBanner).
         property real slide: 0
         Behavior on slide {
             NumberAnimation {
                 duration: root.open ? Theme.slideIn : Theme.slideOut
-                easing.type: root.open ? Easing.OutBack : Easing.InCubic
-                easing.overshoot: Theme.slideOvershoot
+                easing.type: root.open ? Easing.OutCubic : Easing.InCubic
             }
         }
         visible: root.open || slide > 0
+
+        // Clear all: every card slides off to the right, one just after the
+        // other, and each goes as it leaves.
+        property bool clearing: false
+        function clearAll(): void {
+            clearing = true;
+            for (let i = 0; i < cards.count; i++)
+                cards.itemAt(i).leave("clear", i * 45);
+        }
+        Connections {
+            target: Ui
+            function onClearNotifications(): void {
+                if (root.open)
+                    window.clearAll();
+            }
+        }
+        Connections {
+            target: Notifs
+            function onCountChanged(): void {
+                if (Notifs.count === 0)
+                    window.clearing = false;
+            }
+        }
 
         Connections {
             target: root
@@ -51,7 +73,7 @@ Scope {
         anchors.top: true
         anchors.right: true
         margins.top: Theme.barExclusive
-        implicitWidth: Theme.slideRoom + Theme.notificationWidth + Theme.edge
+        implicitWidth: Theme.notificationWidth + Theme.edge
         implicitHeight: Math.max(1, Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
                                              content.implicitHeight))
         exclusionMode: ExclusionMode.Ignore
@@ -65,7 +87,7 @@ Scope {
 
         Item {
             id: content
-            x: Theme.slideRoom + (1 - window.slide) * (Theme.notificationWidth + Theme.edge + 24)
+            x: (1 - window.slide) * (Theme.notificationWidth + Theme.edge + 24)
             width: Theme.notificationWidth
             height: window.height
             implicitHeight: column.implicitHeight
@@ -91,6 +113,7 @@ Scope {
                     }
 
                     Repeater {
+                        id: cards
                         // Newest first; the cards already shown stay when one goes.
                         model: ScriptModel { values: Notifs.list.slice().reverse() }
 
@@ -106,9 +129,11 @@ Scope {
                         }
                     }
 
-                    // Nothing to show.
+                    // Nothing to show: fades in once the last one has gone.
                     GlassPanel {
-                        visible: Notifs.count === 0
+                        opacity: Notifs.count === 0 ? 1 : 0
+                        visible: opacity > 0
+                        Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
                         width: parent.width
                         height: 52
                         radius: height / 2
@@ -126,7 +151,7 @@ Scope {
                     // Clear all: a round button under the list, as macOS has
                     // next to Edit Widgets.
                     Item {
-                        visible: Notifs.count > 0
+                        visible: Notifs.count > 0 && !window.clearing
                         width: parent.width
                         height: 40 + 4
 
@@ -159,7 +184,7 @@ Scope {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: Notifs.clearAll()
+                                onClicked: window.clearAll()
                             }
                         }
                     }

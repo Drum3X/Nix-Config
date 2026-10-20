@@ -133,13 +133,10 @@ Singleton {
     readonly property int tileRadius: 14
     // Banners and the Notification Center.
     readonly property int notificationWidth: 360
-    // How they slide in from the right edge: fast, a little past their place
-    // and back, as on macOS; out, speeding up. `slideRoom`: room left of
-    // them on their surface for that overshoot.
-    readonly property int slideIn: 560
+    // How they slide in from the right edge, slowing down; and out to it,
+    // speeding up.
+    readonly property int slideIn: 420
     readonly property int slideOut: 280
-    readonly property real slideOvershoot: 1.0
-    readonly property int slideRoom: 40
 
     // ----- motion -----------------------------------------------------------
     readonly property int fast: 140

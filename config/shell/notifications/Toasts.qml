@@ -24,7 +24,7 @@ PanelWindow {
     anchors.top: true
     anchors.right: true
     margins.top: Theme.barExclusive - 2
-    implicitWidth: Theme.slideRoom + Theme.notificationWidth + Theme.edge
+    implicitWidth: Theme.notificationWidth + Theme.edge
     implicitHeight: Math.max(1, stack.implicitHeight)
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
@@ -53,7 +53,6 @@ PanelWindow {
                 required property var modelData
                 notification: modelData
                 width: Theme.notificationWidth
-                inset: Theme.slideRoom
 
                 onGone: (reason) => {
                     if (reason === "activate")
@@ -64,7 +63,7 @@ PanelWindow {
                 Timer {
                     interval: banner.modelData.expireTimeout > 0 ? banner.modelData.expireTimeout : 5000
                     running: banner.modelData.urgency !== NotificationUrgency.Critical && !banner.hovered
-                    onTriggered: banner.leave("timeout")
+                    onTriggered: banner.leave("timeout", 0)
                 }
             }
         }

@@ -49,6 +49,9 @@ Singleton {
         root.notificationsScreen = root.notificationsScreen !== "" ? "" : (screen || firstScreen());
     }
 
+    // The Notification Center, when open, clears them with its animation.
+    signal clearNotifications()
+
     function closeAll(): void {
         root.launcherScreen = "";
         root.controlScreen = "";
@@ -78,5 +81,7 @@ Singleton {
         function toggle(): void { root.toggleNotifications(""); }
         function toggleOn(screen: string): void { root.toggleNotifications(screen); }
         function close(): void { root.notificationsScreen = ""; }
+        // Clear them all; slid away if the Notification Center is open.
+        function clear(): void { root.clearNotifications(); }
     }
 }

@@ -2,18 +2,14 @@ import QtQuick
 import qs.services
 
 // A notification on its own piece of glass, as macOS shows banners and the
-// Notification Center's list. It comes in from beyond the right edge of the
-// screen like macOS's: fast, overshooting a little to the left and settling
-// back; it leaves the other way, speeding up. Dragged to the right far
-// enough, it is swiped away. It never removes the notification itself:
+// Notification Center's list. It slides in from beyond the right edge of the
+// screen, slowing down, and leaves the other way, speeding up. Dragged to
+// the right far enough, it is swiped away. It never removes the notification itself:
 // `gone` says why it went, once it is out of sight, and the owner acts on it.
 GlassPanel {
     id: root
 
     required property var notification
-    // Where it rests, from the left of its parent: the room left of it lets
-    // the overshoot show (Theme.slideRoom).
-    property real inset: 0
     // Slide in when created; false: start in place. Read once, then.
     property bool slideIn: true
     // How far right of its rest it is: 0 in place, `offscreen` beyond the
@@ -22,15 +18,15 @@ GlassPanel {
     readonly property real offscreen: width + Theme.edge + 24
     readonly property bool hovered: card.hovered || drag.active
 
-    // "activate" (clicked or an action), "swipe" (dragged away) or "timeout"
-    // (leave("timeout")).
+    // "activate" (clicked or an action), "swipe" (dragged away), or what was
+    // given to leave() ("timeout", "clear").
     signal gone(string reason)
 
     radius: Theme.panelRadius
     height: card.implicitHeight
     // A transform rather than x: the Column it sits in sets x itself when it
     // moves the cards up after one goes, which would cut a binding on x.
-    transform: Translate { x: root.inset + root.shift }
+    transform: Translate { x: root.shift }
 
     Component.onCompleted: {
         if (slideIn) {
@@ -39,12 +35,14 @@ GlassPanel {
         }
     }
 
-    function leave(reason: string): void {
+    // `delay` ms first: clearing them all sends them off one after another.
+    function leave(reason: string, delay: int): void {
         if (exit.running)
             return;
         enter.stop();
         settle.stop();
         exit.reason = reason;
+        exit.delay = delay || 0;
         exit.start();
     }
 
@@ -54,8 +52,7 @@ GlassPanel {
         property: "shift"
         to: 0
         duration: Theme.slideIn
-        easing.type: Easing.OutBack
-        easing.overshoot: Theme.slideOvershoot
+        easing.type: Easing.OutCubic
     }
 
     NumberAnimation {
@@ -64,13 +61,14 @@ GlassPanel {
         property: "shift"
         to: 0
         duration: 320
-        easing.type: Easing.OutBack
-        easing.overshoot: Theme.slideOvershoot
+        easing.type: Easing.OutCubic
     }
 
     SequentialAnimation {
         id: exit
         property string reason: ""
+        property int delay: 0
+        PauseAnimation { duration: exit.delay }
         NumberAnimation {
             target: root
             property: "shift"
@@ -85,10 +83,10 @@ GlassPanel {
         id: card
         anchors.fill: parent
         notification: root.notification
-        onActivated: root.leave("activate")
+        onActivated: root.leave("activate", 0)
     }
 
-    // Swipe to the right to dismiss; to the left it only gives a little.
+    // Swipe to the right to dismiss.
     DragHandler {
         id: drag
         target: null
@@ -100,7 +98,7 @@ GlassPanel {
                 settle.stop();
                 startShift = root.shift;
             } else if (root.shift > root.width * 0.3 || centroid.velocity.x > 800) {
-                root.leave("swipe");
+                root.leave("swipe", 0);
             } else {
                 settle.start();
             }
@@ -109,7 +107,7 @@ GlassPanel {
             if (!active)
                 return;
             const dx = startShift + translation.x;
-            root.shift = dx >= 0 ? dx : dx * 0.2;
+            root.shift = Math.max(0, dx);
         }
     }
 }
