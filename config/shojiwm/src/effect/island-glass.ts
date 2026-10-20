@@ -171,7 +171,15 @@ const levels = (tint: string) =>
 const LIGHT_LEVELS = levels(GLASS_TINT.light);
 const DARK_LEVELS = levels(GLASS_TINT.dark);
 const CONTROL_LIGHT_LEVELS = levels(GLASS_TINT.controlLight);
-const LEVELS = { light: LIGHT_LEVELS, dark: DARK_LEVELS, controlLight: CONTROL_LIGHT_LEVELS };
+const BAR_DARK_LEVELS = levels(GLASS_TINT.barDark);
+const BAR_LIGHT_LEVELS = levels(GLASS_TINT.barLight);
+const LEVELS = {
+  light: LIGHT_LEVELS,
+  dark: DARK_LEVELS,
+  controlLight: CONTROL_LIGHT_LEVELS,
+  barDark: BAR_DARK_LEVELS,
+  barLight: BAR_LIGHT_LEVELS,
+};
 
 export const ISLAND_GLASS_LIGHT = LIGHT_LEVELS[GLASS_FADE_STEPS];
 export const ISLAND_GLASS_DARK = DARK_LEVELS[GLASS_FADE_STEPS];

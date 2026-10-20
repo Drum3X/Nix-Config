@@ -92,7 +92,6 @@ Scope {
             width: target ? target.width : 0
             height: target ? target.height : 0
             radius: height / 2
-            squeeze: target && target.pressed ? 0.94 : 1
             // Moving to another item while shown: slide over to it.
             Behavior on x {
                 enabled: motion.fade === 1
@@ -102,7 +101,6 @@ Scope {
                 enabled: motion.fade === 1
                 NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
             }
-            Behavior on squeeze { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
         }
     }
 
@@ -327,7 +325,6 @@ Scope {
         property bool primary: false
         // When it was last clicked, to tell which item opened the panel.
         property real clickedAt: 0
-        readonly property bool pressed: mouse.pressed
         // Pressed, and a moment after, so a quick click still shows the capsule.
         readonly property bool flashing: mouse.pressed || flash.running
         signal clicked()

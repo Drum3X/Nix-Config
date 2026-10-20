@@ -411,7 +411,7 @@ WORKSPACE_IPC.handle("glass.fade", (params) => {
 
 // A hyalo-* surface whose glass tint follows what is drawn on it rather than
 // the appearance: the menu bar's capsule is dark glass under black items and
-// light glass under white ones (WallpaperTone in the shell). The shell sends
+// light glass under white ones (GLASS_TINT.barDark / barLight) (WallpaperTone in the shell). The shell sends
 //   glass.tint  { namespace, dark }
 // when that changes, and again after every reconnect.
 const glassTints = new Map<string, ReturnType<typeof signal<boolean | null>>>();
@@ -729,7 +729,7 @@ COMPOSITOR.effect.layer = (layer) => {
     // (Theme.cc in the shell), a lighter one in the light appearance.
     const ownTint = glassTintEntry(namespace)[0]();
     const tint = ownTint !== null
-      ? (ownTint ? "dark" : "light")
+      ? (ownTint ? "barDark" : "barLight")
       : namespace === "hyalo-control"
         ? (themeDark() ? "dark" : "controlLight")
         : (themeDark() ? "dark" : "light");

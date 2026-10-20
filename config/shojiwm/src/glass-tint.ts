@@ -9,6 +9,10 @@ export const GLASS_TINT = {
   // The Control Center in the light appearance: the dark glass it always has
   // (Theme.cc), lighter over the light windows and wallpaper there.
   controlLight: "#08080a40",
+  // The menu bar's capsule (glass.tint): lighter than the panels, it only
+  // sits under one item.
+  barDark: "#08080a40",
+  barLight: "#f6f6f859",
 };
 
 /** `#rrggbbaa` as a straight-alpha vec4 for shaders. */
