@@ -12,7 +12,8 @@ Column {
     property bool scanning: false
     signal toggled()
 
-    bottomPadding: 8
+    // Nothing under the title while it is off: no room under it either.
+    bottomPadding: checked ? 8 : 0
 
     Item {
         width: parent.width

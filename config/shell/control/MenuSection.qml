@@ -26,7 +26,7 @@ Item {
         y: 3
         width: parent.width - 12
         height: parent.height - 3
-        radius: 10
+        radius: height / 2
         visible: root.expandable
         color: mouse.pressed ? Theme.cc.pressed : mouse.containsMouse ? Theme.cc.hover : Theme.clear
         Behavior on color { ColorAnimation { duration: Theme.fast } }

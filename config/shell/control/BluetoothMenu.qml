@@ -14,7 +14,9 @@ CcMenu {
     readonly property var devices: Bluetooth.devices ? Bluetooth.devices.values : []
     readonly property var paired: devices.filter((d) => d.paired)
         .sort((a, b) => (b.connected - a.connected) || a.name.localeCompare(b.name))
-    readonly property var nearby: devices.filter((d) => !d.paired && d.name.length > 0)
+    // Without a name of their own, BlueZ names them by their address.
+    readonly property var nearby: devices.filter((d) => !d.paired && d.name.length > 0
+            && !/^([0-9A-F]{2}[-:]){5}[0-9A-F]{2}$/i.test(d.name))
         .sort((a, b) => a.name.localeCompare(b.name))
 
     title: "Bluetooth"
@@ -22,8 +24,8 @@ CcMenu {
     onToggled: if (adapter) adapter.enabled = !adapter.enabled
 
     readonly property bool discover: scanning && powered
-    onDiscoverChanged: if (adapter) adapter.discovering = discover
-    Component.onDestruction: if (adapter && powered) adapter.discovering = false
+    onDiscoverChanged: if (adapter && adapter.discovering !== discover) adapter.discovering = discover
+    Component.onDestruction: if (adapter && adapter.discovering) adapter.discovering = false
 
     MenuSection {
         visible: root.powered
