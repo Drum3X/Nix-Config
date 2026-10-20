@@ -90,7 +90,7 @@ Item {
                 anchors.right: parent.right
                 anchors.baseline: summary.baseline
                 text: Notifs.ago(root.notification)
-                color: root.colors.textFaint
+                color: root.colors.text
                 font.family: Theme.font
                 font.pixelSize: Theme.textSm
             }
