@@ -268,7 +268,7 @@ Scope {
 
             BarItem {
                 panel: "control"
-                onClicked: Ui.toggleControl(bar.screen.name)
+                onClicked: Ui.toggleControlMenu(bar.screen.name, "wifi")
                 Icon { anchors.verticalCenter: parent.verticalCenter; name: Net.icon; size: 17; filled: true; color: root.itemColor }
             }
 

@@ -96,6 +96,23 @@ Scope {
             morphAnim.start();
         }
 
+        // Opened on a menu from the bar: closing the menu closes the panel, as
+        // there were no controls before it.
+        property bool menuDirect: false
+
+        // The capsule of a menu.
+        function capsuleOf(which: string): Item {
+            return which === "bluetooth" ? btPill : wifiPill;
+        }
+
+        // Escape: back to the controls, or closed if it was opened on the menu.
+        function closeMenu(): void {
+            if (menuDirect)
+                Ui.controlScreen = "";
+            else
+                openMenu("", null);
+        }
+
         Connections {
             target: root
             function onOpenChanged(): void {
@@ -105,6 +122,23 @@ Scope {
                 window.morph = 0;
                 window.menu = "";
                 window.menuOpen = false;
+                window.menuDirect = Ui.controlMenu !== "";
+                // On a menu from the bar: already open, fading in with the panel.
+                if (window.menuDirect) {
+                    window.openMenu(Ui.controlMenu, window.capsuleOf(Ui.controlMenu));
+                    morphAnim.complete();
+                }
+            }
+        }
+
+        // The bar's Wi-Fi item while the panel is already open.
+        Connections {
+            target: Ui
+            function onControlMenuChanged(): void {
+                if (!root.open || Ui.controlMenu === "")
+                    return;
+                window.menuDirect = true;
+                window.openMenu(Ui.controlMenu, window.capsuleOf(Ui.controlMenu));
             }
         }
 
@@ -136,16 +170,16 @@ Scope {
 
             Keys.onEscapePressed: {
                 if (window.menuOpen)
-                    window.openMenu("", null);
+                    window.closeMenu();
                 else
                     Ui.controlScreen = "";
             }
 
-            // A click beside an open menu closes it.
+            // A click beside an open menu closes the panel, as one outside it does.
             MouseArea {
                 anchors.fill: parent
                 enabled: window.menuOpen
-                onClicked: window.openMenu("", null)
+                onClicked: Ui.controlScreen = ""
             }
 
             Flickable {

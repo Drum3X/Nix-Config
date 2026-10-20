@@ -13,6 +13,9 @@ Singleton {
     property string launcherScreen: ""
     property string launcherMode: "apps"   // "apps" | "clipboard"
     property string controlScreen: ""
+    // The menu the Control Center opens on ("wifi", "bluetooth"), from the
+    // bar; "" for its controls.
+    property string controlMenu: ""
     property string notificationsScreen: ""
 
     readonly property bool anyOpen: launcherScreen !== "" || controlScreen !== "" || notificationsScreen !== ""
@@ -40,7 +43,20 @@ Singleton {
     function toggleControl(screen: string): void {
         root.launcherScreen = "";
         root.notificationsScreen = "";
+        root.controlMenu = "";
         root.controlScreen = root.controlScreen !== "" ? "" : (screen || firstScreen());
+    }
+
+    // The Control Center open on one of its menus; closed if it already is.
+    function toggleControlMenu(screen: string, menu: string): void {
+        root.launcherScreen = "";
+        root.notificationsScreen = "";
+        if (root.controlScreen !== "" && root.controlMenu === menu) {
+            root.controlScreen = "";
+            return;
+        }
+        root.controlMenu = menu;
+        root.controlScreen = screen || firstScreen();
     }
 
     function toggleNotifications(screen: string): void {
