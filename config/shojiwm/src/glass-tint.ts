@@ -4,15 +4,15 @@
 // the same values: keep Theme.glassTintDark / glassTintLight in
 // config/shell/common/Theme.qml equal to these.
 export const GLASS_TINT = {
-  dark: "#08080a59",
-  light: "#f6f6f880",
+  dark: "#08080a4d",
+  light: "#f6f6f86b",
   // The Control Center in the light appearance: the dark glass it always has
   // (Theme.cc), lighter over the light windows and wallpaper there.
-  controlLight: "#08080a40",
+  controlLight: "#08080a33",
   // The menu bar's capsule (glass.tint): lighter than the panels, it only
   // sits under one item.
-  barDark: "#08080a40",
-  barLight: "#f6f6f859",
+  barDark: "#08080a33",
+  barLight: "#f6f6f847",
 };
 
 /** `#rrggbbaa` as a straight-alpha vec4 for shaders. */
