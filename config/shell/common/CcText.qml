@@ -15,8 +15,8 @@ Text {
     layer.enabled: shadow && width > 0 && height > 0
     layer.effect: MultiEffect {
         shadowEnabled: true
-        shadowColor: Qt.rgba(0, 0, 0, 0.45)
-        shadowBlur: 0.35
+        shadowColor: Qt.rgba(0, 0, 0, 0.25)
+        shadowBlur: 0.3
         shadowVerticalOffset: 1
         shadowHorizontalOffset: 0
     }
