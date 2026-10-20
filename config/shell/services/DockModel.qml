@@ -51,6 +51,10 @@ Singleton {
         }
         for (let i = 0; i < windows.length; i++) {
             const window = windows[i];
+            // Not one yet while a window is starting up: it joins its app once
+            // it has one, instead of showing up on its own for a moment.
+            if (!window.appId)
+                continue;
             const key = keyFor(window.appId);
             const item = index[key] || add(key, lookup(window.appId), false);
             item.windows.push(window);

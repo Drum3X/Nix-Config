@@ -9,6 +9,8 @@ import qs.services
 // app icons standing on it. Under the pointer the icons magnify in a wave and
 // rise above the shelf, a dot marks the running apps, the name shows above
 // the hovered icon, and a launch bounces the icon until its window appears.
+// An app that opens grows into the row, spreading the others and the shelf;
+// one that closes shrinks out of it.
 //
 // Two surfaces with the same geometry: the shelf is compositor glass
 // ("hyalo-dock"), the icons are a separate clear layer ("no_blur") on top of
@@ -29,7 +31,76 @@ Scope {
     readonly property real headroom: base * (magnify - 1) + lift + 2   // room above the shelf for a raised icon
 
     // Apps, then a divider, then the trash.
-    readonly property var entries: DockModel.items.concat([{ divider: true }, { trash: true }])
+    readonly property var live: DockModel.items.concat([{ key: "#divider", divider: true }, { key: "#trash", trash: true }])
+
+    // What the row shows: `live`, and the apps just closed, kept in their
+    // place (`leaving`) until they have shrunk away.
+    property var entries: []
+    onLiveChanged: merge()
+    Component.onCompleted: merge()
+    onEntriesChanged: syncSlots()
+    // Set before `entries`, for the icons it adds to find theirs.
+    property var byKey: ({})
+
+    function setEntries(next): void {
+        const map = {};
+        next.forEach((entry) => map[entry.key] = entry);
+        byKey = map;
+        entries = next;
+    }
+
+    // The row's model: only the keys, moved and inserted one by one, so an icon
+    // stays the same item while apps come and go around it.
+    ListModel {
+        id: slots
+    }
+
+    function syncSlots(): void {
+        for (let i = 0; i < entries.length; i++) {
+            const key = entries[i].key;
+            if (i < slots.count && slots.get(i).key === key)
+                continue;
+            let from = -1;
+            for (let j = i + 1; j < slots.count; j++) {
+                if (slots.get(j).key === key) {
+                    from = j;
+                    break;
+                }
+            }
+            if (from >= 0)
+                slots.move(from, i, 1);
+            else
+                slots.insert(i, { key: key });
+        }
+        while (slots.count > entries.length)
+            slots.remove(slots.count - 1);
+    }
+
+    function merge(): void {
+        const next = live.slice();
+        const keys = {};
+        next.forEach((entry) => keys[entry.key] = true);
+        for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
+            if (!keys[entry.key]) {
+                next.splice(Math.min(i, next.length - 2), 0, Object.assign({}, entry, { leaving: true, windows: [] }));
+                keys[entry.key] = true;
+            }
+        }
+        setEntries(next);
+    }
+
+    function forget(key: string): void {
+        setEntries(entries.filter((entry) => entry.key !== key));
+    }
+
+    // The apps there at startup are simply there; later ones grow in.
+    property bool settled: false
+    Timer {
+        running: true
+        interval: 1500
+        onTriggered: root.settled = true
+    }
 
     // Pointer x over the icon row, in the resting row's coordinates (far off when
     // away). The row is centred the same way magnified or not, so the window's
@@ -50,7 +121,7 @@ Scope {
     readonly property real labelWidth: labelMetrics.width + 22
     readonly property real labelHeight: 26
     readonly property real labelX: hoveredIndex < 0 ? 0
-        : Math.round((shelfWindow.width - shelfWidth) / 2 + restCentres[hoveredIndex] - labelWidth / 2)
+        : Math.round((iconWindow.width - shelfWidth) / 2 + restCentres[hoveredIndex] - labelWidth / 2)
     // Distance of the label's bottom edge from the bottom of the screen.
     readonly property real labelBottom: Theme.dockGap + Theme.dockPad + base + lift + labelGap
 
@@ -106,7 +177,25 @@ Scope {
     }
 
     // Shelf geometry, shared by both surfaces (they are the same size).
-    readonly property real shelfWidth: iconRow.implicitWidth + Theme.dockPad * 2
+    // The shelf around the apps that stay, easing to a new width as they grow
+    // in and shrink away: the same curve as their slots, so it keeps around
+    // them. Worked out from the entries, not read off the icon row: the row
+    // lays itself out while the icon surface draws, too late for the shelf
+    // surface, which then kept showing its previous width.
+    readonly property real targetWidth: {
+        let w = Theme.dockPad * 2 - spacing;
+        for (let i = 0; i < entries.length; i++) {
+            if (!entries[i].leaving)
+                w += slotWidth(entries[i]) + spacing;
+        }
+        return w;
+    }
+    property real shelfWidth: targetWidth
+    Behavior on shelfWidth {
+        enabled: root.settled
+        NumberAnimation { duration: root.growDuration; easing.type: Easing.OutCubic }
+    }
+    readonly property int growDuration: 340
     readonly property real surfaceHeight: Theme.dockHeight + Theme.dockGap + headroom
 
     // ----- the glass shelf ------------------------------------------------------
@@ -138,7 +227,6 @@ Scope {
             height: Theme.dockHeight
             radius: Theme.dockRadius
         }
-
     }
 
     // ----- the icons --------------------------------------------------------------
@@ -178,36 +266,55 @@ Scope {
                 x: Theme.dockPad
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: Theme.dockPad
-                spacing: root.spacing
-
                 Repeater {
-                    model: root.entries
+                    model: slots
 
                     delegate: Item {
                         id: slot
-                        required property var modelData
+                        required property string key
                         required property int index
+                        readonly property var modelData: root.byKey[key] || ({ key: key, leaving: true, windows: [] })
 
                         readonly property bool isDivider: modelData.divider === true
                         readonly property bool isTrash: modelData.trash === true
                         readonly property bool running: !isDivider && !isTrash && modelData.windows.length > 0
+                        readonly property bool leaving: modelData.leaving === true
+                        // 0 out of the row, 1 in it: grows in, shrinks away.
+                        property real presence: 0
+                        property bool growing: false
+                        Behavior on presence {
+                            enabled: slot.growing
+                            NumberAnimation { duration: root.growDuration; easing.type: Easing.OutCubic }
+                        }
+                        Component.onCompleted: {
+                            growing = root.settled;
+                            presence = 1;
+                            growing = true;
+                        }
+                        onLeavingChanged: presence = leaving ? 0 : 1
+                        onPresenceChanged: if (leaving && presence === 0) root.forget(key)
+                        property real slotWidth: isDivider ? 13 : root.base * magnification
+                        Behavior on slotWidth {
+                            enabled: !root.hovering
+                            NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+                        }
+                        // The icon's centre, left of the gap the slot carries.
+                        readonly property real centreOffset: -root.spacing * presence / 2
                         readonly property real magnification: root.scaleAt(index)
                         readonly property bool hovered: hover.containsMouse
                         // The hovered icon rises a little.
                         property real lift: hovered && !isDivider ? root.lift : 0
                         Behavior on lift { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
-                        width: isDivider ? 13 : root.base * magnification
+                        width: (slotWidth + root.spacing) * presence
                         height: root.base
-                        Behavior on width {
-                            enabled: !root.hovering
-                            NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-                        }
 
                         // Divider.
                         Rectangle {
                             visible: slot.isDivider
                             anchors.centerIn: parent
+                            anchors.horizontalCenterOffset: slot.centreOffset
+                            scale: slot.presence
                             width: 1
                             height: parent.height - 8
                             color: Theme.text
@@ -218,11 +325,14 @@ Scope {
                             id: icon
                             visible: !slot.isDivider
                             anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.horizontalCenterOffset: slot.centreOffset
+                            scale: slot.presence
+                            transformOrigin: Item.Bottom
                             anchors.bottom: parent.bottom
                             anchors.bottomMargin: bounce.offset + slot.lift
                             implicitSize: root.base * slot.magnification
                             source: slot.isTrash ? Quickshell.iconPath("user-trash", "user-trash-full")
-                                : slot.isDivider ? "" : slot.modelData.icon
+                                : slot.isDivider ? "" : (slot.modelData.icon || "")
                             asynchronous: true
                             mipmap: true
                             Behavior on implicitSize {
@@ -256,13 +366,14 @@ Scope {
                         // and the bottom of the shelf.
                         Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.horizontalCenterOffset: slot.centreOffset
                             anchors.top: parent.bottom
                             anchors.topMargin: (Theme.dockPad - height) / 2
                             width: 4
                             height: 4
                             radius: 2
                             color: Theme.text
-                            opacity: slot.running ? 0.7 : 0
+                            opacity: slot.running ? 0.7 * slot.presence : 0
                             Behavior on opacity { NumberAnimation { duration: Theme.normal } }
                         }
 
@@ -275,8 +386,9 @@ Scope {
 
                         MouseArea {
                             id: hover
-                            enabled: !slot.isDivider
+                            enabled: !slot.isDivider && !slot.leaving
                             anchors.fill: parent
+                            anchors.rightMargin: root.spacing * slot.presence
                             hoverEnabled: true
                             acceptedButtons: Qt.LeftButton | Qt.MiddleButton
                             cursorShape: Qt.PointingHandCursor
