@@ -28,7 +28,9 @@ GlassPanel {
 
     radius: Theme.panelRadius
     height: card.implicitHeight
-    x: inset + shift
+    // A transform rather than x: the Column it sits in sets x itself when it
+    // moves the cards up after one goes, which would cut a binding on x.
+    transform: Translate { x: root.inset + root.shift }
 
     Component.onCompleted: {
         if (slideIn) {
