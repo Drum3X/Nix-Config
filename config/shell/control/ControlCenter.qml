@@ -1,7 +1,6 @@
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
-import Quickshell.Networking
 import Quickshell.Services.UPower
 import Quickshell.Wayland
 import Quickshell.Widgets
@@ -13,7 +12,8 @@ import qs.services
 // its own piece of glass on a grid of round cells (Theme.ccUnit). Wi-Fi and
 // Focus are capsules, Now Playing a square; Bluetooth, Appearance, Energy and
 // the battery are circles; then the Display and Sound sliders and the session
-// actions. Notifications are in the Notification Center.
+// actions. The Wi-Fi and Bluetooth capsules grow into their menus. Notifications
+// are in the Notification Center.
 Scope {
     id: root
 
@@ -44,8 +44,9 @@ Scope {
         margins.top: Theme.barExclusive
         margins.right: Theme.edge
         implicitWidth: window.span(4)
+        // As tall as the controls, or an open menu (until it has shrunk back).
         implicitHeight: Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
-                                 content.implicitHeight)
+                                 Math.max(content.implicitHeight, menuLoader.implicitHeight, menuHeight))
         exclusionMode: ExclusionMode.Ignore
         color: "transparent"
 
@@ -60,14 +61,50 @@ Scope {
             return Theme.ccUnit * cells + Theme.ccGap * (cells - 1);
         }
 
-        // The list open under the toggles: "", "wifi" or "bluetooth".
-        property string expanded: ""
-        property var pskNetwork: null
+        // ----- Wi-Fi and Bluetooth menus --------------------------------
+        // A capsule's glass grows into its menu, across the top of the panel,
+        // while the other controls shrink away under it; it shrinks back the
+        // same way.
+
+        // The menu on the glass ("wifi", "bluetooth"); kept while it shrinks back.
+        property string menu: ""
+        property bool menuOpen: false
+        // The capsule it grows out of, in panel coordinates.
+        property rect menuFrom: Qt.rect(0, 0, 0, 0)
+        // 0: the capsule, 1: the menu.
+        property real morph: 0
+        readonly property real shrink: 1 - morph
+        readonly property real controlsReveal: reveal * Math.max(0, 1 - morph * 2)
+        // Eased when a section opens or closes in the open menu.
+        property real menuHeight: menuLoader.implicitHeight
+        Behavior on menuHeight {
+            enabled: window.morph === 1
+            NumberAnimation { duration: 260; easing.type: Easing.OutCubic }
+        }
+
+        // `capsule` is the control it grows out of; "" closes it.
+        function openMenu(which: string, capsule: Item): void {
+            if (which) {
+                const p = capsule.mapToItem(panel, 0, 0);
+                menuFrom = Qt.rect(p.x, p.y, capsule.width, capsule.height);
+                menu = which;
+            }
+            menuOpen = which !== "";
+            morphAnim.stop();
+            morphAnim.to = menuOpen ? 1 : 0;
+            morphAnim.duration = menuOpen ? Theme.slideIn : 320;
+            morphAnim.start();
+        }
 
         Connections {
             target: root
             function onOpenChanged(): void {
-                window.expand("");
+                if (!root.open)
+                    return;
+                morphAnim.stop();
+                window.morph = 0;
+                window.menu = "";
+                window.menuOpen = false;
             }
         }
 
@@ -77,20 +114,6 @@ Scope {
         readonly property bool btEnabled: adapter ? adapter.enabled : false
         readonly property var btConnected: Bluetooth.devices
             ? Bluetooth.devices.values.filter((d) => d.connected) : []
-        // Paired devices first, then the ones found by scanning, unnamed ones left out.
-        readonly property var btDevices: Bluetooth.devices
-            ? Bluetooth.devices.values.filter((d) => d.paired || d.name.length > 0)
-                .sort((a, b) => (b.connected - a.connected) || (b.paired - a.paired) || a.name.localeCompare(b.name))
-            : []
-
-        // Opens one list (or none), scanning for what it shows while it is open.
-        function expand(which: string): void {
-            expanded = which;
-            pskNetwork = null;
-            Net.scan(which === "wifi");
-            if (adapter && adapter.enabled)
-                adapter.discovering = which === "bluetooth";
-        }
 
         readonly property var profiles: [
             { profile: PowerProfile.PowerSaver, icon: "eco", label: "Low Power" },
@@ -111,10 +134,23 @@ Scope {
             anchors.fill: parent
             focus: true
 
-            Keys.onEscapePressed: Ui.controlScreen = ""
+            Keys.onEscapePressed: {
+                if (window.menuOpen)
+                    window.openMenu("", null);
+                else
+                    Ui.controlScreen = "";
+            }
+
+            // A click beside an open menu closes it.
+            MouseArea {
+                anchors.fill: parent
+                enabled: window.menuOpen
+                onClicked: window.openMenu("", null)
+            }
 
             Flickable {
                 anchors.fill: parent
+                visible: window.morph < 1
                 contentHeight: content.implicitHeight
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
@@ -132,18 +168,22 @@ Scope {
                             spacing: Theme.ccGap
 
                             CcPill {
-                                reveal: window.reveal
+                                id: wifiPill
+                                reveal: window.controlsReveal
+                                scale: window.shrink
                                 icon: Net.wired ? "lan" : Net.wifiEnabled ? "wifi" : "wifi_off"
                                 label: "Wi-Fi"
                                 detail: Net.wired ? "Ethernet" : !Net.wifiEnabled ? "Off" : (Net.name || "Not Connected")
                                 checked: Net.wifiEnabled
                                 expandable: true
                                 onToggled: Net.setWifi(!Net.wifiEnabled)
-                                onDetailsRequested: window.expand(window.expanded === "wifi" ? "" : "wifi")
+                                onDetailsRequested: window.openMenu("wifi", wifiPill)
                             }
 
                             CcPill {
-                                reveal: window.reveal
+                                id: btPill
+                                reveal: window.controlsReveal
+                                scale: window.shrink
                                 icon: window.btConnected.length > 0 ? "bluetooth_connected"
                                     : window.btEnabled ? "bluetooth" : "bluetooth_disabled"
                                 label: "Bluetooth"
@@ -152,11 +192,11 @@ Scope {
                                 checked: window.btEnabled
                                 expandable: !!window.adapter
                                 onToggled: if (window.adapter) window.adapter.enabled = !window.adapter.enabled
-                                onDetailsRequested: window.expand(window.expanded === "bluetooth" ? "" : "bluetooth")
+                                onDetailsRequested: window.openMenu("bluetooth", btPill)
                             }
                         }
 
-                        NowPlaying { reveal: window.reveal }
+                        NowPlaying { reveal: window.controlsReveal; scale: window.shrink }
                     }
 
                     // ----- Focus, Appearance, Energy, battery --------------------
@@ -164,28 +204,32 @@ Scope {
                         spacing: Theme.ccGap
 
                         CcCircle {
-                            reveal: window.reveal
+                            reveal: window.controlsReveal
+                            scale: window.shrink
                             icon: "dark_mode"
                             checked: Notifs.doNotDisturb
                             onClicked: Notifs.doNotDisturb = !Notifs.doNotDisturb
                         }
 
                         CcCircle {
-                            reveal: window.reveal
+                            reveal: window.controlsReveal
+                            scale: window.shrink
                             icon: "contrast"
                             checked: Theme.dark
                             onClicked: ThemeState.toggle()
                         }
 
                         CcCircle {
-                            reveal: window.reveal
+                            reveal: window.controlsReveal
+                            scale: window.shrink
                             icon: window.profiles[window.profileIndex].icon
                             checked: PowerProfiles.profile !== PowerProfile.Balanced
                             onClicked: window.nextProfile()
                         }
 
                         CcCircle {
-                            reveal: window.reveal
+                            reveal: window.controlsReveal
+                            scale: window.shrink
                             interactive: false
                             icon: !window.hasBattery ? "power"
                                 : window.battery.state === UPowerDeviceState.Charging ? "battery_charging_full" : "battery_full"
@@ -193,296 +237,10 @@ Scope {
                         }
                     }
 
-                    // ----- Wi-Fi networks ----------------------------------------
-                    GlassPanel {
-                        reveal: window.reveal
-                        width: parent.width
-                        height: networks.implicitHeight + 16
-                        radius: 30
-                        visible: window.expanded === "wifi" && Net.wifiEnabled
-
-                        Column {
-                            id: networks
-                            x: 8
-                            y: 8
-                            width: parent.width - 16
-                            spacing: 2
-
-                            CcText {
-                                x: 8
-                                height: 26
-                                verticalAlignment: Text.AlignVCenter
-                                text: "Wi-Fi"
-                                color: Theme.cc.text
-                                font.family: Theme.font
-                                font.styleName: "Semibold"
-                                font.pixelSize: Theme.textMd
-                            }
-
-                            Repeater {
-                                model: Net.networks.slice(0, 8)
-
-                                delegate: Item {
-                                    id: netRow
-                                    required property var modelData
-                                    width: parent.width
-                                    height: window.pskNetwork === modelData ? 74 : 34
-
-                                    Rectangle {
-                                        anchors.fill: parent
-                                        radius: 17
-                                        color: netMouse.pressed ? Theme.cc.pressed : netMouse.containsMouse ? Theme.cc.hover : Theme.clear
-                                        Behavior on color { ColorAnimation { duration: Theme.fast } }
-                                    }
-
-                                    Rectangle {
-                                        id: netIcon
-                                        x: 6
-                                        y: 5
-                                        width: 24
-                                        height: 24
-                                        radius: 12
-                                        color: netRow.modelData.connected ? "#ffffff" : Theme.cc.buttonOff
-
-                                        Icon {
-                                            anchors.centerIn: parent
-                                            name: netRow.modelData.signalStrength > 0.66 ? "wifi"
-                                                : netRow.modelData.signalStrength > 0.33 ? "wifi_2_bar" : "wifi_1_bar"
-                                            size: 14
-                                            filled: true
-                                            color: netRow.modelData.connected ? Theme.cc.accent : Theme.cc.text
-                                        }
-                                    }
-
-                                    CcText {
-                                        anchors.left: netIcon.right
-                                        anchors.leftMargin: 10
-                                        anchors.right: lock.left
-                                        anchors.rightMargin: 6
-                                        y: 9
-                                        text: netRow.modelData.name
-                                            + (netRow.modelData.stateChanging ? "  ·  Connecting…" : "")
-                                        elide: Text.ElideRight
-                                        color: Theme.cc.text
-                                        font.family: Theme.font
-                                        font.pixelSize: Theme.textSm
-                                    }
-
-                                    Icon {
-                                        id: lock
-                                        anchors.right: parent.right
-                                        anchors.rightMargin: 10
-                                        y: 9
-                                        visible: netRow.modelData.security !== WifiSecurityType.Open
-                                        name: "lock"
-                                        size: 14
-                                        color: Theme.cc.textDim
-                                    }
-
-                                    MouseArea {
-                                        id: netMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            const network = netRow.modelData;
-                                            if (network.connected)
-                                                network.disconnect();
-                                            else if (network.known || network.security === WifiSecurityType.Open)
-                                                network.connect();
-                                            else
-                                                window.pskNetwork = network;
-                                        }
-                                    }
-
-                                    // Password for a network that is not known yet.
-                                    Rectangle {
-                                        visible: window.pskNetwork === netRow.modelData
-                                        anchors.left: parent.left
-                                        anchors.right: parent.right
-                                        anchors.bottom: parent.bottom
-                                        anchors.margins: 6
-                                        height: 32
-                                        radius: 16
-                                        color: Theme.cc.sliderTrack
-
-                                        TextInput {
-                                            id: psk
-                                            anchors.fill: parent
-                                            anchors.leftMargin: 12
-                                            anchors.rightMargin: 12
-                                            verticalAlignment: TextInput.AlignVCenter
-                                            echoMode: TextInput.Password
-                                            color: Theme.cc.text
-                                            font.family: Theme.font
-                                            font.pixelSize: Theme.textSm
-                                            onVisibleChanged: if (visible) { text = ""; forceActiveFocus(); }
-                                            onAccepted: {
-                                                netRow.modelData.connectWithPsk(text);
-                                                window.pskNetwork = null;
-                                            }
-                                            Keys.onEscapePressed: window.pskNetwork = null
-
-                                            CcText {
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                visible: psk.text.length === 0
-                                                text: "Password"
-                                                color: Theme.cc.textFaint
-                                                font: psk.font
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // ----- Bluetooth devices -------------------------------------
-                    GlassPanel {
-                        reveal: window.reveal
-                        width: parent.width
-                        height: devices.implicitHeight + 16
-                        radius: 30
-                        visible: window.expanded === "bluetooth" && window.btEnabled
-
-                        Column {
-                            id: devices
-                            x: 8
-                            y: 8
-                            width: parent.width - 16
-                            spacing: 2
-
-                            Item {
-                                width: parent.width
-                                height: 26
-
-                                CcText {
-                                    x: 8
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: "Bluetooth"
-                                    color: Theme.cc.text
-                                    font.family: Theme.font
-                                    font.styleName: "Semibold"
-                                    font.pixelSize: Theme.textMd
-                                }
-                                CcText {
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: 8
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    visible: window.adapter ? window.adapter.discovering : false
-                                    text: "Searching…"
-                                    color: Theme.cc.textDim
-                                    font.family: Theme.font
-                                    font.pixelSize: Theme.textXs
-                                }
-                            }
-
-                            CcText {
-                                x: 8
-                                height: 30
-                                visible: window.btDevices.length === 0
-                                verticalAlignment: Text.AlignVCenter
-                                text: "No devices"
-                                color: Theme.cc.textDim
-                                font.family: Theme.font
-                                font.pixelSize: Theme.textSm
-                            }
-
-                            Repeater {
-                                model: window.btDevices.slice(0, 8)
-
-                                delegate: Item {
-                                    id: devRow
-                                    required property var modelData
-                                    readonly property bool busy: modelData.state === BluetoothDeviceState.Connecting
-                                        || modelData.state === BluetoothDeviceState.Disconnecting || modelData.pairing
-                                    width: parent.width
-                                    height: 34
-
-                                    Rectangle {
-                                        anchors.fill: parent
-                                        radius: 17
-                                        color: devMouse.pressed ? Theme.cc.pressed : devMouse.containsMouse ? Theme.cc.hover : Theme.clear
-                                        Behavior on color { ColorAnimation { duration: Theme.fast } }
-                                    }
-
-                                    Rectangle {
-                                        id: devIcon
-                                        x: 6
-                                        y: 5
-                                        width: 24
-                                        height: 24
-                                        radius: 12
-                                        color: devRow.modelData.connected ? "#ffffff" : Theme.cc.buttonOff
-
-                                        Icon {
-                                            anchors.centerIn: parent
-                                            name: (devRow.modelData.icon || "").indexOf("audio") >= 0 ? "headphones"
-                                                : (devRow.modelData.icon || "").indexOf("input-mouse") >= 0 ? "mouse"
-                                                : (devRow.modelData.icon || "").indexOf("input-keyboard") >= 0 ? "keyboard"
-                                                : (devRow.modelData.icon || "").indexOf("phone") >= 0 ? "smartphone"
-                                                : "bluetooth"
-                                            size: 14
-                                            filled: true
-                                            color: devRow.modelData.connected ? Theme.cc.accent : Theme.cc.text
-                                        }
-                                    }
-
-                                    CcText {
-                                        anchors.left: devIcon.right
-                                        anchors.leftMargin: 10
-                                        anchors.right: devState.left
-                                        anchors.rightMargin: 6
-                                        y: 9
-                                        text: devRow.modelData.name
-                                        elide: Text.ElideRight
-                                        color: Theme.cc.text
-                                        font.family: Theme.font
-                                        font.pixelSize: Theme.textSm
-                                    }
-
-                                    CcText {
-                                        id: devState
-                                        anchors.right: parent.right
-                                        anchors.rightMargin: 10
-                                        y: 10
-                                        text: devRow.busy ? "…"
-                                            : devRow.modelData.connected && devRow.modelData.batteryAvailable
-                                                ? Math.round(devRow.modelData.battery * 100) + "%"
-                                            : devRow.modelData.connected ? "Connected"
-                                            : devRow.modelData.paired ? "" : "Pair"
-                                        color: devRow.modelData.paired || devRow.busy ? Theme.cc.textDim : Theme.cc.accent
-                                        font.family: Theme.font
-                                        font.pixelSize: Theme.textXs
-                                    }
-
-                                    MouseArea {
-                                        id: devMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            const device = devRow.modelData;
-                                            if (devRow.busy)
-                                                return;
-                                            if (device.connected) {
-                                                device.disconnect();
-                                            } else if (device.paired) {
-                                                device.connect();
-                                            } else {
-                                                device.trusted = true;
-                                                device.pair();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
                     // ----- Display / Sound ---------------------------------------
                     CcSlider {
-                        reveal: window.reveal
+                        reveal: window.controlsReveal
+                        scale: window.shrink
                         width: parent.width
                         visible: Brightness.available
                         title: "Display"
@@ -493,7 +251,8 @@ Scope {
                     }
 
                     CcSlider {
-                        reveal: window.reveal
+                        reveal: window.controlsReveal
+                        scale: window.shrink
                         width: parent.width
                         title: "Sound"
                         iconLow: Audio.muted ? "volume_off" : "volume_mute"
@@ -506,12 +265,64 @@ Scope {
                     Row {
                         spacing: Theme.ccGap
 
-                        PowerCircle { reveal: window.reveal; icon: "lock"; confirm: false; onRun: Lock.lock() }
-                        PowerCircle { reveal: window.reveal; icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
-                        PowerCircle { reveal: window.reveal; icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
-                        PowerCircle { reveal: window.reveal; icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
+                        PowerCircle { reveal: window.controlsReveal; scale: window.shrink; icon: "lock"; confirm: false; onRun: Lock.lock() }
+                        PowerCircle { reveal: window.controlsReveal; scale: window.shrink; icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
+                        PowerCircle { reveal: window.controlsReveal; scale: window.shrink; icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
+                        PowerCircle { reveal: window.controlsReveal; scale: window.shrink; icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
                     }
                 }
+            }
+
+            // The open menu, on the glass the capsule grows into.
+            GlassPanel {
+                id: menuGlass
+                readonly property real m: window.morph
+                readonly property rect from: window.menuFrom
+
+                visible: window.menu !== ""
+                x: from.x * (1 - m)
+                y: from.y * (1 - m)
+                width: from.width + (panel.width - from.width) * m
+                height: from.height + (Math.min(panel.height, window.menuHeight) - from.height) * m
+                radius: from.height / 2 + (26 - from.height / 2) * m
+                reveal: window.reveal
+                clip: true
+
+                // Clicks on the menu stay in it.
+                MouseArea { anchors.fill: parent }
+
+                Flickable {
+                    width: panel.width
+                    height: menuGlass.height
+                    contentHeight: menuLoader.implicitHeight
+                    interactive: contentHeight > height
+                    boundsBehavior: Flickable.StopAtBounds
+                    opacity: Math.max(0, (menuGlass.m - 0.3) / 0.7)
+
+                    Loader {
+                        id: menuLoader
+                        width: panel.width
+                        sourceComponent: window.menu === "wifi" ? wifiMenu
+                            : window.menu === "bluetooth" ? bluetoothMenu : null
+                    }
+                }
+
+                Component {
+                    id: wifiMenu
+                    WifiMenu { scanning: window.menuOpen && root.open }
+                }
+                Component {
+                    id: bluetoothMenu
+                    BluetoothMenu { scanning: window.menuOpen && root.open }
+                }
+            }
+
+            NumberAnimation {
+                id: morphAnim
+                target: window
+                property: "morph"
+                easing.type: Easing.OutCubic
+                onFinished: if (!window.menuOpen) window.menu = ""
             }
         }
     }
