@@ -37,13 +37,14 @@ Scope {
         }
         visible: root.open || slide > 0
 
-        // Clear all: every card slides off to the right, one just after the
-        // other, and each goes as it leaves.
+        // Clear all: every card slides off to the right, from the bottom up,
+        // one just after the other, and each goes as it leaves. The bottom
+        // one first, so the cards above never move up while they slide.
         property bool clearing: false
         function clearAll(): void {
             clearing = true;
             for (let i = 0; i < cards.count; i++)
-                cards.itemAt(i).leave("clear", i * 45);
+                cards.itemAt(i).leave("clear", (cards.count - 1 - i) * 45);
         }
         Connections {
             target: Ui
