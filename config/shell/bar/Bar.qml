@@ -291,6 +291,8 @@ Scope {
             BarItem {
                 panel: "notifications"
                 primary: true
+                padding: 12
+                reachRight: rightRow.anchors.rightMargin
                 onClicked: Ui.toggleNotifications(bar.screen.name)
 
                 Text {
@@ -319,18 +321,23 @@ Scope {
         property bool primary: false
         // When it was last clicked, to tell which item opened the panel.
         property real clickedAt: 0
+        // Room on either side of the content, inside the capsule.
+        property real padding: 8
+        // How far past its right side a click still reaches it: the last item
+        // takes the clicks up to the edge of the screen.
+        property real reachRight: 0
         // Pressed, and a moment after, so a quick click still shows the capsule.
         readonly property bool flashing: mouse.pressed || flash.running
         signal clicked()
         signal wheel(bool up)
 
-        implicitWidth: holder.childrenRect.width + 16
+        implicitWidth: holder.childrenRect.width + padding * 2
         implicitHeight: Theme.barHeight - 6
         anchors.verticalCenter: parent ? parent.verticalCenter : undefined
 
         Item {
             id: holder
-            x: 8
+            x: item.padding
             width: childrenRect.width
             height: parent.height
         }
@@ -342,7 +349,12 @@ Scope {
 
         MouseArea {
             id: mouse
+            // Up to the top of the screen, as on macOS: a click on the very
+            // edge still lands.
             anchors.fill: parent
+            anchors.topMargin: -(Theme.barHeight - item.height) / 2
+            anchors.bottomMargin: -(Theme.barHeight - item.height) / 2
+            anchors.rightMargin: -item.reachRight
             onReleased: flash.restart()
             onClicked: {
                 item.clickedAt = Date.now();
