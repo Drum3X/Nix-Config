@@ -90,7 +90,7 @@ Item {
                 anchors.right: parent.right
                 anchors.baseline: summary.baseline
                 text: Notifs.ago(root.notification)
-                color: "#dedee6"   // light grey: textDim is as light as the glass
+                color: root.colors.textSoft
                 font.family: Theme.font
                 font.pixelSize: Theme.textSm
             }

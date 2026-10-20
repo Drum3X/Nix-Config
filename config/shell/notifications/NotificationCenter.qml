@@ -116,7 +116,7 @@ Scope {
                         CcText {
                             anchors.centerIn: parent
                             text: "No Notifications"
-                            color: Theme.cc.textDim
+                            color: Theme.cc.textSoft
                             font.family: Theme.font
                             font.weight: Font.Medium
                             font.pixelSize: Theme.textMd

@@ -17,6 +17,9 @@ Singleton {
     readonly property QtObject darkPalette: QtObject {
         readonly property color text: "#f3f2fa"
         readonly property color textDim: "#b4b6c8"
+        // Secondary text on the dark glass: textDim is about as light as the
+        // glass is over light windows.
+        readonly property color textSoft: "#dedee6"
         readonly property color textFaint: "#80839a"
         readonly property color accent: "#0a84ff"
         readonly property color danger: "#ff8f9c"
@@ -28,6 +31,7 @@ Singleton {
     readonly property QtObject lightPalette: QtObject {
         readonly property color text: "#262838"
         readonly property color textDim: "#5d6075"
+        readonly property color textSoft: "#5d6075"
         readonly property color textFaint: "#8a8ca0"
         readonly property color accent: "#007aff"
         readonly property color danger: "#e0465c"
