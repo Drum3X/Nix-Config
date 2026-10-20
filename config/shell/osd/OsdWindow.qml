@@ -5,6 +5,7 @@ import qs.common
 import qs.services
 
 // Volume / brightness, shown for a moment under the menu bar when they change.
+// Dark glass in both appearances, as the Control Center (Theme.cc).
 PanelWindow {
     id: root
 
@@ -46,6 +47,7 @@ PanelWindow {
             name: Osd.icon
             size: 20
             filled: true
+            color: Theme.cc.text
         }
 
         Rectangle {
@@ -57,18 +59,18 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             height: 6
             radius: 3
-            color: Theme.hover
+            color: Theme.cc.sliderTrack
 
             Rectangle {
                 width: track.width * Math.max(0, Math.min(1, Osd.value))
                 height: parent.height
                 radius: 3
-                color: Theme.text
+                color: Theme.cc.text
                 Behavior on width { NumberAnimation { duration: Theme.fast; easing.type: Easing.OutCubic } }
             }
         }
 
-        Text {
+        CcText {
             id: percent
             anchors.right: parent.right
             anchors.rightMargin: 16
@@ -76,7 +78,6 @@ PanelWindow {
             width: 32
             horizontalAlignment: Text.AlignRight
             text: Math.round(Osd.value * 100)
-            color: Theme.text
             font.family: Theme.font
             font.styleName: "Semibold"
             font.pixelSize: Theme.textSm
