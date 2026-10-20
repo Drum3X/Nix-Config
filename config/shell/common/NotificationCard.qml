@@ -81,7 +81,7 @@ Item {
                 elide: Text.ElideRight
                 color: root.colors.text
                 font.family: Theme.font
-                font.weight: Font.DemiBold
+                font.styleName: "Semibold"
                 font.pixelSize: Theme.textMd
             }
 
@@ -138,7 +138,7 @@ Item {
                             text: modelData.text
                             color: root.colors.text
                             font.family: Theme.font
-                            font.weight: Font.Medium
+                            font.styleName: "Medium"
                             font.pixelSize: Theme.textMd
                         }
 

@@ -1,5 +1,6 @@
 //@ pragma Env QSG_RENDER_LOOP=threaded
-//@ pragma Env QSG_DISTANCEFIELD_ANTIALIASING=gray
+//@ pragma NativeTextRendering
+//@ pragma Env FREETYPE_PROPERTIES=cff:no-stem-darkening=0 autofitter:no-stem-darkening=0
 
 // hyalo-shell: the desktop shell of Hyalo, on ShojiWM.
 //
@@ -7,6 +8,9 @@
 // and panels is ShojiWM's ISLAND_GLASS (matched on the "hyalo-*" layer
 // namespaces); the shell draws only a translucent silhouette for it to
 // refract. The lock screen draws its own glass (common/FrostGlass.qml).
+//
+// Text is drawn through FreeType (NativeTextRendering) with stem darkening,
+// fuller and crisper than Qt's distance field text, as text is on macOS.
 
 import QtQuick
 import Quickshell

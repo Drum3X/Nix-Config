@@ -104,7 +104,7 @@ Item {
             text: Qt.formatTime(root.now, "HH:mm")
             color: Theme.onWallpaper
             font.family: Theme.fontDisplay
-            font.weight: Font.Thin
+            font.styleName: "Thin"
             font.pixelSize: Math.round(root.height * 0.15)
             font.letterSpacing: -2
             renderType: Text.CurveRendering
@@ -116,7 +116,7 @@ Item {
             color: Theme.onWallpaper
             opacity: 0.92
             font.family: Theme.font
-            font.weight: Font.Normal
+            font.styleName: "Regular"
             font.pixelSize: Math.round(root.height * 0.024)
         }
     }
@@ -145,7 +145,7 @@ Item {
                 text: root.heading.length > 0 ? root.heading.charAt(0).toUpperCase() : ""
                 color: Theme.onWallpaper
                 font.family: Theme.font
-                font.weight: Font.Light
+                font.styleName: "Light"
                 font.pixelSize: 38
             }
         }
@@ -155,7 +155,7 @@ Item {
             text: root.heading
             color: Theme.onWallpaper
             font.family: Theme.font
-            font.weight: Font.Medium
+            font.styleName: "Medium"
             font.pixelSize: 17
         }
 

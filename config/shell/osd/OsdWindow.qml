@@ -78,7 +78,7 @@ PanelWindow {
             text: Math.round(Osd.value * 100)
             color: Theme.text
             font.family: Theme.font
-            font.weight: Font.DemiBold
+            font.styleName: "Semibold"
             font.pixelSize: Theme.textSm
             font.features: ({ "tnum": 1 })
         }

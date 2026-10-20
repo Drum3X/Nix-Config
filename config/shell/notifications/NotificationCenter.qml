@@ -118,7 +118,7 @@ Scope {
                             text: "No Notifications"
                             color: Theme.cc.textSoft
                             font.family: Theme.font
-                            font.weight: Font.Medium
+                            font.styleName: "Medium"
                             font.pixelSize: Theme.textMd
                         }
                     }

@@ -69,7 +69,7 @@ Item {
                 elide: Text.ElideRight
                 color: Theme.cc.text
                 font.family: Theme.font
-                font.weight: Font.DemiBold
+                font.styleName: "Semibold"
                 font.pixelSize: Theme.textMd
             }
             CcText {

@@ -52,7 +52,7 @@ Item {
                 text: root.label
                 color: Theme.cc.text
                 font.family: Theme.font
-                font.weight: Font.DemiBold
+                font.styleName: "Semibold"
                 font.pixelSize: Theme.textXs
             }
         }

@@ -174,7 +174,7 @@ Scope {
                     text: bar.appName
                     color: root.itemColor
                     font.family: Theme.font
-                    font.weight: Font.Bold
+                    font.styleName: "Bold"
                     font.pixelSize: Theme.textBar
                 }
             }
@@ -227,7 +227,7 @@ Scope {
                     text: Compositor.layoutShort
                     color: root.itemColor
                     font.family: Theme.font
-                    font.weight: Font.DemiBold
+                    font.styleName: "Semibold"
                     font.pixelSize: Theme.textSm
                 }
             }
@@ -308,7 +308,7 @@ Scope {
                     text: Qt.locale("en_US").toString(clock.date, "ddd MMM d  HH:mm")
                     color: root.itemColor
                     font.family: Theme.font
-                    font.weight: Font.Medium
+                    font.styleName: "Medium"
                     font.pixelSize: Theme.textBar
                     font.features: ({ "tnum": 1 })
                 }

@@ -95,6 +95,8 @@ Singleton {
 
     // ----- type -------------------------------------------------------------
     // macOS: SF Pro Text for UI, SF Pro Display for large sizes, SF Mono.
+    // Weights are asked for by style name (font.styleName: "Semibold"), not
+    // font.weight: by weight Qt draws SF Pro's Medium and Semibold as Regular.
     readonly property string font: "SF Pro Text"
     readonly property string fontDisplay: "SF Pro Display"
     readonly property string fontMono: "SF Mono"

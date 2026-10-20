@@ -201,7 +201,7 @@ Scope {
                             maximumLineCount: 1
                             color: Theme.text
                             font.family: Theme.font
-                            font.weight: root.clipboard ? Font.Normal : Font.Medium
+                            font.styleName: root.clipboard ? "Regular" : "Medium"
                             font.pixelSize: Theme.textMd
                         }
 

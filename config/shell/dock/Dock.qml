@@ -58,7 +58,7 @@ Scope {
         id: labelMetrics
         text: root.shownText
         font.family: Theme.font
-        font.weight: Font.Medium
+        font.styleName: "Medium"
         font.pixelSize: Theme.textSm
     }
 
@@ -346,7 +346,7 @@ Scope {
                 text: root.shownText
                 color: Theme.text
                 font.family: Theme.font
-                font.weight: Font.Medium
+                font.styleName: "Medium"
                 font.pixelSize: Theme.textSm
             }
         }
