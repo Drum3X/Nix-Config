@@ -35,4 +35,9 @@ in {
       emoji = ["Noto Color Emoji"];
     };
   };
+
+  # Stem darkening: FreeType thickens the strokes a little, as macOS draws
+  # text, so small UI text reads fuller. The shell sets it for itself too
+  # (config/shell/shell.qml).
+  environment.sessionVariables.FREETYPE_PROPERTIES = "cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
 }
