@@ -41,10 +41,6 @@ Singleton {
         socket.flush();
     }
 
-    // The socket is up again (after every ShojiWM config reload): resend
-    // whatever the compositor keeps per surface (bar glass tints).
-    signal reconnected()
-
     function sendTheme(): void {
         send("theme.set", { mode: ThemeState.dark ? "dark" : "light" });
     }
@@ -79,7 +75,6 @@ Singleton {
         onConnectedChanged: {
             if (connected) {
                 root.sendTheme();
-                root.reconnected();
                 root.send("keyboard.get");
             }
         }

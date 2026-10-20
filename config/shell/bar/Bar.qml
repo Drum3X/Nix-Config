@@ -14,11 +14,11 @@ import qs.services
 // Its items are black over a light wallpaper and white over a dark one
 // (WallpaperTone), whatever the appearance. A clicked item sits for a moment
 // in a capsule of liquid glass, and as long as the panel it opened stays
-// open: dark glass under black items, light glass under white ones. Two
-// surfaces with the same geometry, as the dock: the capsule is compositor
-// glass ("hyalo-bar-capsule-<screen>"), the bar itself a clear layer
-// ("no_blur") above it, so its text and icons never count as part of the
-// glass silhouette.
+// open: the dark glass of the panels at the top right, in both appearances.
+// Two surfaces with the same geometry, as the dock: the capsule is
+// compositor glass ("hyalo-bar-capsule-<screen>"), the bar itself a clear
+// layer ("no_blur") above it, so its text and icons never count as part of
+// the glass silhouette.
 Scope {
     id: root
 
@@ -53,16 +53,6 @@ Scope {
         id: motion
         open: root.litItem !== null
         namespace: root.capsuleNamespace
-    }
-
-    function sendTint(): void {
-        Compositor.send("glass.tint", { namespace: root.capsuleNamespace, dark: root.blackItems });
-    }
-    onBlackItemsChanged: sendTint()
-    Component.onCompleted: sendTint()
-    Connections {
-        target: Compositor
-        function onReconnected(): void { root.sendTint(); }
     }
 
     // ----- the glass capsule ----------------------------------------------------

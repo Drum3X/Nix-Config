@@ -409,26 +409,6 @@ WORKSPACE_IPC.handle("glass.fade", (params) => {
     glassFadeEntry(namespace)[1](value);
 });
 
-// A hyalo-* surface whose glass tint follows what is drawn on it rather than
-// the appearance: the menu bar's capsule is dark glass under black items and
-// light glass under white ones (GLASS_TINT.barDark / barLight) (WallpaperTone in the shell). The shell sends
-//   glass.tint  { namespace, dark }
-// when that changes, and again after every reconnect.
-const glassTints = new Map<string, ReturnType<typeof signal<boolean | null>>>();
-function glassTintEntry(namespace: string) {
-  let entry = glassTints.get(namespace);
-  if (!entry) {
-    entry = signal<boolean | null>(null);
-    glassTints.set(namespace, entry);
-  }
-  return entry;
-}
-WORKSPACE_IPC.handle("glass.tint", (params) => {
-  const { namespace, dark } = (params ?? {}) as { namespace?: string; dark?: boolean };
-  if (typeof namespace === "string" && typeof dark === "boolean")
-    glassTintEntry(namespace)[1](dark);
-});
-
 // The active keyboard layout, for the bar's layout indicator.
 //   keyboard.get     -> { index, name }   (request/response)
 //   keyboard.layout  -> { index, name }   (broadcast)
@@ -719,7 +699,13 @@ const LAYER_BLUR_MASK = compileLayerEffect({
   ],
 });
 
+// The panels at the top right (the Control Center, the Notification Center,
+// the banners, the OSD) and the menu bar's capsule are on dark glass in both
+// appearances, as on macOS (Theme.cc in the shell), a lighter one in the
+// light appearance.
 const DARK_GLASS_NAMESPACES = new Set(["hyalo-control", "hyalo-notification-center", "hyalo-notify", "hyalo-osd"]);
+const darkGlass = (namespace: string) =>
+  DARK_GLASS_NAMESPACES.has(namespace) || namespace.startsWith("hyalo-bar-capsule-");
 
 COMPOSITOR.effect.layer = (layer) => {
   const namespace = layer.namespace();
@@ -727,16 +713,7 @@ COMPOSITOR.effect.layer = (layer) => {
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    // The panels at the top right (the Control Center, the Notification
-    // Center, the banners, the OSD) are on dark glass in both appearances,
-    // as on macOS (Theme.cc in the shell), a lighter one in the light
-    // appearance.
-    const ownTint = glassTintEntry(namespace)[0]();
-    const tint = ownTint !== null
-      ? (ownTint ? "barDark" : "barLight")
-      : DARK_GLASS_NAMESPACES.has(namespace)
-        ? (themeDark() ? "dark" : "controlLight")
-        : (themeDark() ? "dark" : "light");
+    const tint = themeDark() ? "dark" : darkGlass(namespace) ? "controlLight" : "light";
     return { behind: islandGlassAt(tint, glassFade(namespace)()) };
   }
   // The wallpaper, and anything else that wants no glass at all.
