@@ -5,22 +5,21 @@ import qs.services
 
 // One notification, laid out like macOS: the app icon (or the notification's
 // image) on the left; the summary in bold with the time on the right, the
-// body under it, and the actions as capsules at the bottom right. A close
-// button shows over the icon's corner under the pointer. The card draws no
-// background: NotificationBanner puts it on glass.
+// body under it, and the actions as capsules at the bottom right. The card
+// draws no background: NotificationBanner puts it on glass, which is dark in
+// both appearances (Theme.cc), as the Control Center's.
 //
-// It only asks: a click (activated) or the close button (closeRequested);
-// whoever shows it takes it away, so it can animate out first.
+// A click only asks (activated): whoever shows it takes it away, so it can
+// animate out first.
 Item {
     id: root
 
     required property var notification
-    property QtObject colors: Theme.palette
-    readonly property bool hovered: mouse.containsMouse || close.hovered || actionsHovered
+    property QtObject colors: Theme.cc
+    readonly property bool hovered: mouse.containsMouse || actionsHovered
     property bool actionsHovered: false
 
     signal activated()
-    signal closeRequested()
 
     implicitHeight: Math.max(picture.height, column.implicitHeight) + 28
 
@@ -73,7 +72,7 @@ Item {
             width: parent.width
             height: summary.implicitHeight
 
-            Text {
+            CcText {
                 id: summary
                 anchors.left: parent.left
                 anchors.right: time.left
@@ -86,7 +85,7 @@ Item {
                 font.pixelSize: Theme.textMd
             }
 
-            Text {
+            CcText {
                 id: time
                 anchors.right: parent.right
                 anchors.baseline: summary.baseline
@@ -97,7 +96,7 @@ Item {
             }
         }
 
-        Text {
+        CcText {
             width: parent.width
             visible: text.length > 0
             text: root.notification.body
@@ -133,7 +132,7 @@ Item {
                         color: actionMouse.pressed ? root.colors.pressed : root.colors.hover
                         Behavior on color { ColorAnimation { duration: Theme.fast } }
 
-                        Text {
+                        CcText {
                             id: actionLabel
                             anchors.centerIn: parent
                             text: modelData.text
@@ -157,36 +156,6 @@ Item {
                     }
                 }
             }
-        }
-    }
-
-    // The close button, over the icon's top left corner while hovered.
-    Rectangle {
-        id: close
-        readonly property bool hovered: closeMouse.containsMouse
-        x: picture.x - 8
-        y: picture.y - 8
-        width: 20
-        height: 20
-        radius: 10
-        color: closeMouse.pressed ? root.colors.pressed : Theme.dark ? "#4a4a50" : "#f2f2f5"
-        opacity: root.hovered ? 1 : 0
-        visible: opacity > 0
-        Behavior on opacity { NumberAnimation { duration: Theme.fast } }
-
-        Icon {
-            anchors.centerIn: parent
-            name: "close"
-            size: 13
-            color: root.colors.textDim
-        }
-
-        MouseArea {
-            id: closeMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.closeRequested()
         }
     }
 }

@@ -719,18 +719,21 @@ const LAYER_BLUR_MASK = compileLayerEffect({
   ],
 });
 
+const DARK_GLASS_NAMESPACES = new Set(["hyalo-control", "hyalo-notification-center", "hyalo-notify"]);
+
 COMPOSITOR.effect.layer = (layer) => {
   const namespace = layer.namespace();
   // hyalo-shell's surfaces draw only a faint silhouette (Theme.glassAlpha ==
   // ISLAND_GLASS_OPTIONS.surfaceOpacity) and let the compositor recover the
   // shape from it and refract what is behind.
   if (namespace?.startsWith("hyalo-")) {
-    // The Control Center is on dark glass in both appearances, as on macOS
+    // The panels at the top right (the Control Center, the Notification
+    // Center, the banners) are on dark glass in both appearances, as on macOS
     // (Theme.cc in the shell), a lighter one in the light appearance.
     const ownTint = glassTintEntry(namespace)[0]();
     const tint = ownTint !== null
       ? (ownTint ? "barDark" : "barLight")
-      : namespace === "hyalo-control"
+      : DARK_GLASS_NAMESPACES.has(namespace)
         ? (themeDark() ? "dark" : "controlLight")
         : (themeDark() ? "dark" : "light");
     return { behind: islandGlassAt(tint, glassFade(namespace)()) };

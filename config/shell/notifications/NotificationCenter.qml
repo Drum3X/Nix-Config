@@ -8,7 +8,8 @@ import qs.services
 // clock, every notification on its own glass, newest first, and a round
 // button under them that clears them all. It slides in from the right edge
 // of the screen and back out to it; a notification swiped to the right is
-// dismissed. Opened from the clock in the menu bar.
+// dismissed. Dark glass in both appearances, as the Control Center. Opened
+// from the clock in the menu bar.
 Scope {
     id: root
 
@@ -25,12 +26,14 @@ Scope {
         id: window
         screen: root.modelData
 
-        // 1 in place, 0 beyond the right edge of the screen.
+        // 1 in place, 0 beyond the right edge of the screen; as the banners
+        // (NotificationBanner), it overshoots a little on the way in.
         property real slide: 0
         Behavior on slide {
             NumberAnimation {
-                duration: root.open ? 380 : 260
-                easing.type: root.open ? Easing.OutCubic : Easing.InCubic
+                duration: root.open ? Theme.slideIn : Theme.slideOut
+                easing.type: root.open ? Easing.OutBack : Easing.InCubic
+                easing.overshoot: Theme.slideOvershoot
             }
         }
         visible: root.open || slide > 0
@@ -48,7 +51,7 @@ Scope {
         anchors.top: true
         anchors.right: true
         margins.top: Theme.barExclusive
-        implicitWidth: Theme.notificationWidth + Theme.edge
+        implicitWidth: Theme.slideRoom + Theme.notificationWidth + Theme.edge
         implicitHeight: Math.max(1, Math.min(screen.height - Theme.barExclusive - Theme.dockHeight - Theme.edge * 3,
                                              content.implicitHeight))
         exclusionMode: ExclusionMode.Ignore
@@ -62,7 +65,7 @@ Scope {
 
         Item {
             id: content
-            x: (1 - window.slide) * (Theme.notificationWidth + Theme.edge + 24)
+            x: Theme.slideRoom + (1 - window.slide) * (Theme.notificationWidth + Theme.edge + 24)
             width: Theme.notificationWidth
             height: window.height
             implicitHeight: column.implicitHeight
@@ -110,10 +113,10 @@ Scope {
                         height: 52
                         radius: height / 2
 
-                        Text {
+                        CcText {
                             anchors.centerIn: parent
                             text: "No Notifications"
-                            color: Theme.textDim
+                            color: Theme.cc.textDim
                             font.family: Theme.font
                             font.weight: Font.Medium
                             font.pixelSize: Theme.textMd
@@ -140,7 +143,7 @@ Scope {
                             Rectangle {
                                 anchors.fill: parent
                                 radius: clearAll.radius
-                                color: clearMouse.containsMouse ? Theme.hover : Theme.clear
+                                color: clearMouse.containsMouse ? Theme.cc.hover : Theme.clear
                                 Behavior on color { ColorAnimation { duration: Theme.fast } }
                             }
 
@@ -148,7 +151,7 @@ Scope {
                                 anchors.centerIn: parent
                                 name: "close"
                                 size: 18
-                                color: Theme.text
+                                color: Theme.cc.text
                             }
 
                             MouseArea {

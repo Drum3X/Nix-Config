@@ -8,9 +8,9 @@ import qs.services
 // New notifications as macOS banners, stacked under the right end of the
 // bar. Each slides in from the right edge and back out after its timeout
 // (5 s by default, never for critical ones); hovering holds it. Swiped away
-// or timed out, it stays in the Notification Center; its close button
-// dismisses it altogether. Hidden while the Notification Center or the
-// Control Center is open on this screen.
+// or timed out, it stays in the Notification Center; clicked, it is gone.
+// Dark glass in both appearances, as the Control Center. Hidden while the
+// Notification Center or the Control Center is open on this screen.
 PanelWindow {
     id: root
 
@@ -24,7 +24,7 @@ PanelWindow {
     anchors.top: true
     anchors.right: true
     margins.top: Theme.barExclusive - 2
-    implicitWidth: Theme.notificationWidth + Theme.edge
+    implicitWidth: Theme.slideRoom + Theme.notificationWidth + Theme.edge
     implicitHeight: Math.max(1, stack.implicitHeight)
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
@@ -37,7 +37,7 @@ PanelWindow {
 
     Column {
         id: stack
-        width: Theme.notificationWidth
+        width: parent.width
         spacing: 8
 
         move: Transition {
@@ -52,10 +52,11 @@ PanelWindow {
                 id: banner
                 required property var modelData
                 notification: modelData
-                width: stack.width
+                width: Theme.notificationWidth
+                inset: Theme.slideRoom
 
                 onGone: (reason) => {
-                    if (reason === "close" || reason === "activate")
+                    if (reason === "activate")
                         banner.modelData.dismiss();
                     Notifs.dismissToast(banner.modelData);
                 }
