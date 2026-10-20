@@ -3,34 +3,45 @@ import Quickshell
 import Quickshell.Widgets
 import qs.services
 
-// One notification: app icon (or image), summary, body and action buttons.
-// Clicking runs its default action; the close button dismisses it.
+// One notification, laid out like macOS: the app icon (or the notification's
+// image) on the left; the summary in bold with the time on the right, the
+// body under it, and the actions as capsules at the bottom right. A close
+// button shows over the icon's corner under the pointer. The card draws no
+// background: NotificationBanner puts it on glass.
+//
+// It only asks: a click (activated) or the close button (closeRequested);
+// whoever shows it takes it away, so it can animate out first.
 Item {
     id: root
 
     required property var notification
-    property color background: "transparent"
-    // Theme.cc on the Control Center's always-dark glass.
     property QtObject colors: Theme.palette
-    readonly property bool hovered: mouse.containsMouse || close.hovered
+    readonly property bool hovered: mouse.containsMouse || close.hovered || actionsHovered
+    property bool actionsHovered: false
 
-    signal dismissed()
+    signal activated()
+    signal closeRequested()
 
-    implicitHeight: column.implicitHeight + 24
+    implicitHeight: Math.max(picture.height, column.implicitHeight) + 28
 
-    Rectangle {
+    MouseArea {
+        id: mouse
         anchors.fill: parent
-        radius: Theme.tileRadius
-        color: root.background
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            Notifs.invokeDefault(root.notification);
+            root.activated();
+        }
     }
 
     ClippingRectangle {
         id: picture
-        x: 12
-        y: 12
-        width: 36
-        height: 36
-        radius: 10
+        x: 14
+        y: 14
+        width: 38
+        height: 38
+        radius: 9
         color: "transparent"
 
         Image {
@@ -54,34 +65,39 @@ Item {
         anchors.left: picture.right
         anchors.leftMargin: 12
         anchors.right: parent.right
-        anchors.rightMargin: 34
-        y: 12
-        spacing: 3
+        anchors.rightMargin: 14
+        y: 14
+        spacing: 2
 
-        CcText {
-            shadow: root.colors === Theme.cc && !Theme.dark
+        Item {
             width: parent.width
-            text: root.notification.appName
-            visible: text.length > 0
-            elide: Text.ElideRight
-            color: root.colors.textFaint
-            font.family: Theme.font
-            font.pixelSize: Theme.textXs
+            height: summary.implicitHeight
+
+            Text {
+                id: summary
+                anchors.left: parent.left
+                anchors.right: time.left
+                anchors.rightMargin: 8
+                text: root.notification.summary || root.notification.appName
+                elide: Text.ElideRight
+                color: root.colors.text
+                font.family: Theme.font
+                font.weight: Font.DemiBold
+                font.pixelSize: Theme.textMd
+            }
+
+            Text {
+                id: time
+                anchors.right: parent.right
+                anchors.baseline: summary.baseline
+                text: Notifs.ago(root.notification)
+                color: root.colors.textFaint
+                font.family: Theme.font
+                font.pixelSize: Theme.textSm
+            }
         }
 
-        CcText {
-            shadow: root.colors === Theme.cc && !Theme.dark
-            width: parent.width
-            text: root.notification.summary
-            elide: Text.ElideRight
-            color: root.colors.text
-            font.family: Theme.font
-            font.weight: Font.DemiBold
-            font.pixelSize: Theme.textMd
-        }
-
-        CcText {
-            shadow: root.colors === Theme.cc && !Theme.dark
+        Text {
             width: parent.width
             visible: text.length > 0
             text: root.notification.body
@@ -89,76 +105,88 @@ Item {
             maximumLineCount: 3
             elide: Text.ElideRight
             textFormat: Text.PlainText
-            color: root.colors.textDim
+            color: root.colors.text
             font.family: Theme.font
-            font.pixelSize: Theme.textSm
+            font.pixelSize: Theme.textMd
         }
 
-        Row {
-            spacing: 6
-            topPadding: 4
+        Item {
+            width: parent.width
+            height: actionRow.height + 6
             visible: actions.count > 0
 
-            Repeater {
-                id: actions
-                model: (root.notification.actions || []).filter((a) => a.identifier !== "default")
+            Row {
+                id: actionRow
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                spacing: 6
 
-                delegate: Rectangle {
-                    required property var modelData
-                    width: actionLabel.implicitWidth + 20
-                    height: 26
-                    radius: 13
-                    color: actionMouse.containsMouse ? root.colors.pressed : root.colors.hover
+                Repeater {
+                    id: actions
+                    model: (root.notification.actions || []).filter((a) => a.identifier !== "default")
 
-                    CcText {
-                        shadow: root.colors === Theme.cc && !Theme.dark
-                        id: actionLabel
-                        anchors.centerIn: parent
-                        text: modelData.text
-                        color: root.colors.text
-                        font.family: Theme.font
-                        font.weight: Font.Medium
-                        font.pixelSize: Theme.textSm
-                    }
+                    delegate: Rectangle {
+                        required property var modelData
+                        width: actionLabel.implicitWidth + 24
+                        height: 28
+                        radius: 14
+                        color: actionMouse.pressed ? root.colors.pressed : root.colors.hover
+                        Behavior on color { ColorAnimation { duration: Theme.fast } }
 
-                    MouseArea {
-                        id: actionMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: modelData.invoke()
+                        Text {
+                            id: actionLabel
+                            anchors.centerIn: parent
+                            text: modelData.text
+                            color: root.colors.text
+                            font.family: Theme.font
+                            font.weight: Font.Medium
+                            font.pixelSize: Theme.textMd
+                        }
+
+                        MouseArea {
+                            id: actionMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onContainsMouseChanged: root.actionsHovered = containsMouse
+                            onClicked: {
+                                modelData.invoke();
+                                root.activated();
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    MouseArea {
-        id: mouse
-        anchors.fill: parent
-        z: -1
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            Notifs.invokeDefault(root.notification);
-            root.dismissed();
-        }
-    }
-
-    IconButton {
+    // The close button, over the icon's top left corner while hovered.
+    Rectangle {
         id: close
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.margins: 6
-        width: 24
-        height: 24
-        icon: "close"
-        iconSize: 16
-        colors: root.colors
-        color: root.colors.textDim
-        onClicked: {
-            root.notification.dismiss();
-            root.dismissed();
+        readonly property bool hovered: closeMouse.containsMouse
+        x: picture.x - 8
+        y: picture.y - 8
+        width: 20
+        height: 20
+        radius: 10
+        color: closeMouse.pressed ? root.colors.pressed : Theme.dark ? "#4a4a50" : "#f2f2f5"
+        opacity: root.hovered ? 1 : 0
+        visible: opacity > 0
+        Behavior on opacity { NumberAnimation { duration: Theme.fast } }
+
+        Icon {
+            anchors.centerIn: parent
+            name: "close"
+            size: 13
+            color: root.colors.textDim
+        }
+
+        MouseArea {
+            id: closeMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.closeRequested()
         }
     }
 }

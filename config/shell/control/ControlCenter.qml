@@ -12,8 +12,8 @@ import qs.services
 // The control center, laid out like macOS Tahoe: no panel, every control is
 // its own piece of glass on a grid of round cells (Theme.ccUnit). Wi-Fi and
 // Focus are capsules, Now Playing a square; Bluetooth, Appearance, Energy and
-// the battery are circles; then the Display and Sound sliders, the session
-// actions and the notifications.
+// the battery are circles; then the Display and Sound sliders and the session
+// actions. Notifications are in the Notification Center.
 Scope {
     id: root
 
@@ -510,74 +510,6 @@ Scope {
                         PowerCircle { reveal: window.reveal; icon: "logout"; onRun: Quickshell.execDetached(["shoji_wm", "--quit"]) }
                         PowerCircle { reveal: window.reveal; icon: "restart_alt"; onRun: Quickshell.execDetached(["systemctl", "reboot"]) }
                         PowerCircle { reveal: window.reveal; icon: "power_settings_new"; onRun: Quickshell.execDetached(["systemctl", "poweroff"]) }
-                    }
-
-                    // ----- notifications -----------------------------------------
-                    // Off the glass, on whatever is behind: the appearance's own
-                    // colours (Theme), not the glass's (Theme.cc).
-                    Item {
-                        width: parent.width
-                        height: 22
-                        visible: Notifs.count > 0
-                        opacity: Math.min(1, window.reveal * window.reveal)
-
-                        Text {
-                            x: 6
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: "Notifications"
-                            color: Theme.text
-                            font.family: Theme.font
-                            font.weight: Font.DemiBold
-                            font.pixelSize: Theme.textSm
-                        }
-
-                        // "Clear", on a small capsule that shows under the pointer.
-                        Rectangle {
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: clearText.implicitWidth + 16
-                            height: 22
-                            radius: height / 2
-                            color: clearMouse.pressed ? Theme.pressed : clearMouse.containsMouse ? Theme.hover : Theme.clear
-                            Behavior on color { ColorAnimation { duration: Theme.fast } }
-
-                            Text {
-                                id: clearText
-                                anchors.centerIn: parent
-                                text: "Clear"
-                                color: Theme.accent
-                                font.family: Theme.font
-                                font.pixelSize: Theme.textSm
-                            }
-
-                            MouseArea {
-                                id: clearMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: Notifs.clearAll()
-                            }
-                        }
-                    }
-
-                    Repeater {
-                        model: Notifs.list.slice().reverse().slice(0, 6)
-
-                        delegate: GlassPanel {
-                            reveal: window.reveal
-                            id: card
-                            required property var modelData
-                            width: content.width
-                            height: notification.implicitHeight
-                            radius: Theme.panelRadius
-
-                            NotificationCard {
-                                id: notification
-                                anchors.fill: parent
-                                notification: card.modelData
-                                colors: Theme.cc
-                            }
-                        }
                     }
                 }
             }

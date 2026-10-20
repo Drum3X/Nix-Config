@@ -125,6 +125,8 @@ Singleton {
     readonly property int ccUnit: 72
     readonly property int ccGap: 14
     readonly property int tileRadius: 14
+    // Banners and the Notification Center.
+    readonly property int notificationWidth: 360
 
     // ----- motion -----------------------------------------------------------
     readonly property int fast: 140

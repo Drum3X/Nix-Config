@@ -133,6 +133,11 @@ ShellRoot {
         Toasts {}
     }
 
+    Variants {
+        model: Quickshell.screens
+        NotificationCenter {}
+    }
+
     // Rounded screen corners, over everything.
     Variants {
         model: Quickshell.screens

@@ -13,8 +13,9 @@ Singleton {
     property string launcherScreen: ""
     property string launcherMode: "apps"   // "apps" | "clipboard"
     property string controlScreen: ""
+    property string notificationsScreen: ""
 
-    readonly property bool anyOpen: launcherScreen !== "" || controlScreen !== ""
+    readonly property bool anyOpen: launcherScreen !== "" || controlScreen !== "" || notificationsScreen !== ""
 
     function firstScreen(): string {
         return Quickshell.screens.length > 0 ? Quickshell.screens[0].name : "";
@@ -22,6 +23,7 @@ Singleton {
 
     function openLauncher(screen: string, mode: string): void {
         root.controlScreen = "";
+        root.notificationsScreen = "";
         root.launcherMode = mode;
         root.launcherScreen = screen || firstScreen();
         if (mode === "clipboard")
@@ -37,12 +39,20 @@ Singleton {
 
     function toggleControl(screen: string): void {
         root.launcherScreen = "";
+        root.notificationsScreen = "";
         root.controlScreen = root.controlScreen !== "" ? "" : (screen || firstScreen());
+    }
+
+    function toggleNotifications(screen: string): void {
+        root.launcherScreen = "";
+        root.controlScreen = "";
+        root.notificationsScreen = root.notificationsScreen !== "" ? "" : (screen || firstScreen());
     }
 
     function closeAll(): void {
         root.launcherScreen = "";
         root.controlScreen = "";
+        root.notificationsScreen = "";
     }
 
     IpcHandler {
@@ -60,5 +70,13 @@ Singleton {
 
         function toggle(): void { root.toggleControl(""); }
         function toggleOn(screen: string): void { root.toggleControl(screen); }
+    }
+
+    IpcHandler {
+        target: "notifications"
+
+        function toggle(): void { root.toggleNotifications(""); }
+        function toggleOn(screen: string): void { root.toggleNotifications(screen); }
+        function close(): void { root.notificationsScreen = ""; }
     }
 }

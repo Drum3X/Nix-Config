@@ -42,6 +42,7 @@ Scope {
         return items.find((item) => item.flashing)
             ?? (Ui.controlScreen === modelData.name ? opener("control") : null)
             ?? (Ui.launcherScreen === modelData.name ? opener("launcher") : null)
+            ?? (Ui.notificationsScreen === modelData.name ? opener("notifications") : null)
             ?? null;
     }
     // Where the capsule last was, so it fades out in place.
@@ -296,9 +297,11 @@ Scope {
                 Icon { anchors.verticalCenter: parent.verticalCenter; name: "toggle_on"; size: 19; filled: true; color: root.itemColor }
             }
 
+            // The date and time open the Notification Center.
             BarItem {
-                panel: "control"
-                onClicked: Ui.toggleControl(bar.screen.name)
+                panel: "notifications"
+                primary: true
+                onClicked: Ui.toggleNotifications(bar.screen.name)
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
@@ -318,9 +321,10 @@ Scope {
     component BarItem: Item {
         id: item
         default property alias content: holder.data
-        // The panel a click opens ("control", "launcher"), if any: the capsule
-        // stays on the item while it is open. `primary`: the panel's own
-        // button, which takes the capsule when it is opened from the keyboard.
+        // The panel a click opens ("control", "launcher", "notifications"), if
+        // any: the capsule stays on the item while it is open. `primary`: the
+        // panel's own button, which takes the capsule when it is opened from
+        // the keyboard.
         property string panel: ""
         property bool primary: false
         // When it was last clicked, to tell which item opened the panel.
