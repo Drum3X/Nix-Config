@@ -14,6 +14,10 @@
     });
   };
 
-  # KDE's video player; volume is in Plasma's own audio applet.
-  home.packages = [pkgs.haruna];
+  home.packages = [
+    # KDE's video player; volume is in Plasma's own audio applet.
+    pkgs.haruna
+    # YouTube Music client (formerly th-ch/youtube-music).
+    pkgs.pear-desktop
+  ];
 }
