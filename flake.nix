@@ -1,5 +1,5 @@
 {
-  description = "Drum3X's NixOS config (COSMIC desktop).";
+  description = "Drum3X's NixOS config (KDE Plasma desktop).";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

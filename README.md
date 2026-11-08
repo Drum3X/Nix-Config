@@ -1,10 +1,11 @@
 # Nix-Config
 
-Drum3X'in NixOS config'i: **COSMIC** masaüstü ve **cosmic-greeter**, Home Manager
+Drum3X'in NixOS config'i: **KDE Plasma 6** masaüstü ve **SDDM**, Home Manager
 NixOS modülü olarak, tek bir `nixos-rebuild switch` ile uygulanır.
 
-- Tema, fontlar ve ikonlar COSMIC'in varsayılanlarıdır; koyu / açık tema dahil
-  hepsi COSMIC Ayarlar'dan değiştirilir.
+- Tema, fontlar, ikonlar ve uygulamalar (Konsole, Dolphin, Kate, Ark, Gwenview,
+  Okular, Spectacle, Elisa) Plasma'nın varsayılanlarıdır; hepsi Sistem
+  Ayarları'ndan değiştirilir.
 - Eski ShojiWM + Quickshell (Hyalo) masaüstü artık
   [Drum3X/Hyalo-Shell](https://github.com/Drum3X/Hyalo-Shell) reposunda.
 
@@ -65,5 +66,5 @@ sudo nixos-rebuild switch --flake ~/Config#nitro
 
 - NVIDIA hibrit: masaüstü Intel iGPU'da çalışır. Bir programı dGPU'da açmak için
   `nvidia-offload <komut>`.
-- Panel, dock, kısayollar ve duvar kağıdı COSMIC Ayarlar'dan yönetilir
-  (`~/.config/cosmic`); bu repo onları sabitlemez.
+- Panel, kısayollar ve duvar kağıdı Plasma Sistem Ayarları'ndan yönetilir;
+  bu repo onları sabitlemez.

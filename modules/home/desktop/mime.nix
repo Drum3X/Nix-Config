@@ -1,6 +1,5 @@
 {...}: let
   browser = "vivaldi-stable.desktop";
-  files = "org.gnome.Nautilus.desktop";
 in {
   xdg = {
     enable = true;
@@ -9,6 +8,7 @@ in {
       createDirectories = true;
     };
 
+    # Everything else opens in Plasma's own apps.
     mimeApps = {
       enable = true;
       defaultApplications = {
@@ -16,16 +16,16 @@ in {
         "x-scheme-handler/http" = browser;
         "x-scheme-handler/https" = browser;
         "x-scheme-handler/about" = browser;
-        "application/pdf" = browser;
-        "inode/directory" = files;
-        "text/plain" = "com.system76.CosmicEdit.desktop";
+        "inode/directory" = "org.kde.dolphin.desktop";
+        "text/plain" = "org.kde.kate.desktop";
+        "application/pdf" = "org.kde.okular.desktop";
       };
     };
   };
 
   home.sessionVariables = {
     BROWSER = "vivaldi";
-    TERMINAL = "ghostty";
-    FILE_MANAGER = "nautilus";
+    TERMINAL = "konsole";
+    FILE_MANAGER = "dolphin";
   };
 }

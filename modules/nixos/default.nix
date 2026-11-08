@@ -15,7 +15,7 @@
     ./hardware/nvidia.nix
     ./hardware/power.nix
 
-    ./desktop/cosmic.nix
+    ./desktop/plasma.nix
     ./desktop/security.nix
     ./desktop/services.nix
 

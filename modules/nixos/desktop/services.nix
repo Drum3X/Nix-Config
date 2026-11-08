@@ -4,15 +4,7 @@
   ...
 }: {
   config = lib.mkIf config.my.desktop.enable {
+    # GTK apps (Vivaldi, OBS) keep their settings in dconf.
     programs.dconf.enable = true;
-
-    services = {
-      gvfs.enable = true;
-      udisks2.enable = true;
-      gnome = {
-        gnome-keyring.enable = true;
-        sushi.enable = true;
-      };
-    };
   };
 }

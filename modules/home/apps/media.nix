@@ -14,8 +14,6 @@
     });
   };
 
-  home.packages = with pkgs; [
-    mpv
-    pavucontrol
-  ];
+  # KDE's video player; volume is in Plasma's own audio applet.
+  home.packages = [pkgs.haruna];
 }

@@ -19,7 +19,7 @@ in {
       description = "Where this repository is checked out on the machine.";
     };
 
-    desktop.enable = mkEnableOption "the COSMIC desktop and its greeter";
+    desktop.enable = mkEnableOption "the KDE Plasma desktop and SDDM";
 
     hardware.nvidia = {
       enable = mkEnableOption "NVIDIA PRIME offload (Intel iGPU + NVIDIA dGPU)";

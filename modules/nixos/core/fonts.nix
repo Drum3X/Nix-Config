@@ -1,6 +1,6 @@
 {pkgs, ...}: {
-  # The COSMIC module installs its own fonts (Open Sans, Noto, Fira); these only
-  # add scripts and emoji they do not cover.
+  # Plasma installs and picks its own fonts (Noto Sans, Hack); these only add
+  # scripts and emoji Noto Sans does not cover.
   fonts = {
     packages = with pkgs; [
       noto-fonts-cjk-sans
@@ -9,13 +9,5 @@
 
     # causes more issues than it solves
     enableDefaultPackages = false;
-
-    # COSMIC's own defaults, so apps that ask fontconfig match COSMIC apps.
-    fontconfig.defaultFonts = {
-      serif = ["Noto Serif"];
-      sansSerif = ["Open Sans"];
-      monospace = ["Noto Sans Mono"];
-      emoji = ["Noto Color Emoji"];
-    };
   };
 }
