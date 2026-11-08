@@ -14,13 +14,6 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # San Francisco / New York, downloaded from Apple at build time (Apple's
-    # font licence does not allow redistribution, so nixpkgs has none).
-    apple-fonts = {
-      url = "github:Lyndeno/apple-fonts.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {

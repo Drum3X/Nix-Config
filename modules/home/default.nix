@@ -3,8 +3,6 @@
     ./desktop/mime.nix
 
     ./theme/cursor.nix
-    ./theme/gtk.nix
-    ./theme/qt.nix
 
     ./apps/browsers.nix
     ./apps/files.nix

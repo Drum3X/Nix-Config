@@ -2,7 +2,6 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      font-family = ["SF Mono" "Symbols Nerd Font"];
       font-size = 11;
       # Follows the system color scheme.
       theme = "light:Adwaita,dark:Adwaita Dark";

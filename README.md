@@ -3,8 +3,8 @@
 Drum3X'in NixOS config'i: **COSMIC** masaüstü ve **cosmic-greeter**, Home Manager
 NixOS modülü olarak, tek bir `nixos-rebuild switch` ile uygulanır.
 
-- Koyu / açık tema COSMIC Ayarlar'dan değiştirilir. Qt uygulamaları Kvantum ile
-  KvLibadwaita (açık) kullanır (`modules/home/theme/qt.nix`).
+- Tema, fontlar ve ikonlar COSMIC'in varsayılanlarıdır; koyu / açık tema dahil
+  hepsi COSMIC Ayarlar'dan değiştirilir.
 - Eski ShojiWM + Quickshell (Hyalo) masaüstü artık
   [Drum3X/Hyalo-Shell](https://github.com/Drum3X/Hyalo-Shell) reposunda.
 
