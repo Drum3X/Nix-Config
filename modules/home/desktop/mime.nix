@@ -1,5 +1,5 @@
 {...}: let
-  browser = "vivaldi-stable.desktop";
+  browser = "google-chrome.desktop";
 in {
   xdg = {
     enable = true;
@@ -24,7 +24,7 @@ in {
   };
 
   home.sessionVariables = {
-    BROWSER = "vivaldi";
+    BROWSER = "google-chrome-stable";
     TERMINAL = "konsole";
     FILE_MANAGER = "dolphin";
   };

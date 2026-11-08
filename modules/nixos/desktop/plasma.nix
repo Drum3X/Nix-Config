@@ -1,8 +1,11 @@
 {
   config,
   lib,
+  pkgs,
   ...
-}: {
+}: let
+  cursor = "Bibata-Modern-Classic";
+in {
   config = lib.mkIf config.my.desktop.enable {
     # Plasma 6 with its default apps (Konsole, Dolphin, Kate, Ark, Gwenview,
     # Okular, Spectacle, Elisa), fonts, theme and KWallet; SDDM on Wayland.
@@ -10,7 +13,18 @@
     services.displayManager.sddm = {
       enable = true;
       wayland.enable = true;
+      settings.Theme.CursorTheme = cursor;
     };
+
+    # The Bibata cursor instead of Breeze, in SDDM and as Plasma's default
+    # (System Settings can still change it). GTK and X apps get it from
+    # Home Manager (modules/home/theme/cursor.nix).
+    environment.systemPackages = [pkgs.bibata-cursors];
+    environment.etc."xdg/kcminputrc".text = ''
+      [Mouse]
+      cursorTheme=${cursor}
+      cursorSize=24
+    '';
 
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
   };

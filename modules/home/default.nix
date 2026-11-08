@@ -2,6 +2,8 @@
   imports = [
     ./desktop/mime.nix
 
+    ./theme/cursor.nix
+
     ./apps/browsers.nix
     ./apps/media.nix
 
