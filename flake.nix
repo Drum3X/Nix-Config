@@ -15,6 +15,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # F-Dpi (github.com/Drum3X/F-DPI): sing-box proxy and zapret DPI bypass.
+    f-dpi = {
+      url = "github:Drum3X/F-DPI";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Plasma settings (shortcuts, virtual desktops) from Home Manager.
     plasma-manager = {
       url = "github:nix-community/plasma-manager";

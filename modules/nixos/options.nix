@@ -37,6 +37,7 @@ in {
 
     network = {
       dnscrypt.enable = mkEnableOption "dnscrypt-proxy as the local resolver";
+      f-dpi.enable = mkEnableOption "F-Dpi, the sing-box proxy and zapret DPI bypass app";
       zapret.enable = mkEnableOption "zapret DPI bypass";
     };
   };

@@ -20,6 +20,7 @@
     ./desktop/services.nix
 
     ./network/dnscrypt.nix
+    ./network/f-dpi.nix
     ./network/zapret.nix
   ];
 }

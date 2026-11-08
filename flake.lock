@@ -20,6 +20,26 @@
         "type": "github"
       }
     },
+    "f-dpi": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794154149,
+        "narHash": "sha256-hBbijbIOFxrYrWXLPiDXuMsTtQsTxgMD/PYeZbxDS2c=",
+        "owner": "Drum3X",
+        "repo": "F-DPI",
+        "rev": "b1fc1f5574e7a970a9f75484012982c22c611e25",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Drum3X",
+        "repo": "F-DPI",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -98,6 +118,7 @@
     "root": {
       "inputs": {
         "disko": "disko",
+        "f-dpi": "f-dpi",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",

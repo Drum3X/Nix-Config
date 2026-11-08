@@ -18,6 +18,7 @@
 
     network = {
       dnscrypt.enable = false;
+      f-dpi.enable = true;
       zapret.enable = false;
     };
   };
