@@ -5,6 +5,7 @@
     ./theme/cursor.nix
 
     ./apps/browsers.nix
+    ./apps/passwords.nix
     ./apps/media.nix
 
     ./terminal/cli.nix
