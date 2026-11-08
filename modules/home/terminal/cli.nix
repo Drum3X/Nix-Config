@@ -8,6 +8,7 @@
     nil
     ripgrep
     unzip
+    wl-clipboard # wl-copy/wl-paste: CLI tools (gh, claude) copy through it on Wayland
   ];
 
   programs = {
