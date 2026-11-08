@@ -7,7 +7,6 @@
     ./apps/browsers.nix
     ./apps/files.nix
     ./apps/media.nix
-    ./apps/vscode.nix
 
     ./terminal/cli.nix
     ./terminal/ghostty.nix

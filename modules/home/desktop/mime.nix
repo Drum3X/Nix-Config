@@ -18,7 +18,7 @@ in {
         "x-scheme-handler/about" = browser;
         "application/pdf" = browser;
         "inode/directory" = files;
-        "text/plain" = "code.desktop";
+        "text/plain" = "com.system76.CosmicEdit.desktop";
       };
     };
   };
