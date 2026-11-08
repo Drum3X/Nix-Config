@@ -13,6 +13,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "hm-backup";
+    sharedModules = [inputs.plasma-manager.homeModules.plasma-manager];
     extraSpecialArgs = {inherit inputs self;};
     users.drum3x = ./home.nix;
   };

@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ./desktop/mime.nix
+    ./desktop/plasma.nix
 
     ./theme/cursor.nix
 
