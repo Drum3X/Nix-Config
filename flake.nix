@@ -1,5 +1,5 @@
 {
-  description = "Hyalo: Drum3X's NixOS desktop (ShojiWM + Quickshell, liquid glass).";
+  description = "Drum3X's NixOS config (COSMIC desktop).";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -12,11 +12,6 @@
 
     disko = {
       url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    shojiwm = {
-      url = "github:bea4dev/ShojiWM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -38,7 +33,7 @@
       inherit system;
       overlays = [self.overlays.default];
     };
-    hyaloLib = import ./lib {inherit inputs self;};
+    myLib = import ./lib {inherit inputs self;};
   in {
     overlays = import ./overlays {inherit inputs;};
 
@@ -47,7 +42,7 @@
     formatter.${system} = pkgs.alejandra;
 
     nixosConfigurations = {
-      nitro = hyaloLib.mkHost {
+      nitro = myLib.mkHost {
         hostName = "nitro";
         inherit system;
       };

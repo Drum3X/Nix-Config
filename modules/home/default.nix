@@ -1,9 +1,6 @@
 {...}: {
   imports = [
-    ./desktop/darkman.nix
     ./desktop/mime.nix
-    ./desktop/shell.nix
-    ./desktop/shojiwm.nix
 
     ./theme/cursor.nix
     ./theme/gtk.nix

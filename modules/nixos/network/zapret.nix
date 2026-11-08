@@ -3,7 +3,7 @@
   lib,
   ...
 }: {
-  config = lib.mkIf config.hyalo.network.zapret.enable {
+  config = lib.mkIf config.my.network.zapret.enable {
     services.zapret = {
       enable = true;
       params = [

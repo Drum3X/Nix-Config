@@ -167,8 +167,7 @@
         "disko": "disko",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-stable": "nixpkgs-stable",
-        "shojiwm": "shojiwm"
+        "nixpkgs-stable": "nixpkgs-stable"
       }
     },
     "sf-arabic": {
@@ -253,26 +252,6 @@
       "original": {
         "type": "file",
         "url": "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg"
-      }
-    },
-    "shojiwm": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1792040296,
-        "narHash": "sha256-ZneGdoGW0iheFj8G8snUHqfhOt0DfdtjpmJCI/Bfg5U=",
-        "owner": "bea4dev",
-        "repo": "ShojiWM",
-        "rev": "98f84845ebbaabf0cd847d7dc5ac628e5adfccce",
-        "type": "github"
-      },
-      "original": {
-        "owner": "bea4dev",
-        "repo": "ShojiWM",
-        "type": "github"
       }
     }
   },

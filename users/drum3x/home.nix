@@ -11,13 +11,4 @@
     name = "Drum3X";
     email = "drum3x@tutamail.com";
   };
-
-  # Pinned apps in the dock, by desktop entry id.
-  hyalo.dock.pinned = [
-    "org.gnome.Nautilus"
-    "vivaldi-stable"
-    "com.mitchellh.ghostty"
-    "code"
-    "com.obsproject.Studio"
-  ];
 }

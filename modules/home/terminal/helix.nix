@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: {
-  options.hyalo.helix.enable = lib.mkEnableOption "Helix with the language server setup";
+  options.my.helix.enable = lib.mkEnableOption "Helix with the language server setup";
 
-  config = lib.mkIf config.hyalo.helix.enable {
+  config = lib.mkIf config.my.helix.enable {
     programs.helix = {
       enable = true;
       extraPackages = with pkgs; [

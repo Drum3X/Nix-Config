@@ -4,16 +4,11 @@
     ./hardware.nix
   ];
 
-  hyalo = {
+  my = {
     user = "drum3x";
     flakePath = "/home/drum3x/Config";
 
-    desktop = {
-      enable = true;
-      # Point ~/.config/shojiwm and the shell at the checkout in flakePath so the
-      # design can be iterated on with hot reload, without a rebuild per change.
-      liveConfig = true;
-    };
+    desktop.enable = true;
 
     hardware.nvidia = {
       enable = true;

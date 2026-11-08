@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  cfg = config.hyalo.hardware.nvidia;
+  cfg = config.my.hardware.nvidia;
 in {
   config = lib.mkMerge [
     {

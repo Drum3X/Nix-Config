@@ -35,11 +35,14 @@ in {
     pkgs.libsForQt5.qt5ct
   ];
 
-  # Kvantum's own kvantum.kvconfig is left writable on purpose: darkman
-  # rewrites it to switch between KvLibadwaita and KvLibadwaitaDark.
   xdg.configFile = {
     # One folder holds both variants (KvLibadwaita.kvconfig, KvLibadwaitaDark.kvconfig).
     "Kvantum/KvLibadwaita".source = "${KvLibadwaita}/src/KvLibadwaita";
+
+    # Light, matching the GTK default. Change to KvLibadwaitaDark for dark Qt apps.
+    "Kvantum/kvantum.kvconfig".text = lib.generators.toINI {} {
+      General.theme = "KvLibadwaita";
+    };
 
     "qt5ct/qt5ct.conf".text = let
       font = ''"${defaultFont},-1,5,50,0,0,0,0,0"'';

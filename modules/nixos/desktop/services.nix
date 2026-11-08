@@ -3,7 +3,7 @@
   lib,
   ...
 }: {
-  config = lib.mkIf config.hyalo.desktop.enable {
+  config = lib.mkIf config.my.desktop.enable {
     programs.dconf.enable = true;
 
     services = {

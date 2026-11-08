@@ -3,8 +3,8 @@
   pkgs,
   ...
 }: {
-  # Light by default; darkman (../desktop/darkman.nix) flips gtk-theme and
-  # color-scheme in dconf at sunset, which GTK 3, GTK 4 and libadwaita all follow.
+  # Light adw-gtk3 by default. GTK 4 / libadwaita follow the color scheme COSMIC
+  # publishes through its portal.
   gtk = {
     enable = true;
 
@@ -24,10 +24,6 @@
     };
 
     gtk4.theme = null;
-
-    # GTK3 reads this from settings.ini rather than dconf.
-    gtk3.extraConfig.gtk-decoration-layout = ":";
-    gtk4.extraConfig.gtk-decoration-layout = ":";
   };
 
   dconf.settings."org/gnome/desktop/interface" = {
@@ -39,7 +35,6 @@
   };
 
   dconf.settings."org/gnome/desktop/wm/preferences" = {
-    # No window buttons in GTK headerbars: ShojiWM draws the traffic lights.
-    button-layout = ":";
+    button-layout = ":minimize,maximize,close";
   };
 }

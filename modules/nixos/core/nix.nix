@@ -11,7 +11,7 @@ in {
       experimental-features = ["nix-command" "flakes"];
       warn-dirty = false;
       auto-optimise-store = true;
-      trusted-users = ["root" config.hyalo.user];
+      trusted-users = ["root" config.my.user];
       nix-path = config.nix.nixPath;
     };
 

@@ -18,7 +18,6 @@
 
         inputs.disko.nixosModules.disko
         inputs.home-manager.nixosModules.home-manager
-        inputs.shojiwm.nixosModules.default
 
         ../modules/nixos
         ../hosts/${hostName}

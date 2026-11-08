@@ -1,3 +1,3 @@
-{pkgs}: {
-  hyalo-shell = pkgs.callPackage ./hyalo-shell {};
-}
+# Packages defined in this repository, one directory each:
+#   name = pkgs.callPackage ./name {};
+{pkgs}: {}
