@@ -8,6 +8,7 @@
     ./apps/browsers.nix
     ./apps/passwords.nix
     ./apps/media.nix
+    ./apps/antigravity.nix
 
     ./terminal/cli.nix
     ./terminal/git.nix
