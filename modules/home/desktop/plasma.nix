@@ -20,7 +20,7 @@ in {
       repeatRate = 40;
     };
 
-    krunner.shortcuts.launch = ["Meta+Space" "Alt+Space" "Alt+F2"];
+    krunner.shortcuts.launch = ["Meta+Space" "Meta+A" "Alt+Space" "Alt+F2"];
 
     spectacle.shortcuts = {
       captureRectangularRegion = ["Print" "Meta+Shift+S"];
@@ -36,7 +36,7 @@ in {
 
       plasmashell =
         {
-          "activate application launcher" = ["Meta" "Meta+A" "Alt+F1"];
+          "activate application launcher" = ["Meta" "Alt+F1"];
         }
         # Meta+1..4 switch desktops instead of activating task manager entries.
         // perDesktop (n: lib.nameValuePair "activate task manager entry ${toString n}" []);
