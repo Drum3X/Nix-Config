@@ -26,6 +26,11 @@ in {
       cursorSize=24
     '';
 
+    # Writes the files Chrome reads from /etc/opt/chrome (no Chromium
+    # installed): the Plasma module only sets the Plasma Browser Integration
+    # host up, and NixOS links it there only with this on.
+    programs.chromium.enable = true;
+
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
   };
 }
