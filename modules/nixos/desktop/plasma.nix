@@ -31,6 +31,11 @@ in {
     # host up, and NixOS links it there only with this on.
     programs.chromium.enable = true;
 
-    environment.sessionVariables.NIXOS_OZONE_WL = "1";
+    environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      # Spectacle's OCR links Tesseract without any language data; point it
+      # at English and Turkish.
+      TESSDATA_PREFIX = "${pkgs.tesseract.override {enableLanguages = ["eng" "tur"];}}/share/tessdata";
+    };
   };
 }
