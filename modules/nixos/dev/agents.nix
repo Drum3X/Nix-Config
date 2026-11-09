@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   config = lib.mkIf config.my.desktop.enable {
@@ -14,6 +15,9 @@
     # writes only to the project, temp and the caches below; network only to
     # domains Claude asks about. A command the sandbox breaks can still be
     # rerun outside it, with a prompt.
+    # The policy reaches every Claude Code (Claude Desktop's built-in one
+    # too), but only the wrapped CLI brings these on its own PATH.
+    environment.systemPackages = [pkgs.bubblewrap pkgs.socat];
     environment.etc."claude-code/managed-settings.json".text = builtins.toJSON {
       sandbox = {
         enabled = true;
