@@ -53,7 +53,8 @@ Compare the hardware (are the initrd modules the same as in
 nixos-generate-config --no-filesystems --show-hardware-config
 ```
 
-**Format the disk. This wipes `/dev/nvme0n1` completely.** Windows must be on
+**Format the disk. This wipes the KIOXIA NVMe named in `hosts/nitro/disko.nix`
+completely** (check it with `ls -l /dev/disk/by-id/`). Windows must be on
 another disk:
 
 ```bash

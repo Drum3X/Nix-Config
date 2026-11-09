@@ -52,7 +52,8 @@ Donanımı karşılaştır (initrd modülleri `hosts/nitro/hardware.nix` ile ayn
 nixos-generate-config --no-filesystems --show-hardware-config
 ```
 
-**Diski formatla. Bu komut `/dev/nvme0n1` diskini tamamen siler.** Windows ayrı
+**Diski formatla. Bu komut `hosts/nitro/disko.nix` içinde adı yazan KIOXIA
+NVMe diskini tamamen siler** (`ls -l /dev/disk/by-id/` ile kontrol et). Windows ayrı
 diskte olmalı:
 
 ```bash
