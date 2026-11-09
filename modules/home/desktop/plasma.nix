@@ -23,6 +23,8 @@ in {
       number = builtins.length desktops;
       rows = 1;
     };
+    # Switching desktops slides the windows only; the wallpaper stays put.
+    configFile.kwinrc.Effect-slide.SlideBackground = false;
 
     input.keyboard = {
       layouts = [{layout = "tr";} {layout = "us";}];
