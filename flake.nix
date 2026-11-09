@@ -21,6 +21,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # AI coding agents, updated daily (github.com/numtide/llm-agents.nix). Not
+    # following nixpkgs: its binary cache only matches its own nixpkgs.
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
     # Plasma settings (shortcuts, virtual desktops) from Home Manager.
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
