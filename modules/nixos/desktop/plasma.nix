@@ -10,6 +10,10 @@ in {
     # Plasma 6 with its default apps (Konsole, Dolphin, Kate, Ark, Gwenview,
     # Okular, Spectacle, Elisa), fonts, theme and KWallet; SDDM on Wayland.
     services.desktopManager.plasma6.enable = true;
+    # Plasma turns on KDE PIM (KMail, Kontact, Merkuro) by default. Its
+    # Akonadi server (MariaDB plus a dozen agents) starts with the panel and
+    # stalls it; mail is Thunderbird here.
+    programs.kde-pim.enable = false;
     services.displayManager.sddm = {
       enable = true;
       wayland.enable = true;
