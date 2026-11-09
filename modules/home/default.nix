@@ -10,6 +10,7 @@
     ./apps/media.nix
     ./apps/antigravity.nix
     ./apps/mail.nix
+    ./apps/chat.nix
 
     ./terminal/cli.nix
     ./terminal/git.nix
