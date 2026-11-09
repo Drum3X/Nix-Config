@@ -11,6 +11,7 @@
     ./apps/agents.nix
     ./apps/mail.nix
     ./apps/chat.nix
+    ./apps/translate.nix
 
     ./terminal/cli.nix
     ./terminal/git.nix
