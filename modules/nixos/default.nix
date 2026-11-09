@@ -19,6 +19,8 @@
     ./desktop/security.nix
     ./desktop/services.nix
 
+    ./dev/agents.nix
+
     ./network/dnscrypt.nix
     ./network/f-dpi.nix
     ./network/zapret.nix
