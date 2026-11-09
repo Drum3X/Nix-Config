@@ -8,7 +8,7 @@
     ./apps/browsers.nix
     ./apps/passwords.nix
     ./apps/media.nix
-    ./apps/antigravity.nix
+    ./apps/agents.nix
     ./apps/mail.nix
     ./apps/chat.nix
 
