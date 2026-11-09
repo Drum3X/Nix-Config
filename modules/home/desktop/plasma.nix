@@ -23,12 +23,8 @@ in {
       number = builtins.length desktops;
       rows = 1;
     };
-    configFile.kwinrc = {
-      # Switching desktops slides the windows only; the wallpaper stays put.
-      Effect-slide.SlideBackground = false;
-      # Meta on its own opens KRunner instead of the application launcher.
-      ModifierOnlyShortcuts.Meta = "org.kde.krunner,/App,,toggleDisplay";
-    };
+    # Switching desktops slides the windows only; the wallpaper stays put.
+    configFile.kwinrc.Effect-slide.SlideBackground = false;
 
     input.keyboard = {
       layouts = [{layout = "tr";} {layout = "us";}];
@@ -37,7 +33,9 @@ in {
       repeatRate = 40;
     };
 
-    krunner.shortcuts.launch = ["Meta+Space" "Alt+Space" "Alt+F2"];
+    # Meta on its own: a plain global shortcut since Plasma 6.8 (kwinrc
+    # ModifierOnlyShortcuts is gone). The application launcher gave it up.
+    krunner.shortcuts.launch = ["Meta" "Meta+Space" "Alt+Space" "Alt+F2"];
 
     spectacle.shortcuts = {
       captureRectangularRegion = ["Print" "Meta+Shift+S"];
