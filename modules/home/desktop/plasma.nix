@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   desktops = lib.range 1 4;
   perDesktop = f: lib.listToAttrs (map f desktops);
 in {
@@ -7,6 +11,13 @@ in {
   # still be changed in System Settings.
   programs.plasma = {
     enable = true;
+
+    # A new one every minute. The images stay out of the repo (about 60 MB):
+    # copy the folder over by hand on a new machine.
+    workspace.wallpaperSlideShow = {
+      path = "${config.home.homeDirectory}/Pictures/Wallpapers";
+      interval = 60;
+    };
 
     kwin.virtualDesktops = {
       number = builtins.length desktops;
