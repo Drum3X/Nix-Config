@@ -12,7 +12,10 @@
   ];
 
   programs = {
-    bash.enable = true;
+    bash = {
+      enable = true;
+      shellAliases.rebuild = "sudo nixos-rebuild switch --flake ~/Config#nitro";
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
