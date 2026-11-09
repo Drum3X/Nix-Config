@@ -9,6 +9,7 @@
     ./apps/passwords.nix
     ./apps/media.nix
     ./apps/antigravity.nix
+    ./apps/mail.nix
 
     ./terminal/cli.nix
     ./terminal/git.nix
