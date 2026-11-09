@@ -23,8 +23,12 @@ in {
       number = builtins.length desktops;
       rows = 1;
     };
-    # Switching desktops slides the windows only; the wallpaper stays put.
-    configFile.kwinrc.Effect-slide.SlideBackground = false;
+    configFile.kwinrc = {
+      # Switching desktops slides the windows only; the wallpaper stays put.
+      Effect-slide.SlideBackground = false;
+      # Meta on its own opens KRunner instead of the application launcher.
+      ModifierOnlyShortcuts.Meta = "org.kde.krunner,/App,,toggleDisplay";
+    };
 
     input.keyboard = {
       layouts = [{layout = "tr";} {layout = "us";}];
@@ -33,7 +37,7 @@ in {
       repeatRate = 40;
     };
 
-    krunner.shortcuts.launch = ["Meta+Space" "Meta+A" "Alt+Space" "Alt+F2"];
+    krunner.shortcuts.launch = ["Meta+Space" "Alt+Space" "Alt+F2"];
 
     spectacle.shortcuts = {
       captureRectangularRegion = ["Print" "Meta+Shift+S"];
@@ -49,7 +53,7 @@ in {
 
       plasmashell =
         {
-          "activate application launcher" = ["Meta" "Alt+F1"];
+          "activate application launcher" = "Alt+F1";
         }
         # Meta+1..4 switch desktops instead of activating task manager entries.
         // perDesktop (n: lib.nameValuePair "activate task manager entry ${toString n}" []);
@@ -59,6 +63,7 @@ in {
       kwin =
         {
           "Window Close" = ["Meta+D" "Alt+F4"];
+          "Overview" = ["Meta+A" "Meta+W"];
           "Show Desktop" = [];
           "Window Maximize" = ["Meta+F" "Meta+M" "Meta+PgUp"];
           "Window Fullscreen" = "Meta+Shift+F";
