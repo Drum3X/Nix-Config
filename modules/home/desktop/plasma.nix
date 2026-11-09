@@ -48,6 +48,7 @@ in {
     shortcuts = {
       "services/org.kde.konsole.desktop"._launch = ["Meta+Return" "Meta+T"];
       "services/google-chrome.desktop"._launch = "Meta+Q";
+      "services/thunderbird.desktop"._launch = "Meta+W";
       "services/org.kde.dolphin.desktop"._launch = "Meta+E";
       # Print takes a region now (above), not the Spectacle window.
       "services/org.kde.spectacle.desktop"._launch = [];
@@ -55,6 +56,8 @@ in {
       plasmashell =
         {
           "activate application launcher" = "Alt+F1";
+          # Its default Meta+Q took the key from the browser.
+          "manage activities" = [];
         }
         # Meta+1..4 switch desktops instead of activating task manager entries.
         // perDesktop (n: lib.nameValuePair "activate task manager entry ${toString n}" []);
@@ -64,7 +67,7 @@ in {
       kwin =
         {
           "Window Close" = ["Meta+D" "Alt+F4"];
-          "Overview" = ["Meta+A" "Meta+W"];
+          "Overview" = "Meta+A";
           "Show Desktop" = [];
           "Window Maximize" = ["Meta+F" "Meta+M" "Meta+PgUp"];
           "Window Fullscreen" = "Meta+Shift+F";
