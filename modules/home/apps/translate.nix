@@ -26,6 +26,9 @@
       # the app and user) outlives it when it is killed, even by SIGTERM at
       # logout; the next Crow then takes it for a running one and quits
       # silently. Clear it when no Crow is running.
+      # On PATH under a fixed name: KWin keeps the shortcut commands it read
+      # at login, so a store path in them would go stale on every change.
+      ln -s ${selection} $out/bin/crow-selection
       wrapProgram $out/bin/crow --set QT_QPA_PLATFORM xcb --run '
         if ! ${pkgs.procps}/bin/pgrep -u "$(id -u)" -x .crow-wrapped >/dev/null; then
           lock=DGmXV0fRZmWN3QniUGcRsBfQODhkBnRHyz1MgaYC8iY=
@@ -37,7 +40,7 @@
       rm $out/$desktop
       sed -E \
         -e 's|^Exec=${pkgs.crow-translate}/bin/crow|Exec=crow|' \
-        -e 's|^Exec=.*/qdbus org.kde.CrowTranslate /org/kde/CrowTranslate/MainWindow (translateSelection\|speakSelection\|speakTranslatedSelection\|copyTranslatedSelection)$|Exec=${selection} \1|' \
+        -e 's|^Exec=.*/qdbus org.kde.CrowTranslate /org/kde/CrowTranslate/MainWindow (translateSelection\|speakSelection\|speakTranslatedSelection\|copyTranslatedSelection)$|Exec=crow-selection \1|' \
         ${pkgs.crow-translate}/$desktop > $out/$desktop
     '';
   };
