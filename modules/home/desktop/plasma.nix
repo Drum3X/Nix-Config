@@ -19,6 +19,9 @@ in {
       interval = 60;
     };
 
+    # Log in to an empty desktop: apps open at logout do not come back.
+    session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
+
     kwin.virtualDesktops = {
       number = builtins.length desktops;
       rows = 1;
