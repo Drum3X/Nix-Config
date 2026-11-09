@@ -12,6 +12,7 @@
     ./apps/mail.nix
     ./apps/chat.nix
     ./apps/translate.nix
+    ./apps/notes.nix
 
     ./terminal/cli.nix
     ./terminal/git.nix
