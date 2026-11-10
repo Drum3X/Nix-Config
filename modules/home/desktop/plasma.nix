@@ -24,7 +24,8 @@ in {
 
     kwin.virtualDesktops = {
       number = builtins.length desktops;
-      rows = 1;
+      # A 2x2 grid: three-finger swipes go up and down a row too.
+      rows = 2;
     };
     # Switching desktops slides the windows only; the wallpaper stays put.
     configFile.kwinrc.Effect-slide.SlideBackground = false;
