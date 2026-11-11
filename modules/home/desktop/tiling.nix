@@ -1,13 +1,12 @@
 {pkgs, ...}: {
-  # Krohnkite, a tiling KWin script. Windows open floating; Meta+Z tiles the
-  # focused one (and floats it again), Meta+Shift+Z does the whole desktop.
+  # Krohnkite, a tiling KWin script. Windows open tiled; Meta+Z floats the
+  # focused one (and tiles it again), Meta+Shift+Z does the whole desktop.
   home.packages = [pkgs.kdePackages.krohnkite];
 
   programs.plasma = {
     configFile.kwinrc = {
       Plugins.krohnkiteEnabled = true;
       Script-krohnkite = {
-        floatAsDefault = true;
         # Gaps around and between tiles. The panel dodges windows instead of
         # reserving space, so the bottom gap clears it by hand: 48 px thick,
         # floating 8 px up, plus the 24 px gap.
