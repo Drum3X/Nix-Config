@@ -10,11 +10,11 @@
         floatAsDefault = true;
         # Gaps around and between tiles. The panel dodges windows instead of
         # reserving space, so the bottom gap clears it by hand: 48 px thick,
-        # floating 8 px up, plus the 12 px gap.
-        screenGapTop = 12;
-        screenGapLeft = 12;
-        screenGapRight = 12;
-        screenGapBottom = 68;
+        # floating 8 px up, plus the 24 px gap.
+        screenGapTop = 24;
+        screenGapLeft = 24;
+        screenGapRight = 24;
+        screenGapBottom = 80;
         screenGapBetween = 12;
       };
     };
