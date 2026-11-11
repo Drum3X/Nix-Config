@@ -1,15 +1,11 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   desktops = lib.range 1 4;
   perDesktop = f: lib.listToAttrs (map f desktops);
 in {
-  # The KWin script behind the dynamic desktops below.
-  home.packages = [pkgs.kdePackages.dynamic-workspaces];
-
   # The shortcuts of the old ShojiWM setup, on Plasma's own actions. Only the
   # keys below are written; everything else stays as Plasma ships it and can
   # still be changed in System Settings.
@@ -26,12 +22,11 @@ in {
     # Log in to an empty desktop: apps open at logout do not come back.
     session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
 
-    # Desktops come and go GNOME-style (the Dynamic Workspaces KWin script):
-    # an empty one always waits on the right, moving a window onto it adds
-    # another, and an empty last one goes away. No fixed number here, the
-    # script owns it; one row, the only layout it handles.
-    kwin.virtualDesktops.rows = 1;
-    configFile.kwinrc.Plugins.dynamic_workspacesEnabled = true;
+    kwin.virtualDesktops = {
+      number = builtins.length desktops;
+      # A 2x2 grid: three-finger swipes go up and down a row too.
+      rows = 2;
+    };
     # Switching desktops slides the windows only; the wallpaper stays put.
     configFile.kwinrc.Effect-slide.SlideBackground = false;
 
