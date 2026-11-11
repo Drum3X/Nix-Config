@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  desktops = lib.range 1 4;
+  desktops = lib.range 1 6;
   perDesktop = f: lib.listToAttrs (map f desktops);
 in {
   # The shortcuts of the old ShojiWM setup, on Plasma's own actions. Only the
@@ -23,9 +23,8 @@ in {
     session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
 
     kwin.virtualDesktops = {
-      # A 3x2 grid: three-finger swipes go up and down a row too. Meta+1..4
-      # and the other per-desktop keys below reach the first four.
-      number = 6;
+      # A 3x2 grid: three-finger swipes go up and down a row too.
+      number = builtins.length desktops;
       rows = 2;
     };
     # Switching desktops slides the windows only; the wallpaper stays put.
@@ -61,7 +60,7 @@ in {
           # Its default Meta+Q took the key from the browser.
           "manage activities" = [];
         }
-        # Meta+1..4 switch desktops instead of activating task manager entries.
+        # Meta+1..6 switch desktops instead of activating task manager entries.
         // perDesktop (n: lib.nameValuePair "activate task manager entry ${toString n}" []);
 
       org_kde_powerdevil."Turn Off Screen" = "Meta+Shift+P";
@@ -88,7 +87,8 @@ in {
           "Window to Previous Desktop" = "Meta+Shift+Up";
           "Window to Next Desktop" = "Meta+Shift+Down";
         }
-        // perDesktop (n: lib.nameValuePair "Switch to Desktop ${toString n}" ["Meta+${toString n}" "Ctrl+F${toString n}"])
+        # Ctrl+F1..F4 too, as in Plasma; Ctrl+F5 stays the browser's hard reload.
+        // perDesktop (n: lib.nameValuePair "Switch to Desktop ${toString n}" (["Meta+${toString n}"] ++ lib.optional (n <= 4) "Ctrl+F${toString n}"))
         // perDesktop (n: lib.nameValuePair "Window to Desktop ${toString n}" "Meta+Ctrl+${toString n}");
     };
   };
