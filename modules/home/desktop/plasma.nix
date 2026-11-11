@@ -6,6 +6,16 @@
   desktops = lib.range 1 6;
   perDesktop = f: lib.listToAttrs (map f desktops);
 in {
+  # Autostart apps (app-*@autostart.service) wait only for
+  # graphical-session.target, and that can outlive a logout: a portal or a
+  # DrKonqi crash handler started late keeps it up. The next login then
+  # starts them before KWin, and they abort with no display (F-Dpi,
+  # DiscoverNotifier). Wait for the Plasma workspace instead.
+  xdg.configFile."systemd/user/app-.service.d/10-after-plasma.conf".text = ''
+    [Unit]
+    After=plasma-workspace.target
+  '';
+
   # The shortcuts of the old ShojiWM setup, on Plasma's own actions. Only the
   # keys below are written; everything else stays as Plasma ships it and can
   # still be changed in System Settings.
