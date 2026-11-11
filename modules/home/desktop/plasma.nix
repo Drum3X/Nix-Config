@@ -23,9 +23,9 @@ in {
     session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
 
     kwin.virtualDesktops = {
-      # A 6x2 grid: three-finger swipes go up and down a row too. Meta+1..4
+      # A 3x2 grid: three-finger swipes go up and down a row too. Meta+1..4
       # and the other per-desktop keys below reach the first four.
-      number = 12;
+      number = 6;
       rows = 2;
     };
     # Switching desktops slides the windows only; the wallpaper stays put.
