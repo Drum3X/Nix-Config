@@ -2,6 +2,7 @@
   imports = [
     ./desktop/mime.nix
     ./desktop/plasma.nix
+    ./desktop/tiling.nix
 
     ./theme/cursor.nix
 
