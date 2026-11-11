@@ -65,8 +65,8 @@ in {
     krunner.shortcuts.launch = ["Meta" "Meta+Space" "Alt+Space" "Alt+F2"];
 
     spectacle.shortcuts = {
-      captureRectangularRegion = ["Print" "Meta+Shift+S"];
-      captureEntireDesktop = "Shift+Print";
+      captureRectangularRegion = "Print";
+      captureEntireDesktop = ["Shift+Print" "Meta+Shift+S"];
     };
 
     shortcuts = {
@@ -74,8 +74,8 @@ in {
       "services/google-chrome.desktop"._launch = "Meta+Q";
       "services/thunderbird.desktop"._launch = "Meta+W";
       "services/org.kde.dolphin.desktop"._launch = "Meta+E";
-      # Print takes a region now (above), not the Spectacle window.
-      "services/org.kde.spectacle.desktop"._launch = [];
+      # Print takes a region now (above); the Spectacle window is on Meta+S.
+      "services/org.kde.spectacle.desktop"._launch = "Meta+S";
 
       plasmashell =
         {
