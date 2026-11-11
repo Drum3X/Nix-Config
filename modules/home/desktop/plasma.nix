@@ -29,6 +29,19 @@ in {
       interval = 60;
     };
 
+    # The task manager lists windows from every virtual desktop, not just the
+    # current one. A Plasma script rather than appletsrc keys, whose panel
+    # and widget ids differ between installs.
+    startup.desktopScript.taskmanager_all_desktops.text = ''
+      panels().forEach(function (panel) {
+        panel.widgets("org.kde.plasma.icontasks").forEach(function (widget) {
+          widget.currentConfigGroup = ["General"];
+          widget.writeConfig("showOnlyCurrentDesktop", false);
+          widget.reloadConfig();
+        });
+      });
+    '';
+
     # Log in to an empty desktop: apps open at logout do not come back.
     session.sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
 
