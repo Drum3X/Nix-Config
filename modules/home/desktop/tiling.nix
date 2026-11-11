@@ -6,7 +6,17 @@
   programs.plasma = {
     configFile.kwinrc = {
       Plugins.krohnkiteEnabled = true;
-      Script-krohnkite.floatAsDefault = true;
+      Script-krohnkite = {
+        floatAsDefault = true;
+        # Gaps around and between tiles. The panel dodges windows instead of
+        # reserving space, so the bottom gap clears it by hand: 48 px thick,
+        # floating 8 px up, plus the 12 px gap.
+        screenGapTop = 12;
+        screenGapLeft = 12;
+        screenGapRight = 12;
+        screenGapBottom = 68;
+        screenGapBetween = 12;
+      };
     };
 
     # Its defaults, moved off the keys this config already uses. The rest
