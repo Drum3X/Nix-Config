@@ -12,8 +12,7 @@ NixOS modülü olarak, tek bir `nixos-rebuild switch` ile uygulanır.
   [plasma-manager](https://github.com/nix-community/plasma-manager) ile
   ayarlanır. Geri kalan her şey Sistem Ayarları'ndan değiştirilir.
 - Kodlama ajanları (Claude Code, Claude Desktop, Antigravity Hub)
-  [llm-agents.nix](https://github.com/numtide/llm-agents.nix)'ten gelir. Claude
-  Code komutlarını sandbox içinde çalıştırır (`modules/nixos/dev/agents.nix`).
+  [llm-agents.nix](https://github.com/numtide/llm-agents.nix)'ten gelir.
 - [F-Dpi](https://github.com/Drum3X/F-DPI) (sing-box proxy ve zapret DPI
   bypass) kendi flake'inden gelir.
 - Eski ShojiWM + Quickshell (Hyalo) masaüstü artık

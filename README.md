@@ -12,8 +12,7 @@ Manager as a NixOS module, applied with a single `nixos-rebuild switch`.
   [plasma-manager](https://github.com/nix-community/plasma-manager).
   Everything else is changed in System Settings.
 - Coding agents (Claude Code, Claude Desktop, Antigravity Hub) come from
-  [llm-agents.nix](https://github.com/numtide/llm-agents.nix). Claude Code runs
-  its commands in a sandbox (`modules/nixos/dev/agents.nix`).
+  [llm-agents.nix](https://github.com/numtide/llm-agents.nix).
 - [F-Dpi](https://github.com/Drum3X/F-DPI), a sing-box proxy and zapret DPI
   bypass, comes from its own flake.
 - The old ShojiWM + Quickshell (Hyalo) desktop now lives in
