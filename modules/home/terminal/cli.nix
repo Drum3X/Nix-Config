@@ -19,9 +19,6 @@
     uv
   ];
 
-  # User-installed commands such as kioku (~/.local/bin/kioku, linked by its installer).
-  home.sessionPath = ["$HOME/.local/bin"];
-
   programs = {
     bash = {
       enable = true;

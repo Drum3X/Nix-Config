@@ -25,6 +25,12 @@
     # following nixpkgs: its binary cache only matches its own nixpkgs.
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # Kioku (github.com/Drum3X/kioku): second brain for Claude Code.
+    kioku = {
+      url = "github:Drum3X/kioku";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Plasma settings (shortcuts, virtual desktops) from Home Manager.
     plasma-manager = {
       url = "github:nix-community/plasma-manager";

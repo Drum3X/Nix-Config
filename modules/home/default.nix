@@ -15,6 +15,7 @@
     ./apps/translate.nix
     ./apps/notes.nix
     ./apps/ide.nix
+    ./apps/kioku.nix
 
     ./terminal/cli.nix
     ./terminal/git.nix

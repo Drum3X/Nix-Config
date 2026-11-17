@@ -115,6 +115,26 @@
         "type": "github"
       }
     },
+    "kioku": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794936618,
+        "narHash": "sha256-uAszTWnbGMwcF8CC/F3CW0JfM59lGjsdHwSgdlwyGCg=",
+        "owner": "Drum3X",
+        "repo": "kioku",
+        "rev": "4284109d5f2f40bd895e1398e66dd446ec6c5fc8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Drum3X",
+        "repo": "kioku",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -213,6 +233,7 @@
         "disko": "disko",
         "f-dpi": "f-dpi",
         "home-manager": "home-manager",
+        "kioku": "kioku",
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
