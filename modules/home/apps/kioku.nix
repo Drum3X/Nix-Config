@@ -13,5 +13,10 @@
     # The local checkout while Kioku is in development: edits apply without a
     # rebuild. Remove for a release; the version pinned in flake.lock is used then.
     source = "${config.home.homeDirectory}/Projects/kioku";
+    # kioku capture --gui: kdialog, notify-send and a "Kioku capture" desktop entry.
+    capture.gui = true;
   };
+
+  # Meta+N: a small dialog that drops a thought, todo or link into the vault inbox.
+  programs.plasma.shortcuts."services/kioku-capture.desktop"._launch = "Meta+N";
 }

@@ -122,11 +122,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794937696,
-        "narHash": "sha256-4aYgwLaNVzxMmXBWZJnU4yuDOuKbpxV6yhHDznHiH4I=",
+        "lastModified": 1795038194,
+        "narHash": "sha256-KGEFnpf8EozMjsqeqxqvBt9Vo39bLbFkSTooDX+SSpw=",
         "owner": "Drum3X",
         "repo": "kioku",
-        "rev": "26c9dd5e2fb4fe9d14c57935b3c795c035bb2dca",
+        "rev": "a86223d84f8a59007d18d6c9744f01ab18d07ccc",
         "type": "github"
       },
       "original": {
