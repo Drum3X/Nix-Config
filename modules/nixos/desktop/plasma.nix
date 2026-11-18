@@ -14,6 +14,10 @@ in {
     # Akonadi server (MariaDB plus a dozen agents) starts with the panel and
     # stalls it; mail is Thunderbird here.
     programs.kde-pim.enable = false;
+    # No screen reader or text-to-speech here. Speech Dispatcher pulls in the
+    # MBROLA voices, a 550 MB download whenever nixpkgs rebuilds them.
+    services.orca.enable = false;
+    services.speechd.enable = false;
     services.displayManager.sddm = {
       enable = true;
       wayland.enable = true;
