@@ -3,6 +3,7 @@
     alejandra
     btop
     llm-agents.claude-code
+    llm-agents.opencode
     fastfetch
     fd
     nil
