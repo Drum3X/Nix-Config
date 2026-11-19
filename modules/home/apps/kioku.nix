@@ -15,6 +15,8 @@
     source = "${config.home.homeDirectory}/Projects/kioku";
     # kioku capture --gui: kdialog, notify-send and a "Kioku capture" desktop entry.
     capture.gui = true;
+    # kioku extract: yt-dlp (video links), pandoc (docx, odt, epub …), poppler (PDF), ffmpeg.
+    ingest.tools = true;
   };
 
   # Meta+N: a small dialog that drops a thought, todo or link into the vault inbox.
