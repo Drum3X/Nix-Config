@@ -23,11 +23,17 @@ in {
     # `nix run nixpkgs#foo` and `<nixpkgs>` resolve to this flake's pins.
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+  };
 
-    gc = {
-      automatic = true;
+  # `nh os switch` shows the package diff before activating. Its cleaner
+  # replaces nix.gc (the two conflict) and always keeps the last 5 generations.
+  programs.nh = {
+    enable = true;
+    flake = config.my.flakePath;
+    clean = {
+      enable = true;
       dates = "daily";
-      options = "--delete-older-than 3d";
+      extraArgs = "--keep 5 --keep-since 7d";
     };
   };
 }

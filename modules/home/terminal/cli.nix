@@ -23,7 +23,7 @@
   programs = {
     bash = {
       enable = true;
-      shellAliases.rebuild = "sudo nixos-rebuild switch --flake ~/Config#nitro";
+      shellAliases.rebuild = "nh os switch";
     };
     direnv = {
       enable = true;
