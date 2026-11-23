@@ -29,6 +29,8 @@ modules/home/           Home Manager modülleri (desktop, theme, apps, terminal)
 overlays/               pkgs.stable, pkgs.llm-agents, paket ayarları
 users/drum3x/           kullanıcı hesabı + home.nix
 pkgs/                   bu repoda tanımlı paketler (şimdilik boş)
+justfile                kısa komutlar (`just` listeler)
+AGENTS.md               kodlama ajanları için kurallar (CLAUDE.md içe aktarır)
 ```
 
 Host'a özel her şey `hosts/nitro/default.nix` içindeki `my.*` seçenekleriyle
@@ -73,7 +75,8 @@ git clone https://github.com/drum3x/nix-config ~/Config
 sudo nixos-rebuild switch --flake ~/Config#nitro
 ```
 
-Sonrasında `rebuild` aynı işi yapar.
+Sonrasında `rebuild` (`nh os switch`) aynı işi yapar ve uygulamadan önce paket
+farkını gösterir. `just` diğer komutları listeler (diff, test, up, check).
 
 ## Notlar
 

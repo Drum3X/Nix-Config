@@ -29,6 +29,8 @@ modules/home/           Home Manager modules (desktop, theme, apps, terminal)
 overlays/               pkgs.stable, pkgs.llm-agents, package tweaks
 users/drum3x/           user account + home.nix
 pkgs/                   packages defined in this repo (empty for now)
+justfile                short commands (`just` lists them)
+AGENTS.md               rules for coding agents (CLAUDE.md imports it)
 ```
 
 Everything host-specific is set through the `my.*` options in
@@ -75,7 +77,7 @@ sudo nixos-rebuild switch --flake ~/Config#nitro
 ```
 
 From then on, `rebuild` (`nh os switch`) does the same and shows the package
-diff before activating.
+diff before activating. `just` lists the other commands (diff, test, up, check).
 
 ## Notes
 
