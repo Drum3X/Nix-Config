@@ -16,7 +16,6 @@
     ./hardware/power.nix
 
     ./desktop/plasma.nix
-    ./desktop/security.nix
     ./desktop/services.nix
 
     ./dev/agents.nix
