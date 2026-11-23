@@ -1,15 +1,17 @@
 {
   inputs,
   self,
-}: {
+}:
+{
   # One NixOS system per host. Home Manager runs as a NixOS module, so a single
   # `nixos-rebuild switch --flake .#<host>` applies the system and the user.
-  mkHost = {
-    hostName,
-    system,
-  }:
+  mkHost =
+    {
+      hostName,
+      system,
+    }:
     inputs.nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs self;};
+      specialArgs = { inherit inputs self; };
       modules = [
         {
           networking.hostName = hostName;

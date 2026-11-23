@@ -2,8 +2,9 @@
   inputs,
   pkgs,
   ...
-}: {
-  imports = [inputs.nix-index-database.homeModules.nix-index];
+}:
+{
+  imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
   home.packages = with pkgs; [
     alejandra

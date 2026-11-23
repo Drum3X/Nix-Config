@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.hardware.nvidia;
-in {
+in
+{
   config = lib.mkMerge [
     {
       hardware.graphics = {
@@ -21,7 +23,10 @@ in {
     # The Intel iGPU renders the desktop; `nvidia-offload <cmd>` runs a program
     # on the dGPU, which otherwise stays powered down.
     (lib.mkIf cfg.enable {
-      services.xserver.videoDrivers = ["modesetting" "nvidia"];
+      services.xserver.videoDrivers = [
+        "modesetting"
+        "nvidia"
+      ];
 
       hardware.nvidia = {
         package = config.boot.kernelPackages.nvidiaPackages.stable;

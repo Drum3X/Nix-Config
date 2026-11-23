@@ -1,5 +1,5 @@
-{...}: {
-  imports = [../../modules/home];
+{ ... }: {
+  imports = [ ../../modules/home ];
 
   home = {
     username = "drum3x";

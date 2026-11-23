@@ -1,6 +1,6 @@
-{self, ...}: {
+{ self, ... }: {
   nixpkgs = {
-    overlays = [self.overlays.default];
+    overlays = [ self.overlays.default ];
     config.allowUnfree = true;
   };
 }

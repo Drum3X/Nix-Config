@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = [pkgs.bitwarden-desktop];
+{ pkgs, ... }: {
+  home.packages = [ pkgs.bitwarden-desktop ];
 
   # Not started at login. Bitwarden's own "Start automatically on login"
   # writes this file; owning it here keeps it off (Hidden = removed, in the

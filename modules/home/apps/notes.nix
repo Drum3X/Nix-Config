@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Markdown notes.
-  home.packages = [pkgs.obsidian];
+  home.packages = [ pkgs.obsidian ];
 }

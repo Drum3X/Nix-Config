@@ -1,6 +1,8 @@
-{...}: let
+{ ... }:
+let
   browser = "google-chrome.desktop";
-in {
+in
+{
   xdg = {
     # Apps rewrite mimeapps.list; the config wins, without a backup that
     # would block the next activation.

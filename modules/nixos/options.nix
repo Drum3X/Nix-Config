@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   inherit (lib) mkEnableOption mkOption types;
-in {
+in
+{
   # Everything host-specific is set through these, in hosts/<name>/default.nix.
   # Home Manager modules read them back through `osConfig.my`.
   options.my = {

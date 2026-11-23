@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   services = {
     upower.enable = true;
     power-profiles-daemon.enable = true;
@@ -11,6 +11,6 @@
     };
 
     # Lets the video group write the backlight (brightnessctl).
-    udev.packages = [pkgs.brightnessctl];
+    udev.packages = [ pkgs.brightnessctl ];
   };
 }

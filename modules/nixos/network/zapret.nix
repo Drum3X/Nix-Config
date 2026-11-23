@@ -2,7 +2,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.my.network.zapret.enable {
     services.zapret = {
       enable = true;

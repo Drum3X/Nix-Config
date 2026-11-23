@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   imports = [
     ./desktop/mime.nix
     ./desktop/plasma.nix

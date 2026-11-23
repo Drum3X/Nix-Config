@@ -3,7 +3,8 @@
   lib,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -11,8 +12,15 @@
   # From `nixos-generate-config --no-filesystems --show-hardware-config`.
   # Filesystems live in ./disko.nix.
   boot = {
-    initrd.availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usbhid" "usb_storage" "sd_mod"];
-    kernelModules = ["kvm-intel"];
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "thunderbolt"
+      "nvme"
+      "usbhid"
+      "usb_storage"
+      "sd_mod"
+    ];
+    kernelModules = [ "kvm-intel" ];
   };
 
   hardware = {

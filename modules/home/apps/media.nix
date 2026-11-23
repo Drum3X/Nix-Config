@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.obs-studio = {
     enable = true;
     # nixpkgs adds the driver runpath to OBS's libraries but not to
@@ -8,8 +8,8 @@
     # wrapper, where patching the binary rebuilt all of OBS from source.
     package = pkgs.symlinkJoin {
       inherit (pkgs.obs-studio) name meta;
-      paths = [pkgs.obs-studio];
-      nativeBuildInputs = [pkgs.makeWrapper];
+      paths = [ pkgs.obs-studio ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
       postBuild = ''
         wrapProgram $out/bin/obs --prefix LD_LIBRARY_PATH : ${pkgs.addDriverRunpath.driverLink}/lib
       '';

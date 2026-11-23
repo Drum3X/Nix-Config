@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   # The whole NVMe belongs to NixOS. Windows is on a different disk; GRUB finds
   # it through os-prober.
   disko.devices.disk.main = {
@@ -16,7 +16,7 @@
             type = "filesystem";
             format = "vfat";
             mountpoint = "/boot";
-            mountOptions = ["umask=0077"];
+            mountOptions = [ "umask=0077" ];
           };
         };
 
@@ -24,31 +24,40 @@
           size = "100%";
           content = {
             type = "btrfs";
-            extraArgs = ["-f" "-L" "nixos"];
-            subvolumes = let
-              options = ["compress=zstd" "noatime"];
-            in {
-              "@" = {
-                mountpoint = "/";
-                mountOptions = options;
+            extraArgs = [
+              "-f"
+              "-L"
+              "nixos"
+            ];
+            subvolumes =
+              let
+                options = [
+                  "compress=zstd"
+                  "noatime"
+                ];
+              in
+              {
+                "@" = {
+                  mountpoint = "/";
+                  mountOptions = options;
+                };
+                "@home" = {
+                  mountpoint = "/home";
+                  mountOptions = options;
+                };
+                "@nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = options;
+                };
+                "@log" = {
+                  mountpoint = "/var/log";
+                  mountOptions = options;
+                };
+                "@swap" = {
+                  mountpoint = "/swap";
+                  swap.swapfile.size = "8G";
+                };
               };
-              "@home" = {
-                mountpoint = "/home";
-                mountOptions = options;
-              };
-              "@nix" = {
-                mountpoint = "/nix";
-                mountOptions = options;
-              };
-              "@log" = {
-                mountpoint = "/var/log";
-                mountOptions = options;
-              };
-              "@swap" = {
-                mountpoint = "/swap";
-                swap.swapfile.size = "8G";
-              };
-            };
           };
         };
       };

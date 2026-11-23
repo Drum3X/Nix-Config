@@ -2,10 +2,11 @@
   config,
   inputs,
   ...
-}: {
+}:
+{
   # Kioku (github.com/Drum3X/kioku): Claude Code's second brain. Puts the kioku
   # command on PATH and wires the vault into Claude Code on every switch.
-  imports = [inputs.kioku.homeManagerModules.default];
+  imports = [ inputs.kioku.homeManagerModules.default ];
 
   programs.kioku = {
     enable = true;

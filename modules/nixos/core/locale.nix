@@ -1,6 +1,8 @@
-{...}: let
+{ ... }:
+let
   tr = "tr_TR.UTF-8";
-in {
+in
+{
   time.timeZone = "Europe/Istanbul";
 
   i18n = {

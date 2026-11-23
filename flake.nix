@@ -46,29 +46,32 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    ...
-  } @ inputs: let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      overlays = [self.overlays.default];
-    };
-    myLib = import ./lib {inherit inputs self;};
-  in {
-    overlays = import ./overlays {inherit inputs;};
-
-    packages.${system} = import ./pkgs {inherit pkgs;};
-
-    formatter.${system} = pkgs.alejandra;
-
-    nixosConfigurations = {
-      nitro = myLib.mkHost {
-        hostName = "nitro";
+  outputs =
+    {
+      self,
+      nixpkgs,
+      ...
+    }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
         inherit system;
+        overlays = [ self.overlays.default ];
+      };
+      myLib = import ./lib { inherit inputs self; };
+    in
+    {
+      overlays = import ./overlays { inherit inputs; };
+
+      packages.${system} = import ./pkgs { inherit pkgs; };
+
+      formatter.${system} = pkgs.alejandra;
+
+      nixosConfigurations = {
+        nitro = myLib.mkHost {
+          hostName = "nitro";
+          inherit system;
+        };
       };
     };
-  };
 }

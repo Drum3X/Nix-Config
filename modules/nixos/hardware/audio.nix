@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
@@ -15,7 +15,9 @@
         "monitor.alsa.rules" = [
           {
             matches = [
-              {"node.name" = "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Headphones__sink";}
+              {
+                "node.name" = "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Headphones__sink";
+              }
             ];
             actions.update-props."session.suspend-timeout-seconds" = 0;
           }

@@ -1,7 +1,7 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Krohnkite, a tiling KWin script. Windows open tiled; Meta+Z floats the
   # focused one (and tiles it again), Meta+Shift+Z does the whole desktop.
-  home.packages = [pkgs.kdePackages.krohnkite];
+  home.packages = [ pkgs.kdePackages.krohnkite ];
 
   programs.plasma = {
     configFile.kwinrc = {
@@ -30,14 +30,14 @@
       # Meta+D closes the window.
       KrohnkiteDecrease = "Meta+Shift+I";
       # Meta+T is the terminal, Meta+M maximizes; Meta+\ cycles layouts.
-      KrohnkiteTileLayout = [];
-      KrohnkiteMonocleLayout = [];
+      KrohnkiteTileLayout = [ ];
+      KrohnkiteMonocleLayout = [ ];
       # Meta+L locks the screen; Meta+Left/Right and Meta+Alt+Up/Down already
       # move focus between windows, tiled ones too.
-      KrohnkiteFocusLeft = [];
-      KrohnkiteFocusRight = [];
-      KrohnkiteFocusUp = [];
-      KrohnkiteFocusDown = [];
+      KrohnkiteFocusLeft = [ ];
+      KrohnkiteFocusRight = [ ];
+      KrohnkiteFocusUp = [ ];
+      KrohnkiteFocusDown = [ ];
     };
   };
 }
