@@ -9,6 +9,6 @@
 
   programs.git.settings.user = {
     name = "Drum3X";
-    email = "drum3x@tutamail.com";
+    email = "contact@drum3x.dev";
   };
 }
