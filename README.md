@@ -76,7 +76,7 @@ git clone https://github.com/drum3x/nix-config ~/Config
 sudo nixos-rebuild switch --flake ~/Config#nitro
 ```
 
-From then on, `rebuild` (`nh os switch`) does the same and shows the package
+From then on, `nh os switch` (or `just switch` in the repo) does the same and shows the package
 diff before activating. `just` lists the other commands (diff, test, up, check).
 
 ## Notes

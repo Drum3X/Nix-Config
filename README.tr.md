@@ -75,7 +75,7 @@ git clone https://github.com/drum3x/nix-config ~/Config
 sudo nixos-rebuild switch --flake ~/Config#nitro
 ```
 
-Sonrasında `rebuild` (`nh os switch`) aynı işi yapar ve uygulamadan önce paket
+Sonrasında `nh os switch` (repoda `just switch`) aynı işi yapar ve uygulamadan önce paket
 farkını gösterir. `just` diğer komutları listeler (diff, test, up, check).
 
 ## Notlar

@@ -30,7 +30,6 @@
   programs = {
     bash = {
       enable = true;
-      shellAliases.rebuild = "nh os switch";
     };
     direnv = {
       enable = true;

@@ -28,8 +28,8 @@ Use the `justfile` recipes; `just` lists them.
 - `just diff`: build and show the package diff against the running system.
 - `just up [input…]`: update flake inputs. Only when asked.
 
-Activating is the owner's step: suggest `rebuild` (their alias for
-`nh os switch`) or `just switch`; agents have no sudo here.
+Activating is the owner's step: suggest `just switch` inside the repo, or
+`nh os switch` from anywhere; agents have no sudo here.
 
 ## Style
 
