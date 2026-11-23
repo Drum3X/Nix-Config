@@ -20,6 +20,8 @@
       "usb_storage"
       "sd_mod"
     ];
+    # Early KMS: the panel comes up at its native mode once, no flicker later.
+    initrd.kernelModules = [ "i915" ];
     kernelModules = [ "kvm-intel" ];
   };
 
