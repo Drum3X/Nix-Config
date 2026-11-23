@@ -9,6 +9,7 @@
     ./core/nix.nix
     ./core/nixpkgs.nix
     ./core/packages.nix
+    ./core/snapper.nix
 
     ./hardware/audio.nix
     ./hardware/bluetooth.nix
