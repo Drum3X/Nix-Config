@@ -65,7 +65,7 @@
 
       packages.${system} = import ./pkgs { inherit pkgs; };
 
-      formatter.${system} = pkgs.alejandra;
+      formatter.${system} = pkgs.nixfmt-tree;
 
       nixosConfigurations = {
         nitro = myLib.mkHost {

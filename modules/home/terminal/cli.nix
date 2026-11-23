@@ -7,7 +7,7 @@
   imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
   home.packages = with pkgs; [
-    alejandra
+    nixfmt
     btop
     llm-agents.claude-code
     llm-agents.opencode
