@@ -31,6 +31,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Weekly prebuilt nix-index database: `, foo` runs foo without installing
+    # it, and command-not-found names the package that has it.
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Plasma settings (shortcuts, virtual desktops) from Home Manager.
     plasma-manager = {
       url = "github:nix-community/plasma-manager";

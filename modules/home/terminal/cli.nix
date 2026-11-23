@@ -1,4 +1,10 @@
-{pkgs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [inputs.nix-index-database.homeModules.nix-index];
+
   home.packages = with pkgs; [
     alejandra
     btop
@@ -29,5 +35,7 @@
       enable = true;
       nix-direnv.enable = true;
     };
+    nix-index.enable = true;
+    nix-index-database.comma.enable = true;
   };
 }
