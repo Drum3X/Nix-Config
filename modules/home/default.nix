@@ -19,7 +19,6 @@
 
     ./terminal/cli.nix
     ./terminal/git.nix
-    ./terminal/helix.nix
   ];
 
   programs.home-manager.enable = true;
