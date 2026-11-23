@@ -18,6 +18,7 @@
 
     ./desktop/plasma.nix
     ./desktop/services.nix
+    ./desktop/gaming.nix
 
     ./dev/agents.nix
 

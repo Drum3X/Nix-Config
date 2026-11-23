@@ -23,6 +23,8 @@ in
 
     desktop.enable = mkEnableOption "the KDE Plasma desktop and SDDM";
 
+    gaming.enable = mkEnableOption "Steam, GameMode and Prism Launcher";
+
     hardware.nvidia = {
       enable = mkEnableOption "NVIDIA PRIME offload (Intel iGPU + NVIDIA dGPU)";
 

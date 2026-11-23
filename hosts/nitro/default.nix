@@ -9,6 +9,7 @@
     flakePath = "/home/drum3x/Config";
 
     desktop.enable = true;
+    gaming.enable = true;
 
     hardware.nvidia = {
       enable = true;
