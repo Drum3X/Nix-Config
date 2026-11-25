@@ -10,6 +10,7 @@
     nixfmt
     btop
     llm-agents.claude-code
+    llm-agents.hermes-agent
     llm-agents.opencode
     fastfetch
     fd

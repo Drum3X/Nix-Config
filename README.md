@@ -11,7 +11,7 @@ Manager as a NixOS module, applied with a single `nixos-rebuild switch`.
   set from the config through
   [plasma-manager](https://github.com/nix-community/plasma-manager).
   Everything else is changed in System Settings.
-- Coding agents (Claude Code, Claude Desktop, Antigravity Hub) come from
+- Coding agents (Claude Code, Claude Desktop, Antigravity Hub, Hermes Agent) come from
   [llm-agents.nix](https://github.com/numtide/llm-agents.nix).
 - [F-Dpi](https://github.com/Drum3X/F-DPI), a sing-box proxy and zapret DPI
   bypass, comes from its own flake.

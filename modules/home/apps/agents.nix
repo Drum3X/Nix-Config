@@ -7,6 +7,7 @@
     # generic-linux binaries it downloads (claude-code, uv) run through
     # nix-ld instead (modules/nixos/dev/agents.nix).
     claude-desktop.unwrapped
+    hermes-desktop
     # OpenCode 1, the line GitHub still marks latest; OpenCode 2 is in beta.
     opencode-desktop
   ];
