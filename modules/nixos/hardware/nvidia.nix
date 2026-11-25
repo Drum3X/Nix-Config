@@ -32,6 +32,9 @@ in
         package = config.boot.kernelPackages.nvidiaPackages.stable;
         # Turing (GTX 16 / RTX 20) or newer.
         open = true;
+        # Unfree, so not in any binary cache: it compiled on every driver or
+        # nixpkgs update, and with PRIME offload on Wayland it shows little.
+        nvidiaSettings = false;
 
         powerManagement = {
           enable = true;
