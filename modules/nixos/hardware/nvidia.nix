@@ -32,8 +32,6 @@ in
         package = config.boot.kernelPackages.nvidiaPackages.stable;
         # Turing (GTX 16 / RTX 20) or newer.
         open = true;
-        modesetting.enable = true;
-        nvidiaSettings = true;
 
         powerManagement = {
           enable = true;

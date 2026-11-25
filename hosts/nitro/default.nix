@@ -17,11 +17,7 @@
       nvidiaBusId = "PCI:1:0:0";
     };
 
-    network = {
-      dnscrypt.enable = false;
-      f-dpi.enable = true;
-      zapret.enable = false;
-    };
+    network.f-dpi.enable = true;
   };
 
   # Set once at install time; do not bump it on upgrades.

@@ -1,5 +1,4 @@
 { ... }: {
-  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
   services.pipewire = {
@@ -9,7 +8,6 @@
     pulse.enable = true;
 
     wireplumber = {
-      enable = true;
       # The headphone sink pops on every resume from suspend; keep it awake.
       extraConfig."99-disable-suspend" = {
         "monitor.alsa.rules" = [

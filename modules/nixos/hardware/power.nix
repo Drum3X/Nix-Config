@@ -1,16 +1,10 @@
-{ pkgs, ... }: {
+{ ... }: {
+  # Plasma turns on upower and power-profiles-daemon, and PowerDevil handles
+  # the lid, the backlight and, inside the session, the power key.
   services = {
-    upower.enable = true;
-    power-profiles-daemon.enable = true;
     thermald.enable = true;
 
-    # Lid closed -> suspend; the shell locks before sleep.
-    logind.settings.Login = {
-      HandleLidSwitch = "suspend";
-      HandlePowerKey = "suspend";
-    };
-
-    # Lets the video group write the backlight (brightnessctl).
-    udev.packages = [ pkgs.brightnessctl ];
+    # At the SDDM screen, before PowerDevil runs.
+    logind.settings.Login.HandlePowerKey = "suspend";
   };
 }

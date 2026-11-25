@@ -26,9 +26,8 @@ lib/                    mkHost: nixosSystem + disko + home-manager
 hosts/nitro/            donanım, disko (btrfs), my.* seçenekleri
 modules/nixos/          sistem modülleri (core, hardware, desktop, network, dev)
 modules/home/           Home Manager modülleri (desktop, theme, apps, terminal)
-overlays/               pkgs.stable, pkgs.llm-agents, paket ayarları
+overlays/               pkgs.llm-agents, paket ayarları
 users/drum3x/           kullanıcı hesabı + home.nix
-pkgs/                   bu repoda tanımlı paketler (şimdilik boş)
 justfile                kısa komutlar (`just` listeler)
 AGENTS.md               kodlama ajanları için kurallar (CLAUDE.md içe aktarır)
 ```

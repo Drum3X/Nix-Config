@@ -26,9 +26,8 @@ lib/                    mkHost: nixosSystem + disko + home-manager
 hosts/nitro/            hardware, disko (btrfs), my.* options
 modules/nixos/          system modules (core, hardware, desktop, network, dev)
 modules/home/           Home Manager modules (desktop, theme, apps, terminal)
-overlays/               pkgs.stable, pkgs.llm-agents, package tweaks
+overlays/               pkgs.llm-agents, package tweaks
 users/drum3x/           user account + home.nix
-pkgs/                   packages defined in this repo (empty for now)
 justfile                short commands (`just` lists them)
 AGENTS.md               rules for coding agents (CLAUDE.md imports it)
 ```

@@ -17,13 +17,10 @@
     ./hardware/power.nix
 
     ./desktop/plasma.nix
-    ./desktop/services.nix
     ./desktop/gaming.nix
 
     ./dev/agents.nix
 
-    ./network/dnscrypt.nix
     ./network/f-dpi.nix
-    ./network/zapret.nix
   ];
 }

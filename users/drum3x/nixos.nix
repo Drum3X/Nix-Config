@@ -9,7 +9,6 @@
     description = "Drum3X";
     extraGroups = [
       "networkmanager"
-      "video"
       "wheel"
     ];
   };

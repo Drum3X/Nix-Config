@@ -28,12 +28,5 @@
     # DNS then answers blocked sites with the block page, whatever nfqws does.
     # NetworkManager hands its DNS to resolved once this is on.
     services.resolved.enable = true;
-
-    assertions = [
-      {
-        assertion = !config.my.network.dnscrypt.enable;
-        message = "F-Dpi sets the system DNS through resolved; turn dnscrypt off.";
-      }
-    ];
   };
 }

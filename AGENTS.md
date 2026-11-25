@@ -12,7 +12,8 @@ module. Decisions and their history live in the owner's Kioku vault (project
   explicit lists in each `default.nix`. Host differences go through the `my.*`
   options in `modules/nixos/options.nix`, not new conditionals.
 - `users/drum3x/`: the user and their Home Manager entry point.
-- `overlays/`, `pkgs/`: package changes and local packages.
+- `overlays/`: package changes; add a `pkgs/` directory when a local package
+  is needed.
 
 ## Commands
 

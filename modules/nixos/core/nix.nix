@@ -1,12 +1,4 @@
-{
-  config,
-  inputs,
-  lib,
-  ...
-}:
-let
-  flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-in
+{ config, ... }:
 {
   nix = {
     settings = {
@@ -20,6 +12,8 @@ in
         "root"
         config.my.user
       ];
+      # `<nixpkgs>` resolves to this flake's nixpkgs in nix.conf too, not only
+      # through NIX_PATH; NixOS pins the registry entry itself.
       nix-path = config.nix.nixPath;
       # Prebuilt llm-agents packages.
       extra-substituters = [ "https://cache.numtide.com" ];
@@ -27,10 +21,6 @@ in
     };
 
     channel.enable = false;
-
-    # `nix run nixpkgs#foo` and `<nixpkgs>` resolve to this flake's pins.
-    registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
 
   # `nh os switch` shows the package diff before activating. Its cleaner
