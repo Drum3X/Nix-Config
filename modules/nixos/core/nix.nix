@@ -21,6 +21,11 @@
     };
 
     channel.enable = false;
+
+    # Local builds (F-Dpi, kioku) get only the CPU and disk time the desktop
+    # leaves free, so they do not stutter it; idle, they still run at full speed.
+    daemonCPUSchedPolicy = "idle";
+    daemonIOSchedClass = "idle";
   };
 
   # `nh os switch` shows the package diff before activating. Its cleaner
