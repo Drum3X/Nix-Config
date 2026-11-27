@@ -8,7 +8,7 @@
   # Games run on the Intel iGPU unless offloaded: in Steam, set a game's launch
   # options to `nvidia-offload gamemoderun %command%`; in Prism Launcher, tick
   # "Use discrete GPU" and "Enable Feral GameMode"; start Lunar Client with
-  # `nvidia-offload lunar-client`.
+  # `nvidia-offload lunarclient`.
   config = lib.mkIf config.my.gaming.enable {
     programs.steam = {
       enable = true;
